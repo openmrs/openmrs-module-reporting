@@ -12,9 +12,6 @@
     <name>reporting Module api 2.0</name>
     <description>2.0 api project for reporting</description>
 
-    <properties>
-        <openMRSVersion>2.0.0-alpha</openMRSVersion>
-    </properties>
 
     <dependencies>
         <dependency>

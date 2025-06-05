@@ -12,9 +12,6 @@
     <name>reporting Module api 1.9</name>
     <description>1.9 api project for reporting</description>
 
-    <properties>
-        <openMRSVersion>1.9.9</openMRSVersion>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -45,6 +42,12 @@
             <version>${openMRSVersion}</version>
             <type>pom</type>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>reportingcompatibility-api</artifactId>
+            <version>3.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
 
     </dependencies>

@@ -55,7 +55,7 @@ public class DataExportDataSetEvaluator implements DataSetEvaluator {
 		try {
 			DataExportDataSetDefinition dataExportDefinition = (DataExportDataSetDefinition) definition;
 			DataExportReportObject dataExport = dataExportDefinition.getDataExport();
-			DataExportUtil.generateExport(dataExport, context.getBaseCohort(), null);
+			DataExportUtil.generateExport(dataExport, convertCohort(context.getBaseCohort()), null);
 			
 			File dataFile = DataExportUtil.getGeneratedFile(dataExportDefinition.getDataExport());
 
@@ -88,5 +88,25 @@ public class DataExportDataSetEvaluator implements DataSetEvaluator {
 			throw new RuntimeException("An error occurred while generating a data export.", e);
 		}
 		return dataSet;
+	}
+
+	private org.openmrs.cohort.Cohort convertCohort(org.openmrs.Cohort cohort) {
+		org.openmrs.cohort.Cohort c = new org.openmrs.cohort.Cohort();
+		c.setCohortId(cohort.getId());
+		c.setName(cohort.getName());
+		c.setDescription(cohort.getDescription());
+		c.setMemberIds(cohort.getMemberIds());
+
+		c.setUuid(cohort.getUuid());
+		c.setCreator(cohort.getCreator());
+		c.setDateCreated(cohort.getDateCreated());
+		c.setChangedBy(cohort.getChangedBy());
+		c.setDateChanged(cohort.getDateChanged());
+		c.setVoided(cohort.getVoided());
+		c.setVoidedBy(cohort.getVoidedBy());
+		c.setDateVoided(cohort.getDateVoided());
+		c.setVoidReason(cohort.getVoidReason());
+
+		return c;
 	}
 }

@@ -20,7 +20,7 @@ import java.util.Properties;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
-import org.hibernate.engine.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.Type;
 import org.hibernate.usertype.CompositeUserType;
 import org.hibernate.usertype.ParameterizedType;
@@ -116,9 +116,9 @@ public class MappedDefinitionType implements CompositeUserType, ParameterizedTyp
 	}
 
 	/**
-	 * @see CompositeUserType#nullSafeGet(ResultSet, String[], SessionImplementor, Object)
+	 * @see CompositeUserType#nullSafeGet(ResultSet, String[], SharedSessionContractImplementor, Object)
 	 */
-	public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner) throws HibernateException, SQLException {
+	public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner) throws HibernateException, SQLException {
 		String parameterizableUuid = (String) HibernateUtil.standardType("STRING").nullSafeGet(rs, names[0], session, owner);
 		if (StringUtils.isEmpty(parameterizableUuid)) { return null; }
 		String serializedMappings = (String) HibernateUtil.standardType("STRING").nullSafeGet(rs, names[1], session, owner);
@@ -136,9 +136,9 @@ public class MappedDefinitionType implements CompositeUserType, ParameterizedTyp
 	}
 
 	/**
-	 * @see CompositeUserType#nullSafeSet(PreparedStatement, Object, int, SessionImplementor)
+	 * @see CompositeUserType#nullSafeSet(PreparedStatement, Object, int, SharedSessionContractImplementor)
 	 */
-	public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session) throws HibernateException, SQLException {
+	public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session) throws HibernateException, SQLException {
 		String definitionUuid = null;
 		String serializedMappings = null;
 		if (value != null) {
@@ -160,9 +160,9 @@ public class MappedDefinitionType implements CompositeUserType, ParameterizedTyp
 	}
 
 	/**
-	 * @see CompositeUserType#replace(Object, Object, SessionImplementor, Object)
+	 * @see CompositeUserType#replace(Object, Object, SharedSessionContractImplementor, Object)
 	 */
-	public Object replace(Object original, Object target, SessionImplementor session, Object owner) throws HibernateException {
+	public Object replace(Object original, Object target, SharedSessionContractImplementor session, Object owner) throws HibernateException {
 		return original;
 	}
 	
@@ -181,16 +181,16 @@ public class MappedDefinitionType implements CompositeUserType, ParameterizedTyp
 	}
 	
 	/**
-	 * @see CompositeUserType#disassemble(Object, SessionImplementor)
+	 * @see CompositeUserType#disassemble(Object, SharedSessionContractImplementor)
 	 */
-	public Serializable disassemble(Object value, SessionImplementor session) throws HibernateException {
+	public Serializable disassemble(Object value, SharedSessionContractImplementor session) throws HibernateException {
 		return (Serializable) deepCopy(value);
 	}
 
 	/**
-	 * @see CompositeUserType#assemble(Serializable, SessionImplementor, Object)
+	 * @see CompositeUserType#assemble(Serializable, SharedSessionContractImplementor, Object)
 	 */
-	public Object assemble(Serializable cached, SessionImplementor session, Object owner) throws HibernateException {
+	public Object assemble(Serializable cached, SharedSessionContractImplementor session, Object owner) throws HibernateException {
 		return deepCopy(cached);
 	}
 	

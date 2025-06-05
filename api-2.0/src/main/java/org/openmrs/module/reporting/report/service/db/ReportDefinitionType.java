@@ -17,6 +17,7 @@ import java.sql.Types;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -76,9 +77,9 @@ public class ReportDefinitionType implements UserType {
 	}
 
 	/** 
-	 * @see UserType#nullSafeGet(ResultSet, String[], Object)
+	 * @see UserType#nullSafeGet(ResultSet, String[], SharedSessionContractImplementor,Object)
 	 */
-	public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner) throws HibernateException, SQLException {
+	public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner) throws HibernateException, SQLException {
 		String uuid = rs.getString(names[0]);
 		if (uuid == null) {
 			return null;
@@ -87,9 +88,9 @@ public class ReportDefinitionType implements UserType {
 	}
 
 	/** 
-	 * @see UserType#nullSafeSet(PreparedStatement, Object, int, SessionImplementor)
+	 * @see UserType#nullSafeSet(PreparedStatement, Object, int, SharedSessionContractImplementor)
 	 */
-	public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session) throws HibernateException, SQLException {
+	public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session) throws HibernateException, SQLException {
 		ReportDefinition d = (ReportDefinition) value;
 		String val = (d == null ? null : d.getUuid());
 		st.setString(index, val);

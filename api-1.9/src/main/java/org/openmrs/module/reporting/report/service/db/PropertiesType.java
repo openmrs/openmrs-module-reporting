@@ -10,6 +10,7 @@
 package org.openmrs.module.reporting.report.service.db;
 
 import org.hibernate.HibernateException;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
 
 import java.io.IOException;
@@ -103,17 +104,17 @@ public class PropertiesType implements UserType {
 	}
 
 	/** 
-	 * @see UserType#nullSafeGet(ResultSet, String[], Object)
+	 * @see UserType#nullSafeGet(ResultSet, String[], SharedSessionContractImplementor ,Object)
 	 */
-	public Object nullSafeGet(ResultSet rs, String[] names, Object owner) throws HibernateException, SQLException {
+	public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session ,Object owner) throws HibernateException, SQLException {
 		String s = rs.getString(names[0]);
         return assemble(s, null);
 	}
 
 	/** 
-	 * @see UserType#nullSafeSet(PreparedStatement, Object, int)
+	 * @see UserType#nullSafeSet(PreparedStatement, Object, int, SharedSessionContractImplementor)
 	 */
-	public void nullSafeSet(PreparedStatement st, Object value, int index) throws HibernateException, SQLException {
+	public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session) throws HibernateException, SQLException {
 		String val = (String) disassemble(value);
 		st.setString(index, val);
 	}

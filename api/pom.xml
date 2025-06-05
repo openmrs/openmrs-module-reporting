@@ -16,7 +16,7 @@
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>reportingcompatibility-api</artifactId>
 			<version>${reportingCompatibilityVersion}</version>
-			<scope>provided</scope>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 	
