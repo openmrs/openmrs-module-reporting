@@ -529,11 +529,21 @@
                            properties="#Mon Jan 21 14:08:47 CET 2013" creator="1"
                            date_created="2013-01-21 14:08:47" retired="0" />
 
-  <reporting_report_request id="1" uuid="h8a82b63-1066-4c1d-9b43-b405851fc467" report_definition_uuid="c11f5354-9567-4cc5-b3ef-163e28873926"
-                            process_automatically="1" priority="LOW" status="REQUESTED" requested_by="1" request_datetime="2013-01-21 14:08:47" />
-  <reporting_report_request id="2" uuid="d9a82b63-1066-4c1d-9b43-b405851fc467" report_definition_uuid="d11f5354-9567-4cc5-b3ef-163e28873926"
-                            process_automatically="1" priority="LOW" status="REQUESTED" requested_by="1" request_datetime="2013-01-21 14:08:47" />
-  <reporting_report_request id="3" uuid="b0a82b63-1066-4c1d-9b43-b405851fc467" report_definition_uuid="c11f5354-9567-4cc5-b3ef-163e28873926"
-                            process_automatically="1" priority="LOW" status="REQUESTED" requested_by="1" request_datetime="2013-01-21 14:08:47" />
+  <reporting_report_request id="1" uuid="h8a82b63-1066-4c1d-9b43-b405851fc467"
+                            report_definition_uuid="c11f5354-9567-4cc5-b3ef-163e28873926"
+                            process_automatically="1" priority="LOW" status="REQUESTED" requested_by="1"
+                            request_datetime="2013-01-21 14:08:47" />
+  <reporting_report_request id="2" uuid="d9a82b63-1066-4c1d-9b43-b405851fc467"
+                            report_definition_uuid="d11f5354-9567-4cc5-b3ef-163e28873926"
+                            process_automatically="1" priority="LOW" status="REQUESTED" requested_by="1"
+                            request_datetime="2013-01-21 14:08:48" />
+  <reporting_report_request id="3" uuid="b0a82b63-1066-4c1d-9b43-b405851fc467"
+                            report_definition_uuid="c11f5354-9567-4cc5-b3ef-163e28873926"
+                            process_automatically="1" priority="LOW" status="REQUESTED" requested_by="1"
+                            request_datetime="2013-01-21 14:08:49" />
+  <reporting_report_request id="4" uuid="fce15a1b-4618-4f65-bfe9-8bb60a85c110"
+                            report_definition_uuid="d11f5354-9567-4cc5-b3ef-163e28873925"
+                            process_automatically="1" priority="LOW" status="FAILED" requested_by="1"
+                            request_datetime="2013-01-21 14:08:50" />
 
 </dataset>

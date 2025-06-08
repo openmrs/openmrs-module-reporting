@@ -9,13 +9,13 @@
 				value="%p - %C{1}.%M(%L) |%d{ISO8601}| %m%n" />
 		</layout>
 	</appender>
- 
- 	<logger name="org.openmrs.module.reporting">
-		<level value="INFO" />
+
+	<logger name="org.openmrs">
+		<level value="ERROR" />
 		<appender-ref ref="CONSOLE" />
- 	</logger>
- 	
- 	<!-- Hide unnecessary errors logged by Hibernate during unit testing -->
+	</logger>
+
+	<!-- Hide unnecessary errors logged by Hibernate during unit testing -->
 	<logger name="org.hibernate.tool.hbm2ddl.SchemaExport">
 		<level value="FATAL" />
 		<appender-ref ref="CONSOLE" />

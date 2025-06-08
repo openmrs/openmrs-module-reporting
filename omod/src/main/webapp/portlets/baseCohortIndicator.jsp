@@ -63,11 +63,11 @@
 					<div style="margin:0; padding:0; width:100%; padd">
 						<div class="metadataField">
 							<label class="desc" for="name"><spring:message code="reporting.name" /></label>
-							<input type="text" id="name" tabindex="1" name="name" value="${model.indicator.name}" size="50"/>
+							<input type="text" id="name" tabindex="1" name="name" value="<c:out value='${model.indicator.name}' />" size="50"/>
 						</div>
 						<div class="metadataField">
 							<label class="desc" for="description"><spring:message code="reporting.description" /></label>			
-							<textarea id="description" cols="40" rows="10" tabindex="2" name="description">${model.indicator.description}</textarea>
+							<textarea id="description" cols="40" rows="10" tabindex="2" name="description"><c:out value="${model.indicator.description}"/></textarea>
 						</div>
 						<div class="metadataField">
 							<label class="desc" for="indicatorType"><spring:message code="reporting.indicatorType" /></label>
@@ -124,10 +124,10 @@
 					</c:when>
 					<c:otherwise>
 						<div style="padding-bottom:5px;">
-							<b><spring:message code="reporting.name" />:&nbsp;&nbsp;</b>${model.indicator.name}
+							<b><spring:message code="reporting.name" />:&nbsp;&nbsp;</b><c:out value="${model.indicator.name}"/>
 						</div>
 						<div style="padding-bottom:5px;">
-							<b><spring:message code="reporting.description" />:&nbsp;&nbsp;</b>${model.indicator.description}
+							<b><spring:message code="reporting.description" />:&nbsp;&nbsp;</b><c:out value="${model.indicator.description}"/>
 						</div>
 						<div style="padding-bottom:5px;">
 							<b><spring:message code="reporting.indicatorType" />:&nbsp;&nbsp;</b>${model.indicator.type}
