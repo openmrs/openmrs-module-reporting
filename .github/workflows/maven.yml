@@ -14,7 +14,6 @@ jobs:
       matrix:
         platform: [ ubuntu-latest ]
         java-version: [ 8 ]
-        profile: [ 1.10, 1.11, 1.12, 2.0, 2.1, 2.2, 2.3, 2.4 ]
 
     runs-on: ${{ matrix.platform }}
     env:
@@ -36,5 +35,5 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: Build with Maven
-        run: mvn clean install -P ${{ matrix.profile }} --batch-mode --show-version --file pom.xml
+        run: mvn clean install --batch-mode --show-version --file pom.xml
 
