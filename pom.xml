@@ -39,7 +39,6 @@
 
 	<properties>
 		<openMRSVersion>2.7.0</openMRSVersion>
-		<reportingCompatibilityVersion>3.0.0-SNAPSHOT</reportingCompatibilityVersion>
 		<openMRSMinorVersion>2.7</openMRSMinorVersion>
 		<htmlwidgetsVersion>2.0.0-SNAPSHOT</htmlwidgetsVersion>
 		<serializationVersion>0.2.17-SNAPSHOT</serializationVersion>

@@ -10,14 +10,4 @@
 	<name>Reporting API</name>
 	<description>API project for Reporting</description>
 
-
-	<dependencies>
-		<dependency>
-			<groupId>org.openmrs.module</groupId>
-			<artifactId>reportingcompatibility-api</artifactId>
-			<version>${reportingCompatibilityVersion}</version>
-			<scope>compile</scope>
-		</dependency>
-	</dependencies>
-	
 </project>
