@@ -39,9 +39,9 @@
 
 	<properties>
 		<openMRSVersion>2.7.0</openMRSVersion>
-		<reportingCompatibilityVersion>2.0.6</reportingCompatibilityVersion>
+		<reportingCompatibilityVersion>3.0.0-SNAPSHOT</reportingCompatibilityVersion>
 		<openMRSMinorVersion>2.7</openMRSMinorVersion>
-		<htmlwidgetsVersion>1.7.2</htmlwidgetsVersion>
+		<htmlwidgetsVersion>2.0.0-SNAPSHOT</htmlwidgetsVersion>
 		<serializationVersion>0.2.17-SNAPSHOT</serializationVersion>
 		<calculationVersion>1.2</calculationVersion>
 		<quartzVersion>2.1.1</quartzVersion>
@@ -54,7 +54,6 @@
 		<MODULE_NAME>Reporting</MODULE_NAME>
 		<MODULE_VERSION>${project.parent.version}</MODULE_VERSION>
 		<MODULE_PACKAGE>${project.parent.groupId}.${project.parent.artifactId}</MODULE_PACKAGE>
-		<reportingApiConditionalArtifactId>reporting-api-1.9</reportingApiConditionalArtifactId>
 	</properties>
 
 
