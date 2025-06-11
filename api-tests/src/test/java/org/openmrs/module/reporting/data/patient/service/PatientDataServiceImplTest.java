@@ -34,7 +34,7 @@ import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
@@ -159,7 +159,7 @@ public class PatientDataServiceImplTest extends BaseModuleContextSensitiveTest {
         PersonAttributeCohortDefinition cohortDefinition = new PersonAttributeCohortDefinition();
         cohortDefinition.setName("Test Patients");
         cohortDefinition.setAttributeType(testAttributeType);
-        cohortDefinition.setValues(Arrays.asList("true"));
+        cohortDefinition.setValues(Collections.singletonList("true"));
         Context.getService(CohortDefinitionService.class).saveDefinition(cohortDefinition);
         return cohortDefinition;
     }
@@ -199,7 +199,7 @@ public class PatientDataServiceImplTest extends BaseModuleContextSensitiveTest {
         public CohortDefinition getTestPatients() {
             PersonAttributeCohortDefinition cohortDefinition = new PersonAttributeCohortDefinition();
             cohortDefinition.setAttributeType(Context.getPersonService().getPersonAttributeTypeByUuid(TEST_PATIENT_ATTR_TYPE_UUID));
-            cohortDefinition.setValues(Arrays.asList("true"));
+            cohortDefinition.setValues(Collections.singletonList("true"));
             return cohortDefinition;
         }
 

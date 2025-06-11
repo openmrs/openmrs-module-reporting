@@ -14,15 +14,12 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.openmrs.api.context.Context;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.SkipBaseSetup;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(Context.class)
-public class PrivilegedDataConverterTest {
+@SkipBaseSetup
+public class PrivilegedDataConverterTest extends BaseModuleContextSensitiveTest {
 
     public static final String INPUT = "input";
     public static final String REPLACEMENT = "****";
@@ -32,16 +29,24 @@ public class PrivilegedDataConverterTest {
     
     @Before
     public void setUp() throws Exception {
-        PowerMockito.mockStatic(Context.class);
-        PowerMockito.when(Context.hasPrivilege(HAS_PRIV)).thenReturn(true);
-        PowerMockito.when(Context.hasPrivilege(DOES_NOT_HAVE_PRIV)).thenReturn(false);
+        initializeInMemoryDatabase();
+        executeDataSet("org/openmrs/module/reporting/include/PrivilegeTest.xml");
+        Context.logout();
+        Context.authenticate("test", "test");
     }
     
     @Test
-    public void testConvertWithPrivilege() throws Exception {
-        PrivilegedDataConverter converter = new PrivilegedDataConverter(HAS_PRIV);
-        converter.setReplacement(REPLACEMENT);
-        assertThat((String) converter.convert(INPUT), is(INPUT));
+    public void testConvertWithPrivilege() {
+        try {
+            Context.addProxyPrivilege(HAS_PRIV);
+            Context.hasPrivilege(HAS_PRIV);
+            PrivilegedDataConverter converter = new PrivilegedDataConverter(HAS_PRIV);
+            converter.setReplacement(REPLACEMENT);
+            assertThat((String) converter.convert(INPUT), is(INPUT));
+        }
+        finally {
+            Context.removeProxyPrivilege(HAS_PRIV);
+        }
     }
 
     @Test

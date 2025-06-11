@@ -24,16 +24,20 @@ import org.openmrs.module.reporting.query.obs.ObsQueryResult;
 import org.openmrs.module.reporting.query.obs.definition.SqlObsQuery;
 import org.openmrs.module.reporting.query.obs.service.ObsQueryService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.SkipBaseSetup;
 
 /**
  * Test the evaluation of the SqlObsQuery
  */
+@SkipBaseSetup
 public class SqlObsQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
 
 	protected static Log log = LogFactory.getLog(SqlObsQueryEvaluatorTest.class);
 
 	@Before
 	public void setup() throws Exception {
+		initializeInMemoryDatabase();
+		authenticate();
 		executeDataSet("org/openmrs/module/reporting/include/" + new TestUtil().getTestDatasetFilename("ReportTestDataset"));
 	}
 

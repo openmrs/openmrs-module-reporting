@@ -68,7 +68,7 @@ public class VisitCohortDefinitionEvaluatorTest extends BaseModuleContextSensiti
     @Test
     public void testEvaluateWithNoProperties() throws Exception {
         Cohort c = cohortDefinitionService.evaluate(cd, null);
-        assertThat(c.size(), is(2));
+        assertThat(c.size(), is(3));
     }
 
     @Test
