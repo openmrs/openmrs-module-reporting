@@ -15,13 +15,14 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
+import org.openmrs.logging.MemoryAppender;
+import org.openmrs.logging.OpenmrsLoggingUtil;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.module.reporting.test.OpenmrsVersionTestListener;
 import org.openmrs.module.reporting.test.RequiresVersion;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
-import org.openmrs.util.MemoryAppender;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.test.context.TestExecutionListeners;
 
@@ -38,7 +39,7 @@ public class EvaluationProfilerTest24On extends BaseModuleContextSensitiveTest {
 	
 	@BeforeClass
 	public static void beforeClass() {
-		appender = OpenmrsUtil.getMemoryAppender();
+		appender = OpenmrsLoggingUtil.getMemoryAppender();
 		
 		if (appender == null) {
 			LoggerContext context = (LoggerContext) LogManager.getContext(false);
