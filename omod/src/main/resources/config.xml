@@ -25,7 +25,6 @@
 
     <!-- Required to support data export data set definition, which was moved out of core and into reportingcompatibility in 1.12 -->
     <aware_of_modules>
-        <aware_of_module>org.openmrs.module.reportingcompatibility</aware_of_module>
         <aware_of_module>org.openmrs.module.legacyui</aware_of_module>
         <aware_of_module>org.openmrs.module.logic</aware_of_module>
     </aware_of_modules>
@@ -179,27 +178,5 @@
 		ReportRequest.hbm.xml
 	</mappingFiles>
 	
-	<conditionalResources>
-		<conditionalResource>
-			<path>/lib/reporting-api-1.9.*</path>
-			<openmrsVersion>1.9.9 - 1.12.*</openmrsVersion>
-		</conditionalResource>
-		<conditionalResource>
-			<path>/lib/reporting-api-1.10.*</path>
-			<openmrsVersion>1.10.6 - 9.*</openmrsVersion>
-		</conditionalResource>
-		<conditionalResource>
-			<path>/lib/reporting-api-2.0.*</path>
-			<openmrsVersion>2.0.0 - 2.3.*</openmrsVersion>
-		</conditionalResource>
-		<conditionalResource>
-			<path>/lib/reporting-api-2.2.*</path>
-			<openmrsVersion>2.2.0</openmrsVersion>
-		</conditionalResource>
-		<conditionalResource>
-			<path>/lib/reporting-api-2.4.*</path>
-			<openmrsVersion>2.4.0</openmrsVersion>
-		</conditionalResource>
-	</conditionalResources>
-	
+
 </module>

@@ -4,7 +4,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>reporting</artifactId>
-	<version>1.28.0-SNAPSHOT</version>
+	<version>2.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Reporting</name>
 	<description>Parent project for Reporting</description>
@@ -38,15 +38,13 @@
     </modules>
 
 	<properties>
-		<openMRSVersion>2.4.1</openMRSVersion>
-		<reportingCompatibilityVersion>2.0.6</reportingCompatibilityVersion>
-		<openMRSMinorVersion>2.4</openMRSMinorVersion>
-		<htmlwidgetsVersion>1.7.2</htmlwidgetsVersion>
-		<serializationVersion>0.2.14</serializationVersion>
+		<openMRSVersion>2.7.0</openMRSVersion>
+		<openMRSMinorVersion>2.7</openMRSMinorVersion>
+		<htmlwidgetsVersion>2.0.0-SNAPSHOT</htmlwidgetsVersion>
+		<serializationVersion>0.2.17-SNAPSHOT</serializationVersion>
 		<calculationVersion>1.2</calculationVersion>
 		<quartzVersion>2.1.1</quartzVersion>
 		<poiVersion>3.12</poiVersion>
-		<groovyVersion>1.8.7</groovyVersion>
         <jodatimeVersion>2.12.5</jodatimeVersion>
         <handlebarsVersion>1.1.2</handlebarsVersion>
         <openmrsTestutilsVersion>1.7.0</openmrsTestutilsVersion>
@@ -55,7 +53,6 @@
 		<MODULE_NAME>Reporting</MODULE_NAME>
 		<MODULE_VERSION>${project.parent.version}</MODULE_VERSION>
 		<MODULE_PACKAGE>${project.parent.groupId}.${project.parent.artifactId}</MODULE_PACKAGE>
-		<reportingApiConditionalArtifactId>reporting-api-1.9</reportingApiConditionalArtifactId>
 	</properties>
 
 
@@ -99,15 +96,6 @@
 					<artifactId>c3p0</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-
-
-		<dependency>
-			<groupId>org.codehaus.groovy</groupId>
-			<artifactId>groovy-all</artifactId>
-			<version>${groovyVersion}</version>
-			<type>jar</type>
-			<scope>provided</scope>
 		</dependency>
 
         <dependency>
@@ -212,27 +200,6 @@
 
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
-			<artifactId>serialization.xstream-api-1.9</artifactId>
-			<version>${serializationVersion}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openmrs.module</groupId>
-			<artifactId>serialization.xstream-api-1.10</artifactId>
-			<version>${serializationVersion}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openmrs.module</groupId>
-			<artifactId>serialization.xstream-api-2.0</artifactId>
-			<version>${serializationVersion}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openmrs.module</groupId>
 			<artifactId>htmlwidgets-api</artifactId>
 			<version>${htmlwidgetsVersion}</version>
 			<scope>provided</scope>
@@ -304,87 +271,6 @@
 		</dependency>
 	</dependencies>
 
-	<profiles>
-		<profile>
-			<id>1.10</id>
-			<properties>
-				<openMRSVersion>1.10.2</openMRSVersion>
-				<openMRSMinorVersion>1.10</openMRSMinorVersion>
-			</properties>
-		</profile>
-		<profile>
-			<id>1.11</id>
-			<properties>
-				<openMRSVersion>1.11.3</openMRSVersion>
-				<openMRSMinorVersion>1.11</openMRSMinorVersion>
-			</properties>
-		</profile>
-		<profile>
-			<id>1.12</id>
-			<properties>
-				<openMRSVersion>1.12.0</openMRSVersion>
-				<openMRSMinorVersion>1.12</openMRSMinorVersion>
-                <jacksonVersion>1.9.13</jacksonVersion>
-			</properties>
-		</profile>
-		<profile>
-			<id>2.0</id>
-			<properties>
-				<openMRSVersion>2.0.0</openMRSVersion>
-				<openMRSMinorVersion>2.0</openMRSMinorVersion>
-				<jacksonVersion>1.9.13</jacksonVersion>
-				<reportingApiConditionalArtifactId>reporting-api-2.0</reportingApiConditionalArtifactId>
-			</properties>
-		</profile>
-        <profile>
-            <id>2.1</id>
-            <properties>
-                <openMRSVersion>2.1.1</openMRSVersion>
-                <openMRSMinorVersion>2.1</openMRSMinorVersion>
-                <jacksonVersion>1.9.13</jacksonVersion>
-                <reportingApiConditionalArtifactId>reporting-api-2.0</reportingApiConditionalArtifactId>
-            </properties>
-        </profile>
-        <profile>
-            <id>2.2</id>
-            <properties>
-                <openMRSVersion>2.2.0</openMRSVersion>
-                <openMRSMinorVersion>2.2</openMRSMinorVersion>
-                <jacksonVersion>1.9.13</jacksonVersion>
-                <reportingApiConditionalArtifactId>reporting-api-2.0</reportingApiConditionalArtifactId>
-            </properties>
-        </profile>
-		<profile>
-			<id>2.3</id>
-			<properties>
-				<openMRSVersion>2.3.0</openMRSVersion>
-				<openMRSMinorVersion>2.3</openMRSMinorVersion>
-				<jacksonVersion>1.9.13</jacksonVersion>
-				<reportingApiConditionalArtifactId>reporting-api-2.0</reportingApiConditionalArtifactId>
-			</properties>
-		</profile>
-		<profile>
-			<id>2.4</id>
-			<modules>
-				<module>api</module>
-				<module>api-1.9</module>
-				<module>api-1.10</module>
-				<module>api-2.0</module>
-				<module>api-2.2</module>
-				<module>api-2.4</module>
-				<module>api-tests</module>
-				<module>api-tests-2.4</module>
-				<module>omod</module>
-			</modules>
-			<properties>
-				<!-- 2.4.1 has a bugfix necessary for the tests to pass -->
-				<openMRSVersion>2.4.1</openMRSVersion>
-				<openMRSMinorVersion>2.4</openMRSMinorVersion>
-				<jacksonVersion>1.9.13</jacksonVersion>
-				<reportingApiConditionalArtifactId>reporting-api-2.4</reportingApiConditionalArtifactId>
-			</properties>
-		</profile>
-	</profiles>
 
 	<build>
 		<resources>

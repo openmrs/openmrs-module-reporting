@@ -23,6 +23,7 @@ import org.openmrs.module.reporting.query.visit.VisitQueryResult;
 import org.openmrs.module.reporting.query.visit.definition.ActiveVisitQuery;
 import org.openmrs.module.reporting.query.visit.service.VisitQueryService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.SkipBaseSetup;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ import java.util.List;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.assertThat;
 
+@SkipBaseSetup
 public class ActiveVisitQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
 
     protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
@@ -49,6 +51,8 @@ public class ActiveVisitQueryEvaluatorTest extends BaseModuleContextSensitiveTes
 
     @Before
     public void setup() throws Exception {
+        initializeInMemoryDatabase();
+        authenticate();
         executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
     }
 
