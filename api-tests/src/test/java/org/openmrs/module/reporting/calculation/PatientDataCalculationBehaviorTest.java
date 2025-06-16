@@ -12,7 +12,6 @@ package org.openmrs.module.reporting.calculation;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -48,8 +47,8 @@ public class PatientDataCalculationBehaviorTest extends BaseModuleContextSensiti
 	public void evaluate_shouldEvaluateAPatientCalculation() throws Exception {
 		Integer patientId1 = 2;
 		Integer patientId2 = 7;
-		Set<PatientIdentifier> identifiers1 = new HashSet<>(ps.getPatient(patientId1).getIdentifiers());
-		Set<PatientIdentifier> identifiers2 =  new HashSet<>(ps.getPatient(patientId2).getIdentifiers());
+		Set<PatientIdentifier> identifiers1 = ps.getPatient(patientId1).getIdentifiers();
+		Set<PatientIdentifier> identifiers2 = ps.getPatient(patientId2).getIdentifiers();
 		PatientDataCalculation calculation = new PatientDataCalculationProvider().getCalculation(
 		    "org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition", null);
 		Map<String, Object> parameters = new HashMap<String, Object>();

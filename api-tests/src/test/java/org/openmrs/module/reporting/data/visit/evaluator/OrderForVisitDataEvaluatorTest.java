@@ -10,7 +10,6 @@
 package org.openmrs.module.reporting.data.visit.evaluator;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -35,7 +34,6 @@ import org.openmrs.module.reporting.evaluation.context.VisitEvaluationContext;
 import org.openmrs.module.reporting.query.visit.VisitIdSet;
 import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
-import org.openmrs.test.SkipBaseSetup;
 import org.openmrs.util.OpenmrsConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -68,6 +66,7 @@ public class OrderForVisitDataEvaluatorTest extends BaseModuleContextSensitiveTe
 	 */
 	@Before
 	public void setup() throws Exception {
+
 		if (ModuleUtil.compareVersion(OpenmrsConstants.OPENMRS_VERSION, "1.10") < 0) {
 			setup1_9();
 		} else {
@@ -118,7 +117,6 @@ public class OrderForVisitDataEvaluatorTest extends BaseModuleContextSensitiveTe
 	 */
 	@Test
 	public void evaluate_shouldReturnAllOrdersForAVisit() throws Exception {
-		OrderType orderType = orderService.getOrderType(1);
 
 		VisitEvaluationContext context = new VisitEvaluationContext();
 		context.setBaseVisits(new VisitIdSet(1));
@@ -142,7 +140,7 @@ public class OrderForVisitDataEvaluatorTest extends BaseModuleContextSensitiveTe
 
 		OrderForVisitDataDefinition d = new OrderForVisitDataDefinition();
 
-		d.setTypes(Collections.singletonList(orderService.getOrderType(1)));
+		d.setTypes(Arrays.asList(orderService.getOrderType(1)));
 
 		EvaluatedVisitData vd = Context.getService(VisitDataService.class).evaluate(d, context);
 		Assert.assertEquals(expectedOrdersWithType.intValue(), ((List) vd.getData().get(1)).size());

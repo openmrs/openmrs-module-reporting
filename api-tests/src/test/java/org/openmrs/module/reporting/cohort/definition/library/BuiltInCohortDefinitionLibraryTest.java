@@ -11,12 +11,10 @@ package org.openmrs.module.reporting.cohort.definition.library;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.BirthAndDeathCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.ConditionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.MappedParametersCohortDefinition;
@@ -144,20 +142,5 @@ public class BuiltInCohortDefinitionLibraryTest {
         assertTrue(((MappedParametersCohortDefinition) cd).getWrapped().getParameterizable() instanceof BirthAndDeathCohortDefinition);
         assertThat(cd, hasParameter("startDate", Date.class));
         assertThat(cd, hasParameter("endDate", Date.class));
-    }
-
-    @Test
-    public void testGetConditonSearchAdavanced() throws Exception {
-        CohortDefinition cd = library.getConditonSearchAdvanced();
-        assertTrue(ConditionCohortDefinition.class.isAssignableFrom(cd.getClass()));
-        assertThat(cd, hasParameter("onsetDateOnOrBefore", Date.class));
-        assertThat(cd, hasParameter("onsetDateOnOrAfter", Date.class));
-        assertThat(cd, hasParameter("endDateOnOrBefore", Date.class));
-        assertThat(cd, hasParameter("endDateOnOrAfter", Date.class));
-        assertThat(cd, hasParameter("createdOnOrBefore", Date.class));
-        assertThat(cd, hasParameter("createdOnOrAfter", Date.class));
-        assertThat(cd, hasParameter("activeOnDate", Date.class));
-        assertThat(cd, hasParameter("conditionNonCoded", String.class));
-        assertThat(cd, hasParameter("conditionCoded", Concept.class));
     }
 }

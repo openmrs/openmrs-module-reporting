@@ -33,17 +33,23 @@
 
 	<modules>
 		<module>api</module>
+		<module>api-1.9</module>
+		<module>api-1.10</module>
+		<module>api-2.0</module>
+		<module>api-2.2</module>
+		<module>api-2.4</module>
 		<module>api-tests</module>
 		<module>omod</module>
     </modules>
 
 	<properties>
-		<openMRSVersion>2.4.1</openMRSVersion>
+		<openMRSVersion>1.9.9</openMRSVersion>
 		<reportingCompatibilityVersion>2.0.6</reportingCompatibilityVersion>
-		<openMRSMinorVersion>2.4</openMRSMinorVersion>
+		<openMRSMinorVersion>1.9</openMRSMinorVersion>
 		<htmlwidgetsVersion>1.7.2</htmlwidgetsVersion>
 		<serializationVersion>0.2.14</serializationVersion>
 		<calculationVersion>1.2</calculationVersion>
+		<jacksonVersion>1.5.0</jacksonVersion>
 		<quartzVersion>2.1.1</quartzVersion>
 		<poiVersion>3.12</poiVersion>
 		<groovyVersion>1.8.7</groovyVersion>
@@ -101,6 +107,19 @@
 			</exclusions>
 		</dependency>
 
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-core-asl</artifactId>
+			<version>${jacksonVersion}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>${jacksonVersion}</version>
+			<scope>provided</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
@@ -450,8 +469,8 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<configuration>
-						<target>1.8</target>
-						<source>1.8</source>
+						<target>1.6</target>
+						<source>1.6</source>
 					</configuration>
 				</plugin>
 
@@ -466,10 +485,10 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>3.5.3</version>
+					<version>2.5</version>
 					<configuration>
 						<!-- Some tests are locale specific -->
-                        <argLine>-Xmx1024m -Xms1024m -Duser.language=en -Duser.region=US -Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+                        <argLine>-Xmx1024m -Xms1024m -XX:MaxPermSize=512m -Duser.language=en -Duser.region=US -Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
 						<!-- Bamboo agents require a different tmp folder -->
 						<systemPropertyVariables>
 							<java.io.tmpdir>${java.io.tmpdir}</java.io.tmpdir>
