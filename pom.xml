@@ -39,7 +39,6 @@
 
 	<properties>
 		<openMRSVersion>2.4.1</openMRSVersion>
-		<reportingCompatibilityVersion>2.0.6</reportingCompatibilityVersion>
 		<openMRSMinorVersion>2.4</openMRSMinorVersion>
 		<htmlwidgetsVersion>1.7.2</htmlwidgetsVersion>
 		<serializationVersion>0.2.14</serializationVersion>
@@ -55,7 +54,6 @@
 		<MODULE_NAME>Reporting</MODULE_NAME>
 		<MODULE_VERSION>${project.parent.version}</MODULE_VERSION>
 		<MODULE_PACKAGE>${project.parent.groupId}.${project.parent.artifactId}</MODULE_PACKAGE>
-		<reportingApiConditionalArtifactId>reporting-api-1.9</reportingApiConditionalArtifactId>
 	</properties>
 
 
@@ -367,13 +365,7 @@
 			<id>2.4</id>
 			<modules>
 				<module>api</module>
-				<module>api-1.9</module>
-				<module>api-1.10</module>
-				<module>api-2.0</module>
-				<module>api-2.2</module>
-				<module>api-2.4</module>
 				<module>api-tests</module>
-				<module>api-tests-2.4</module>
 				<module>omod</module>
 			</modules>
 			<properties>
