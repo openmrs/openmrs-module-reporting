@@ -21,6 +21,7 @@ import org.openmrs.module.reporting.query.obs.definition.BasicObsQuery;
 import org.openmrs.module.reporting.query.obs.definition.MappedParametersObsQuery;
 import org.openmrs.module.reporting.query.obs.service.ObsQueryService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.SkipBaseSetup;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+@SkipBaseSetup
 public class MappedParametersObsQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
 
     protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
@@ -38,6 +40,8 @@ public class MappedParametersObsQueryEvaluatorTest extends BaseModuleContextSens
 
     @Before
     public void setup() throws Exception {
+        initializeInMemoryDatabase();
+        authenticate();
         executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
     }
 
