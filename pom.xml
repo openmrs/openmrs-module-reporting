@@ -33,23 +33,16 @@
 
 	<modules>
 		<module>api</module>
-		<module>api-1.9</module>
-		<module>api-1.10</module>
-		<module>api-2.0</module>
-		<module>api-2.2</module>
-		<module>api-2.4</module>
 		<module>api-tests</module>
 		<module>omod</module>
     </modules>
 
 	<properties>
-		<openMRSVersion>1.9.9</openMRSVersion>
-		<reportingCompatibilityVersion>2.0.6</reportingCompatibilityVersion>
-		<openMRSMinorVersion>1.9</openMRSMinorVersion>
+		<openMRSVersion>2.4.1</openMRSVersion>
+		<openMRSMinorVersion>2.4</openMRSMinorVersion>
 		<htmlwidgetsVersion>1.7.2</htmlwidgetsVersion>
 		<serializationVersion>0.2.14</serializationVersion>
 		<calculationVersion>1.2</calculationVersion>
-		<jacksonVersion>1.5.0</jacksonVersion>
 		<quartzVersion>2.1.1</quartzVersion>
 		<poiVersion>3.12</poiVersion>
 		<groovyVersion>1.8.7</groovyVersion>
@@ -61,7 +54,6 @@
 		<MODULE_NAME>Reporting</MODULE_NAME>
 		<MODULE_VERSION>${project.parent.version}</MODULE_VERSION>
 		<MODULE_PACKAGE>${project.parent.groupId}.${project.parent.artifactId}</MODULE_PACKAGE>
-		<reportingApiConditionalArtifactId>reporting-api-1.9</reportingApiConditionalArtifactId>
 	</properties>
 
 
@@ -107,19 +99,6 @@
 			</exclusions>
 		</dependency>
 
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-core-asl</artifactId>
-			<version>${jacksonVersion}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>${jacksonVersion}</version>
-			<scope>provided</scope>
-		</dependency>
 
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
@@ -386,13 +365,7 @@
 			<id>2.4</id>
 			<modules>
 				<module>api</module>
-				<module>api-1.9</module>
-				<module>api-1.10</module>
-				<module>api-2.0</module>
-				<module>api-2.2</module>
-				<module>api-2.4</module>
 				<module>api-tests</module>
-				<module>api-tests-2.4</module>
 				<module>omod</module>
 			</modules>
 			<properties>
@@ -469,8 +442,8 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<configuration>
-						<target>1.6</target>
-						<source>1.6</source>
+						<target>1.8</target>
+						<source>1.8</source>
 					</configuration>
 				</plugin>
 
@@ -485,10 +458,10 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.5</version>
+					<version>3.5.3</version>
 					<configuration>
 						<!-- Some tests are locale specific -->
-                        <argLine>-Xmx1024m -Xms1024m -XX:MaxPermSize=512m -Duser.language=en -Duser.region=US -Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+                        <argLine>-Xmx1024m -Xms1024m -Duser.language=en -Duser.region=US -Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
 						<!-- Bamboo agents require a different tmp folder -->
 						<systemPropertyVariables>
 							<java.io.tmpdir>${java.io.tmpdir}</java.io.tmpdir>

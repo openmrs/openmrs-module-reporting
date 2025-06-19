@@ -11,13 +11,5 @@
 	<description>API project for Reporting</description>
 
 
-	<dependencies>
-		<dependency>
-			<groupId>org.openmrs.module</groupId>
-			<artifactId>reportingcompatibility-api</artifactId>
-			<version>${reportingCompatibilityVersion}</version>
-			<scope>provided</scope>
-		</dependency>
-	</dependencies>
-	
+
 </project>
