@@ -1,5 +1,0 @@
-class ThisDoesNotImplementCohortDefinition {
-
-    String foobar;
-
-}

@@ -1,15 +1,11 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
 package org.openmrs.module.reporting.web.datasets;
 
@@ -19,11 +15,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.logic.LogicException;
+import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.reporting.common.LogicUtil;
 import org.openmrs.module.reporting.dataset.definition.LogicDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.LogicDataSetDefinition.Column;
@@ -40,11 +40,14 @@ public class LogicDataSetEditor {
 	
 	Log log = LogFactory.getLog(getClass());
 	
-	@RequestMapping("/module/reporting/datasets/logicDataSetEditor")
-	public void showDataset(ModelMap model, @RequestParam(required = false, value = "uuid") String uuid) {
+	@RequestMapping("/module/reporting/datasets/logicDataSetEditor.form")
+	public void showDataset(HttpServletRequest request, ModelMap model, @RequestParam(required = false, value = "uuid") String uuid) {
 		DataSetDefinitionService svc = Context.getService(DataSetDefinitionService.class);
 		LogicDataSetDefinition definition = (LogicDataSetDefinition) svc.getDefinition(uuid, LogicDataSetDefinition.class);
 		
+		HttpSession httpSession = request.getSession();
+		if(ModuleFactory.isModuleStarted("logic")) {
+			
 		List<String> tokens = new ArrayList<String>(Context.getLogicService().getAllTokens());
 		Collections.sort(tokens);
 		
@@ -62,9 +65,13 @@ public class LogicDataSetEditor {
 		model.addAttribute("logicErrors", logicErrors);
 		model.addAttribute("tokens", tokens);
 		model.addAttribute("conceptNameTags", Context.getConceptService().getAllConceptNameTags());
+	   }else {
+		
+		httpSession.setAttribute(WebConstants.OPENMRS_ERROR_ATTR, "reporting.logicModuleNotStarted.error");
+	   }
 	}
 	
-	@RequestMapping("/module/reporting/datasets/logicDataSetEditorSave")
+	@RequestMapping("/module/reporting/datasets/logicDataSetEditorSave.form")
 	public String saveLogicDataset(ModelMap model, @RequestParam(required = false, value = "uuid") String uuid,
 	                               @RequestParam(required = false, value = "name") String name,
 	                               @RequestParam(required = false, value = "description") String description,
