@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.openmrs.module.reporting.report.Report;
-
+import java.io.IOException;
 /**
  * A ReportProcessor which can perform a set of actions against Report
  */
