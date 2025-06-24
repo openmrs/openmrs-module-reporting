@@ -35,8 +35,10 @@ import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.definition.DefinitionContext;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.SkipBaseSetup;
 import org.openmrs.test.Verifies;
 
+@SkipBaseSetup
 public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
 	protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
@@ -45,6 +47,8 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 	
 	@Before
 	public void setup() throws Exception {
+		initializeInMemoryDatabase();
+		authenticate();
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
 	
