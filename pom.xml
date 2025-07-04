@@ -45,9 +45,9 @@
 		<calculationVersion>1.2</calculationVersion>
 		<quartzVersion>2.1.1</quartzVersion>
 		<poiVersion>3.12</poiVersion>
-        <jodatimeVersion>2.12.5</jodatimeVersion>
-        <handlebarsVersion>1.1.2</handlebarsVersion>
-        <openmrsTestutilsVersion>1.7.0</openmrsTestutilsVersion>
+    <jodatimeVersion>2.12.5</jodatimeVersion>
+    <handlebarsVersion>1.1.2</handlebarsVersion>
+    <openmrsTestutilsVersion>1.7.0</openmrsTestutilsVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<MODULE_ID>${project.parent.artifactId}</MODULE_ID>
 		<MODULE_NAME>Reporting</MODULE_NAME>
@@ -270,7 +270,6 @@
 			</exclusions>
 		</dependency>
 	</dependencies>
-
 
 	<build>
 		<resources>
