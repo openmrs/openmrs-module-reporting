@@ -12,11 +12,11 @@ package org.openmrs.module.reporting.data.converter;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.SkipBaseSetup;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 @SkipBaseSetup
 public class PrivilegedDataConverterTest extends BaseModuleContextSensitiveTest {
@@ -27,7 +27,7 @@ public class PrivilegedDataConverterTest extends BaseModuleContextSensitiveTest 
     public static final String HAS_PRIV = "A privilege I have";
     public static final String DOES_NOT_HAVE_PRIV = "A privilege I do not have";
     
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         initializeInMemoryDatabase();
         executeDataSet("org/openmrs/module/reporting/include/PrivilegeTest.xml");

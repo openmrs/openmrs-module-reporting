@@ -12,8 +12,8 @@ package org.openmrs.module.reporting.query.obs.evaluator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.TestUtil;
@@ -23,8 +23,8 @@ import org.openmrs.module.reporting.query.obs.ObsIdSet;
 import org.openmrs.module.reporting.query.obs.ObsQueryResult;
 import org.openmrs.module.reporting.query.obs.definition.SqlObsQuery;
 import org.openmrs.module.reporting.query.obs.service.ObsQueryService;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.test.SkipBaseSetup;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 /**
  * Test the evaluation of the SqlObsQuery
@@ -34,7 +34,7 @@ public class SqlObsQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
 
 	protected static Log log = LogFactory.getLog(SqlObsQueryEvaluatorTest.class);
 
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		initializeInMemoryDatabase();
 		authenticate();
