@@ -9,25 +9,23 @@
  */
 package org.openmrs.module.reporting.evaluation;
 
-import static org.junit.Assume.assumeTrue;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.WriterAppender;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.module.reporting.test.OpenmrsVersionTestListener;
 import org.openmrs.module.reporting.test.RequiresVersion;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.test.context.TestExecutionListeners;
 
 import java.io.StringWriter;
@@ -52,7 +50,7 @@ public class EvaluationProfilerTest extends BaseModuleContextSensitiveTest {
 	/**
 	 * Setup each test by configuring AOP on the relevant services and logging for the profiler class
 	 */
-	@Before
+	@BeforeEach
 	public void setup() {
 		profiler1 = new EvaluationProfiler(new EvaluationContext());
 		profiler2 = new EvaluationProfiler(new EvaluationContext());
@@ -70,7 +68,7 @@ public class EvaluationProfilerTest extends BaseModuleContextSensitiveTest {
 	/**
 	 * Cleanup after tests by removing AOP and resetting logging
 	 */
-	@After
+	@AfterEach
 	public void cleanup() {
 		logger.setLevel(startingLevel);
 		for (Appender appender : startingAppenders) {
