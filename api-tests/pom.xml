@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.openmrs.module</groupId>
 		<artifactId>reporting</artifactId>
-		<version>1.16.0-SNAPSHOT</version>
+		<version>1.29.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>reporting-api-tests</artifactId>
@@ -29,11 +29,6 @@
 					<groupId>javassist</groupId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.openmrs.module</groupId>
-			<artifactId>${reportingApiConditionalArtifactId}</artifactId>
-			<version>${project.parent.version}</version>
 		</dependency>
 
 		<dependency>
