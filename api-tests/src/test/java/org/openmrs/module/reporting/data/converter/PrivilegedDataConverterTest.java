@@ -31,8 +31,6 @@ public class PrivilegedDataConverterTest extends BaseModuleContextSensitiveTest 
     public void setUp() throws Exception {
         initializeInMemoryDatabase();
         executeDataSet("org/openmrs/module/reporting/include/PrivilegeTest.xml");
-        Context.logout();
-        Context.authenticate("test", "test");
     }
     
     @Test
