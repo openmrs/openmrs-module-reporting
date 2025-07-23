@@ -41,7 +41,7 @@
 		<openMRSVersion>2.4.1</openMRSVersion>
 		<openMRSMinorVersion>2.4</openMRSMinorVersion>
 		<htmlwidgetsVersion>1.7.2</htmlwidgetsVersion>
-		<serializationVersion>0.2.14</serializationVersion>
+		<serializationVersion>0.2.17-SNAPSHOT</serializationVersion>
 		<calculationVersion>1.2</calculationVersion>
 		<quartzVersion>2.1.1</quartzVersion>
 		<poiVersion>3.12</poiVersion>
