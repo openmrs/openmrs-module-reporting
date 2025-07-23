@@ -45,7 +45,7 @@
 		<calculationVersion>1.2</calculationVersion>
 		<quartzVersion>2.1.1</quartzVersion>
 		<poiVersion>3.12</poiVersion>
-		<groovyVersion>1.8.7</groovyVersion>
+		<groovyVersion>2.4.21</groovyVersion>
         <jodatimeVersion>2.12.5</jodatimeVersion>
         <handlebarsVersion>1.1.2</handlebarsVersion>
         <openmrsTestutilsVersion>1.7.0</openmrsTestutilsVersion>
