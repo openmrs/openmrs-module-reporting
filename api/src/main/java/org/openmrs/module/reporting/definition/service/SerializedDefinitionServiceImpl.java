@@ -40,7 +40,7 @@ public class SerializedDefinitionServiceImpl extends BaseOpenmrsService implemen
     //****************
     // Constructor
     //****************
-	private SerializedDefinitionServiceImpl() { }
+	public SerializedDefinitionServiceImpl() { }
 	
     //****************
     // Properties
