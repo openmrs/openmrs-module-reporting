@@ -56,7 +56,8 @@
 		<addForeignKeyConstraint baseTableName="reporting_report_design" baseColumnNames="retired_by" constraintName="retired_by_for_reporting_report_design" referencedTableName="users" referencedColumnNames="user_id"	deferrable="false" initiallyDeferred="false" />
 	</changeSet>
 
-	<changeSet id="reporting_report_design_2" author="mseaton">
+	<changeSet id="reporting_report_design_2" author="mseaton" dbms="mysql,mariadb">
+		<validCheckSum>8:53ee2581fae69de6011402f9ccf56cdd</validCheckSum> <!-- checksum before mariadb dbms check -->
 		<preConditions onFail="MARK_RAN">
 			<not><columnExists tableName="reporting_report_design" columnName="report_definition_uuid"/></not>
 		</preConditions>
@@ -72,9 +73,33 @@
 		</sql>
 	</changeSet>
 
-	<changeSet id="reporting_report_design_3" author="mseaton">
+	<changeSet id="reporting_report_design_2_postgresql" author="aman" dbms="postgresql">
+		<preConditions onFail="MARK_RAN">
+			<not><columnExists tableName="reporting_report_design" columnName="report_definition_uuid"/></not>
+		</preConditions>
+		<addColumn tableName="reporting_report_design">
+			<column name="report_definition_uuid" type="varchar(38)">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+		<sql>
+			UPDATE reporting_report_design rd
+			SET report_definition_uuid = so.uuid
+			FROM serialized_object so
+			WHERE rd.report_definition_id = so.serialized_object_id;
+		</sql>
+	</changeSet>
+
+	<changeSet id="reporting_report_design_3" author="mseaton" dbms="mysql,mariadb">
+		<validCheckSum>8:376812e41a0a69544e5d3a03f3a99c7f</validCheckSum> <!-- checksum before mariadb dbms check -->
 		<sql>
 			alter table reporting_report_design modify report_definition_uuid char(38) not null;
+		</sql>
+	</changeSet>
+
+	<changeSet id="reporting_report_design_3_postgresql" author="aman" dbms="postgresql">
+		<sql>
+			alter table reporting_report_design alter column report_definition_uuid type char(38);
 		</sql>
 	</changeSet>
 
@@ -84,7 +109,7 @@
 		<preConditions onFail="MARK_RAN">
 			<or>
 				<and>
-					<dbms type="mysql" />
+					<dbms type="mysql,mariadb" />
 					<sqlCheck expectedResult="1">
 						SELECT  count(*)
 						FROM    INFORMATION_SCHEMA.KEY_COLUMN_USAGE KCU
@@ -95,7 +120,7 @@
 				</and>
 				<and>
 					<not>
-						<dbms type="mysql" />
+						<dbms type="mysql,mariadb" />
 					</not>
 					<foreignKeyConstraintExists foreignKeyName="report_definition_id_for_reporting_report_design"/>
 				</and>
@@ -237,6 +262,8 @@
 	</changeSet>
 
 	<changeSet id="reporting_report_request_3" author="mseaton">
+		<validCheckSum>3:8e88f53150534221e9c32cd0e2c94706</validCheckSum> <!-- old checksum without changing tinyint to boolean -->
+		<validCheckSum>3:f821b2d05cdaf6593e2c6a48907b5d48</validCheckSum> <!-- current checksum after changing tinyint to boolean -->
 		<preConditions onFail="MARK_RAN">
 			<not><columnExists tableName="reporting_report_request" columnName="process_automatically"/></not>
 		</preConditions>
@@ -244,7 +271,7 @@
 			Add processAutomatically boolean to ReportRequest
 		</comment>
 		<addColumn tableName="reporting_report_request">
-			<column name="process_automatically" defaultValueNumeric="0" type="tinyint(1)">
+			<column name="process_automatically" defaultValue="0" type="boolean">
 				<constraints nullable="false"/>
 			</column>
 		</addColumn>
@@ -267,6 +294,9 @@
 	<changeSet id="reporting_report_processor_1" author="mseaton">
 	<validCheckSum>3:bc9b147af791381ff5a98a7786f7d638</validCheckSum> <!-- old checksum without clean constraint names -->
 	<validCheckSum>3:779193b8124f3299601ca74ff7699dfe</validCheckSum> <!-- current checksum with clean constraint names -->
+
+	<validCheckSum>3:779193b8124f3299601ca74ff7699dfe</validCheckSum> <!-- old checksum without changing tinyint to boolean -->
+	<validCheckSum>3:357a305d1d6f3723032301f9e96e6f22</validCheckSum> <!-- current checksum after changing tinyint to boolean -->
 		<preConditions onFail="MARK_RAN">
 			<not><tableExists tableName="reporting_report_processor" /></not>
 		</preConditions>
@@ -288,10 +318,10 @@
 				<constraints nullable="false"  />
 			</column>
 			<column name="configuration" type="mediumtext" />
-			<column name="run_on_success" defaultValueNumeric="1" type="tinyint(1)">
+			<column name="run_on_success" defaultValue="1" type="boolean">
 				<constraints nullable="false"  />
 			</column>
-			<column name="run_on_error" defaultValueNumeric="0" type="tinyint(1)">
+			<column name="run_on_error" defaultValue="0" type="boolean">
 				<constraints nullable="false"  />
 			</column>
 			<column name="creator" defaultValueNumeric="0" type="int">
@@ -356,6 +386,10 @@
 	<!--  REPORTING MIGRATION CHANGE SETS TO SUPPORT REFACTORING -->
 
 	<changeSet id="reporting_migration_1" author="mseaton">
+	    <validCheckSum>8:29d9c10336ca467e93b34db77a250d12</validCheckSum> <!-- old checksum before removing ` from sql -->
+    	<validCheckSum>8:631a987732036d592c48c118f8de368d</validCheckSum> <!-- current checksum after removing ` from sql -->
+        <validCheckSum>3:f6ea0df533cc324ea0d6275d72980c78</validCheckSum> <!-- old checksum before removing ` from sql -->
+        <validCheckSum>3:e868cc03288964204097d0beef162f5f</validCheckSum> <!-- current checksum after removing ` from sql -->
 		<comment>
 			Remove OpenMRS scheduled tasks produced by the reporting module
 		</comment>
@@ -364,7 +398,7 @@
 			where 	task_config_id in (select task_config_id from scheduler_task_config where schedulable_class like 'org.openmrs.module.reporting.%');
 		</sql>
 		<sql>
-			delete from `scheduler_task_config` where schedulable_class like 'org.openmrs.module.reporting.%';
+			delete from scheduler_task_config where schedulable_class like 'org.openmrs.module.reporting.%';
 		</sql>
 	</changeSet>
 
@@ -590,5 +624,18 @@
 		</preConditions>
 		<addForeignKeyConstraint baseTableName="reporting_report_processor" baseColumnNames="retired_by" constraintName="retired_by_for_reporting_report_processor" referencedTableName="users" referencedColumnNames="user_id" deferrable="false" initiallyDeferred="false" />
 	</changeSet>
-	
+
+	<changeSet id="update_content_type_database_type" author="alalo">
+		<preConditions onFail="MARK_RAN">
+			<columnExists tableName="reporting_report_design_resource" columnName="content_type" />
+		</preConditions>
+		<comment>
+			Update data type of content_type column from reporting_report_design_resource table
+		</comment>
+		<modifyDataType
+				columnName="content_type"
+				newDataType="varchar(100)"
+				tableName="reporting_report_design_resource"/>
+	</changeSet>
+
 </databaseChangeLog>
