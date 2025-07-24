@@ -14,9 +14,9 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
@@ -34,17 +34,21 @@ import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.definition.DefinitionContext;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.SkipBaseSetup;
 import org.openmrs.test.Verifies;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
+@SkipBaseSetup
 public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
 	protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
 	
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
+		initializeInMemoryDatabase();
+		authenticate();
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
 	
@@ -201,7 +205,7 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 	 * @see EncounterCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)
 	 * @verifies return correct patients when provider parameters are set
 	 */
-	@Ignore
+	@Disabled
 	@Test
 	public void evaluate_shouldReturnCorrectPatientsWhenProviderParametersAreSet() throws Exception {
 		EncounterCohortDefinition cd = new EncounterCohortDefinition();
@@ -212,7 +216,7 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 	/**
 	 * @see {@link EncounterCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
 	 */
-	@Ignore
+	@Disabled
 	@Test
 	@Verifies(value = "should not return voided patients", method = "evaluate(CohortDefinition,EvaluationContext)")
 	public void evaluate_shouldNotReturnVoidedPatients() throws Exception {
