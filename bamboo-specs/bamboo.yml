@@ -187,7 +187,7 @@ Release to Maven:
   artifact-subscriptions: []
 variables:
   build.docker.image.id: maven:3.9.9-amazoncorretto-21
-  maven.development.version: ''
+  maven.development.version: '2.0.0-SNAPSHOT'
   maven.release.version: 1.29.0
   refapp.distro.property: reportingVersion
 repositories:
