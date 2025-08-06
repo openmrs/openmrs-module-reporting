@@ -133,10 +133,13 @@ Release to Maven:
   key: RTMVN
   tasks:
   - checkout:
-      repository: Git
-      path: release-scripts
       force-clean-build: 'false'
       description: Checkout Default Repository
+  - checkout:
+      repository: Release scripts
+      path: release-scripts
+      force-clean-build: 'false'
+      description: Checkout Release Scripts Repository
   - script:
       interpreter: SHELL
       scripts:
