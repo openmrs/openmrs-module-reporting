@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.reporting.serializer;
 
 import com.thoughtworks.xstream.XStream;
@@ -8,21 +17,34 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.mapper.Mapper;
 import com.thoughtworks.xstream.mapper.MapperWrapper;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.dataset.definition.CohortIndicatorAndDimensionDataSetDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.serialization.xstream.XStreamShortSerializer;
 import org.openmrs.module.serialization.xstream.mapper.CGLibMapper;
 import org.openmrs.module.serialization.xstream.mapper.HibernateCollectionMapper;
 import org.openmrs.module.serialization.xstream.mapper.JavassistMapper;
 import org.openmrs.module.serialization.xstream.mapper.NullValueMapper;
 import org.openmrs.serialization.SerializationException;
+import org.openmrs.serialization.SimpleXStreamSerializer;
 
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-
+import java.lang.reflect.Method;
 
 public class ReportingSerializer extends XStreamShortSerializer {
 
 	private static ThreadLocal<DataHolder> cache = new ThreadLocal<DataHolder>();
+
+	private final Log log = LogFactory.getLog(this.getClass());
+
+	private boolean xstreamSecuritySetup = false;
 	
 	/**
 	 * @throws SerializationException
@@ -71,10 +93,15 @@ public class ReportingSerializer extends XStreamShortSerializer {
 	    xstream.registerConverter(new IndicatorConverter(mapper, converterLookup));
 
 		xstream.registerConverter(new ReportDefinitionConverter(mapper, converterLookup));
+		xstream.allowTypes(new Class[] {Parameter.class, Mapped.class, CohortIndicatorAndDimensionDataSetDefinition.CohortIndicatorAndDimensionSpecification.class});
 	}
 	
 	@Override
 	synchronized public <T> T deserialize(String serializedObject, Class<? extends T> clazz) throws SerializationException {
+		if (!xstreamSecuritySetup) {
+			setupXStreamSecurity();
+			xstreamSecuritySetup = true;
+		}
 		boolean cacheOwner = cache.get() == null;
 		if (cacheOwner) {
 			cache.set(new MapBackedDataHolder());
@@ -102,4 +129,31 @@ public class ReportingSerializer extends XStreamShortSerializer {
         }
     }
 
+	/**
+	 * Sets up xstream security on the Reporting Serializer to match the OpenMRS core security configuration
+	 */
+	public void setupXStreamSecurity() throws SerializationException {
+		log.debug("Setting up xstream security on ReportingSerializer");
+		SimpleXStreamSerializer serializer = null;
+		try {
+			serializer = Context.getRegisteredComponent("simpleXStreamSerializer", SimpleXStreamSerializer.class);
+		}
+		catch (Exception ignored) {
+		}
+		if (serializer == null) {
+			log.debug("Not setting up XStream security as no simpleXStreamSerializer component is found");
+			return;
+		}
+		try {
+			Method method = serializer.getClass().getMethod("initXStream", XStream.class);
+			method.invoke(serializer, xstream);
+			log.info("XStream security initialized on ReportingSerializer");
+		}
+		catch (NoSuchMethodException ignored) {
+			log.debug("Not setting up XStream Security as no initXStream method found on SimpleXStreamSerializer");
+		}
+		catch (Exception e) {
+			throw new SerializationException("Failed to set up XStream Security on Reporting Serializer", e);
+		}
+	}
 }
