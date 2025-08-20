@@ -17,6 +17,7 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.ExcelBuilder;
 import org.openmrs.module.reporting.common.ExcelUtil;
 import org.openmrs.module.reporting.common.Localized;
+import org.openmrs.module.reporting.common.MessageUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
@@ -92,7 +93,7 @@ public class XlsReportRenderer extends ReportTemplateRenderer {
 					for (Parameter p : dataset.getDefinition().getParameters()) {
 						Object parameterValue = dataset.getContext().getParameterValue(p.getName());
 						if (ObjectUtil.notNull(parameterValue)) {
-							excelBuilder.addCell(p.getLabelOrName() + ":", "align=right");
+							excelBuilder.addCell(MessageUtil.translate(p.getLabelOrName()) + ":", "align=right");
 							excelBuilder.addCell(ObjectUtil.format(parameterValue));
 							excelBuilder.nextRow();
 						}

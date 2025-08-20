@@ -28,6 +28,7 @@ public class SqlDataSetFactory implements DataSetFactory {
             throw new RuntimeException("SQL file " + dataSetDescriptor.getConfig() + " not found");
         }
         SqlFileDataSetDefinition dsd = new SqlFileDataSetDefinition();
+        dsd.setName(dataSetDescriptor.getName());
         dsd.setSqlFile(sqlFile.getAbsolutePath());
         return dsd;
     }

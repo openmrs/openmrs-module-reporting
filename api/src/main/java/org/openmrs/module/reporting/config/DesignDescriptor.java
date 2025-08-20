@@ -8,6 +8,9 @@ import java.util.Map;
 public class DesignDescriptor {
 
     @JsonProperty
+    private String name;
+
+    @JsonProperty
     private String type;
 
     @JsonProperty
@@ -18,6 +21,14 @@ public class DesignDescriptor {
 
     @JsonProperty
     private List<ProcessorDescriptor> processors;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getType() {
         return type;

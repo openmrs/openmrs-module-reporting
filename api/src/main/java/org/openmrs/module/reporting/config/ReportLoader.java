@@ -16,6 +16,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.db.SerializedObject;
 import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.module.reporting.common.ContentType;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.config.factory.DataSetFactory;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -325,7 +326,7 @@ public class ReportLoader {
     public static ReportDesign constructXlsReportDesign(ReportDefinition reportDefinition, ReportDescriptor reportDescriptor, DesignDescriptor designDescriptor) {
 
         ReportDesign design = new ReportDesign();
-        design.setName("reporting.excel");
+        design.setName(ObjectUtil.nvlStr(designDescriptor.getName(), "reporting.excel"));
         design.setReportDefinition(reportDefinition);
         design.setRendererType(XlsReportRenderer.class);
 

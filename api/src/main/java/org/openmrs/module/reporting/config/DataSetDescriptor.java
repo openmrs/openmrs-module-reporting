@@ -11,6 +11,9 @@ public class DataSetDescriptor {
     private String key;
 
     @JsonProperty
+    private String name;
+
+    @JsonProperty
     private String type;
 
     @JsonProperty
@@ -25,6 +28,14 @@ public class DataSetDescriptor {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getType() {
