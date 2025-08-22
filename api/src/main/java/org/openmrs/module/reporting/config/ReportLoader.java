@@ -28,6 +28,7 @@ import org.openmrs.module.reporting.report.definition.service.ReportDefinitionSe
 import org.openmrs.module.reporting.report.processor.DiskReportProcessor;
 import org.openmrs.module.reporting.report.processor.EmailReportProcessor;
 import org.openmrs.module.reporting.report.processor.LoggingReportProcessor;
+import org.openmrs.module.reporting.report.processor.HttpReportProcessor;
 import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
 import org.openmrs.module.reporting.report.renderer.ReportDesignRenderer;
 import org.openmrs.module.reporting.report.renderer.XlsReportRenderer;
@@ -287,6 +288,9 @@ public class ReportLoader {
                     }
                     else if ("logging".equalsIgnoreCase(type)) {
                         type = LoggingReportProcessor.class.getName();
+                    }
+                    else if ("http".equalsIgnoreCase(type)) {
+                        type = HttpReportProcessor.class.getName();
                     }
                     c.setProcessorType(type);
                     c.setRunOnSuccess(processorDescriptor.getRunOnSuccess());
