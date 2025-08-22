@@ -12,6 +12,7 @@ package org.openmrs.module.reporting.web.taglib;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -360,7 +361,7 @@ public class FormatTag extends TagSupport {
 	 * @param cohort
 	 */
 	private void printCohort(StringBuilder sb, Cohort cohort) {
-		sb.append(cohort.size() + " patients");
+		printCollection(sb, cohort.getMemberIds());
     }
 	
 	private void printObsValue(StringBuilder sb, Obs obsValue) {
@@ -402,14 +403,14 @@ public class FormatTag extends TagSupport {
 	
 	private void printCollection(StringBuilder sb, Collection<?> c){
 		if(c != null){
-			sb.append("<table cellspacing=\"0\" cellpadding=\"2\" border=\"1\">");
-			sb.append("<tr><th align=\"left\">" + Context.getMessageSourceService().getMessage("reporting.ids") + "</th></tr>");
+			sb.append("<table id=\"collectionTable\" cellspacing=\"0\" cellpadding=\"2\" border=\"1\"></table>");
+			Collection<Object> tableData = new ArrayList<Object>();
 			for (Object item : c) {
-				sb.append("<tr><td align=\"left\">");
-				printObject(sb, item);
-				sb.append("</td></tr>");
+				Collection<Object> tableRow = new ArrayList<Object>();
+				tableRow.add(item);
+				tableData.add(tableRow);
 			}
-			sb.append("</table>");
+			sb.append("<script>$j('#collectionTable').dataTable({\"aaData\":" + tableData + ", \"bPaginate\":true, \"bLengthChange\":false, \"bFilter\":false, \"bSort\":false, \"bInfo\":true, \"bAutoWidth\":false, \"aoColumns\":[{\"sTitle\": \"" + Context.getMessageSourceService().getMessage("reporting.ids") + "\"}]});</script>");
 		}
 	}
 
