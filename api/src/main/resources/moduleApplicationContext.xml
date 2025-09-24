@@ -41,7 +41,7 @@
 		<property name="target">
 			<bean class="org.openmrs.module.reporting.definition.service.SerializedDefinitionServiceImpl">
 				<property name="dao"><ref bean="serializedObjectDAO"/></property>
-				<property name="serializer"><ref bean="reportingSerializer"/></property>
+				<property name="serializer" ref="reportingSerializer"/>
 			</bean>
 		</property>
 		<property name="preInterceptors">
