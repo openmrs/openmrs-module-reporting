@@ -16,6 +16,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.db.SerializedObject;
 import org.openmrs.api.db.SerializedObjectDAO;
 import org.openmrs.module.reporting.common.ContentType;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.config.factory.DataSetFactory;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -30,6 +31,7 @@ import org.openmrs.module.reporting.report.processor.EmailReportProcessor;
 import org.openmrs.module.reporting.report.processor.LoggingReportProcessor;
 import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
 import org.openmrs.module.reporting.report.renderer.ReportDesignRenderer;
+import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.renderer.XlsReportRenderer;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.util.OpenmrsUtil;
@@ -250,7 +252,7 @@ public class ReportLoader {
         }
 
         for (DesignDescriptor designDescriptor : reportDescriptor.getDesigns()) {
-            ReportDesign design = null;
+            ReportDesign design;
             if (designDescriptor.getType().equalsIgnoreCase("csv")) {
                 design = constructCSVReportDesign(reportDefinition);
             }
@@ -258,7 +260,33 @@ public class ReportLoader {
                 design = constructXlsReportDesign(reportDefinition, reportDescriptor, designDescriptor);
             }
             else {
-                throw new RuntimeException("Unsupported report design type: " + designDescriptor.getType() + " for report " + reportDefinition.getName());
+                try {
+                    design = new ReportDesign();
+                    design.setName(designDescriptor.getName());
+                    design.setReportDefinition(reportDefinition);
+                    design.setRendererType((Class<? extends ReportRenderer>)Context.loadClass(designDescriptor.getType()));
+
+                    if (StringUtils.isNotBlank(designDescriptor.getTemplate())) {
+                        String template = designDescriptor.getTemplate();
+                        ReportDesignResource resource = new ReportDesignResource();
+                        resource.setName("template");
+                        for (ContentType contentType : ContentType.values()) {
+                            if (template.toLowerCase().endsWith("." + contentType.getExtension())) {
+                                resource.setExtension(contentType.getExtension());
+                                resource.setContentType(contentType.getContentType());
+                            }
+                        }
+                        File templateFile = new File(reportDescriptor.getPath(), template);
+
+                        byte[] templateBytes = FileUtils.readFileToByteArray(templateFile);
+                        resource.setContents(templateBytes);
+                        resource.setReportDesign(design);
+                        design.addResource(resource);
+                    }
+                }
+                catch (Exception e) {
+                    throw new RuntimeException("Failed to load report design: " + designDescriptor.getType() + " for report " + reportDefinition.getName(), e);
+                }
             }
 
             if (designDescriptor.getProperties() != null) {
@@ -325,7 +353,7 @@ public class ReportLoader {
     public static ReportDesign constructXlsReportDesign(ReportDefinition reportDefinition, ReportDescriptor reportDescriptor, DesignDescriptor designDescriptor) {
 
         ReportDesign design = new ReportDesign();
-        design.setName("reporting.excel");
+        design.setName(ObjectUtil.nvlStr(designDescriptor.getName(), "reporting.excel"));
         design.setReportDefinition(reportDefinition);
         design.setRendererType(XlsReportRenderer.class);
 

@@ -19,7 +19,8 @@ public enum ContentType {
 	XML("xml", "text/xml"),
 	CSV("csv", "text/csv"),
 	TEXT("text", "text/plain"),
-	ZIP("zip", "application/zip");
+	ZIP("zip", "application/zip"),
+	PDF("pdf", "application/pdf");
 	
 	//***** PROPERTIES *****
 	
