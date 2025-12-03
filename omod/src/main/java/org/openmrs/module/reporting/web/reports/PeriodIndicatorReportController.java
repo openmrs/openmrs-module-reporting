@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.reporting.web.reports;
 
 import java.util.ArrayList;
@@ -62,7 +71,7 @@ public class PeriodIndicatorReportController {
 		return ret;
 	}
 
-	@RequestMapping("/module/reporting/reports/periodIndicatorReport")
+	@RequestMapping("/module/reporting/reports/periodIndicatorReport.form")
 	public void showForm(ModelMap model,
 						 @RequestParam(value="uuid", required=false) String uuid) {
 		if (uuid == null) {
@@ -80,7 +89,7 @@ public class PeriodIndicatorReportController {
 	}
 
 	
-	@RequestMapping("/module/reporting/reports/periodIndicatorReportSaveColumn")
+	@RequestMapping("/module/reporting/reports/periodIndicatorReportSaveColumn.form")
 	public String addColumn(@RequestParam("uuid") String uuid,
 							@RequestParam(value="index", required=false) Integer index,
 							@RequestParam("key") String key,
@@ -138,7 +147,7 @@ public class PeriodIndicatorReportController {
 		return "redirect:periodIndicatorReport.form?uuid=" + uuid;
 	} 
 	
-	@RequestMapping("/module/reporting/reports/periodIndicatorReportRemoveColumn")
+	@RequestMapping("/module/reporting/reports/periodIndicatorReportRemoveColumn.form")
 	public String removeColumn(@RequestParam("uuid") String uuid,
 							   @RequestParam("key") String key) {
 		
@@ -148,7 +157,7 @@ public class PeriodIndicatorReportController {
 		return "redirect:periodIndicatorReport.form?uuid=" + uuid;
 	}
 	
-	@RequestMapping("/module/reporting/reports/periodIndicatorReportRemoveDimension")
+	@RequestMapping("/module/reporting/reports/periodIndicatorReportRemoveDimension.form")
 	public String removeDimension(@RequestParam("uuid") String uuid,
 								  @RequestParam("key") String key) {
 		

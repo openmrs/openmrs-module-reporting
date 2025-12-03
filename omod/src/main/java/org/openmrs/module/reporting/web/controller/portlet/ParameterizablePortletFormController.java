@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.reporting.web.controller.portlet;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +18,7 @@ import org.openmrs.module.reporting.evaluation.BaseDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.web.WebConstants;
+import org.openmrs.web.WebUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +37,7 @@ public class ParameterizablePortletFormController {
     /**
      * Saves a BaseOpenmrsMetadata object
      */
-    @RequestMapping("/module/reporting/reports/saveBaseParameterizable")
+    @RequestMapping("/module/reporting/reports/saveBaseParameterizable.form")
     public String saveBaseParameterizable(ModelMap model, HttpServletRequest request,
     		@RequestParam(required=true, value="type") Class<? extends BaseDefinition> type,
     		@RequestParam(required=true, value="uuid") String uuid,
@@ -53,8 +63,8 @@ public class ParameterizablePortletFormController {
     			throw new IllegalArgumentException("Cannot instantiate a new " + type, e);
     		}
     	}
-    	p.setName(name);
-    	p.setDescription(description);
+    	p.setName(WebUtil.escapeHTML(name));
+    	p.setDescription(WebUtil.escapeHTML(description));
     	p = ParameterizableUtil.saveParameterizable(p);
     	
     	if (StringUtils.isNotEmpty(successUrl)) {

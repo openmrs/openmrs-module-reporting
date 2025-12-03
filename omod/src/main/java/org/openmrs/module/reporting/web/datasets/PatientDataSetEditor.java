@@ -1,15 +1,11 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
 package org.openmrs.module.reporting.web.datasets;
 
@@ -23,6 +19,7 @@ import java.util.Properties;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
@@ -128,7 +125,7 @@ public class PatientDataSetEditor {
 		}
     }
 
-	@RequestMapping("/module/reporting/datasets/patientDataSetEditor")
+	@RequestMapping("/module/reporting/datasets/patientDataSetEditor.form")
 	public void showDataset(HttpSession session,
 	                        Model model) {
 		model.addAttribute("unsaved", session.getAttribute(IS_UNSAVED_ATTR));
@@ -136,7 +133,7 @@ public class PatientDataSetEditor {
 		model.addAttribute("dataDefinitionTypes", PatientDataDefinition.class.getName() + "," + PersonDataDefinition.class.getName());
 	}
 	
-	@RequestMapping(value="/module/reporting/datasets/patientDataSetEditor-nameDescription", method=RequestMethod.POST)
+	@RequestMapping(value="/module/reporting/datasets/patientDataSetEditor-nameDescription.form", method=RequestMethod.POST)
 	public String changeNameAndDescription(@RequestParam("name") String name,
 	                                       @RequestParam("description") String description,
 	                                       HttpSession session) {
@@ -147,7 +144,7 @@ public class PatientDataSetEditor {
 		return "redirect:patientDataSetEditor.form";
 	}
 
-	@RequestMapping(value="/module/reporting/datasets/patientDataSetEditor-addParam", method=RequestMethod.POST)
+	@RequestMapping(value="/module/reporting/datasets/patientDataSetEditor-addParam.form", method=RequestMethod.POST)
 	public String addParameter(@RequestParam(value="collectionType", required=false) Class<? extends Collection<?>> collectionType,
 	                              @RequestParam(value="parameterType", required=false) Class<?> parameterType,
 	                              @RequestParam(value="name", required=false) String name,
@@ -170,7 +167,7 @@ public class PatientDataSetEditor {
 		return "redirect:patientDataSetEditor.form";
 	}
 		
-	@RequestMapping(value="/module/reporting/datasets/patientDataSetEditor-removeParam", method=RequestMethod.POST)
+	@RequestMapping(value="/module/reporting/datasets/patientDataSetEditor-removeParam.form", method=RequestMethod.POST)
 	public String removeParameter(@RequestParam("name") String name,
 	                              HttpSession session) {
 		PatientDataSetDefinition dsd = getFromSession(session);
@@ -179,7 +176,7 @@ public class PatientDataSetEditor {
 		return "redirect:patientDataSetEditor.form";
 	}
 	
-	@RequestMapping(value="/module/reporting/datasets/patientDataSetEditor-addColumn", method=RequestMethod.POST)
+	@RequestMapping(value="/module/reporting/datasets/patientDataSetEditor-addColumn.form", method=RequestMethod.POST)
 	public String addColumn(@RequestParam(value="label", required=false) String label,
 	                        @RequestParam(value="columnDefinition", required=false) String columnDefinition,
 	                        HttpSession session) {
@@ -197,7 +194,7 @@ public class PatientDataSetEditor {
     	}
 		
 		MappedEditor editor = new MappedEditor();
-		editor.setAsText(columnDefinition);
+		editor.setAsText(StringEscapeUtils.unescapeXml(columnDefinition));
 		Mapped<DataDefinition> mappedDef = (Mapped<DataDefinition>) editor.getValue();
 		
     	dsd.addColumn(label, mappedDef.getParameterizable(), mappedDef.getParameterMappings());
@@ -205,7 +202,7 @@ public class PatientDataSetEditor {
 		return "redirect:patientDataSetEditor.form";
 	}
 	
-	@RequestMapping(value="/module/reporting/datasets/patientDataSetEditor-removeColumn", method=RequestMethod.POST)
+	@RequestMapping(value="/module/reporting/datasets/patientDataSetEditor-removeColumn.form", method=RequestMethod.POST)
 	public String removeColumn(@RequestParam("name") String name,
 	                           HttpSession session) {
 		PatientDataSetDefinition dsd = getFromSession(session);
@@ -214,7 +211,7 @@ public class PatientDataSetEditor {
 		return "redirect:patientDataSetEditor.form";
 	}
 	
-	@RequestMapping(value="/module/reporting/datasets/patientDataSetEditor-addFilter", method=RequestMethod.POST)
+	@RequestMapping(value="/module/reporting/datasets/patientDataSetEditor-addFilter.form", method=RequestMethod.POST)
 	public String addFilter(@RequestParam(value="filterDefinition", required=false) String filterDefinition,
 	                        HttpSession session) {
 		if (StringUtils.isBlank(filterDefinition)) {
@@ -233,7 +230,7 @@ public class PatientDataSetEditor {
 		return "redirect:patientDataSetEditor.form";
 	}
 	
-	@RequestMapping(value="/module/reporting/datasets/patientDataSetEditor-removeFilter", method=RequestMethod.POST)
+	@RequestMapping(value="/module/reporting/datasets/patientDataSetEditor-removeFilter.form", method=RequestMethod.POST)
 	public String removeFilter(@RequestParam("filterIndex") int index,
 	                           HttpSession session) {
 		PatientDataSetDefinition dsd = getFromSession(session);
@@ -242,7 +239,7 @@ public class PatientDataSetEditor {
 		return "redirect:patientDataSetEditor.form";
 	}
 	
-	@RequestMapping(value="/module/reporting/datasets/patientDataSetEditor-sortColumns", method=RequestMethod.POST)
+	@RequestMapping(value="/module/reporting/datasets/patientDataSetEditor-sortColumns.form", method=RequestMethod.POST)
 	public String sortColumns(WebRequest request,
 	                          HttpSession session) {
 		final List<String> columnOrder = new ArrayList<String>();
@@ -267,7 +264,7 @@ public class PatientDataSetEditor {
 		return "redirect:patientDataSetEditor.form";
 	}
 	
-	@RequestMapping(value="/module/reporting/datasets/patientDataSetEditor-save", method=RequestMethod.POST)
+	@RequestMapping(value="/module/reporting/datasets/patientDataSetEditor-save.form", method=RequestMethod.POST)
 	public String save(HttpSession session) {
 		PatientDataSetDefinition dsd = getFromSession(session);
 		String successUrl = (String) session.getAttribute(SUCCESS_URL_ATTR);
@@ -283,7 +280,7 @@ public class PatientDataSetEditor {
 		}
 	}
 	
-	@RequestMapping(value="/module/reporting/datasets/patientDataSetEditor-discard", method=RequestMethod.POST)
+	@RequestMapping(value="/module/reporting/datasets/patientDataSetEditor-discard.form", method=RequestMethod.POST)
 	public String discard(HttpSession session) {
 		String discardUrl = (String) session.getAttribute(DISCARD_URL_ATTR);
 		

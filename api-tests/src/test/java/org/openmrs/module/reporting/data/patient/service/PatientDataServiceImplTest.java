@@ -1,21 +1,17 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
 package org.openmrs.module.reporting.data.patient.service;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Patient;
 import org.openmrs.PersonAttribute;
@@ -35,10 +31,10 @@ import org.openmrs.module.reporting.definition.library.BaseDefinitionLibrary;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
@@ -63,7 +59,7 @@ public class PatientDataServiceImplTest extends BaseModuleContextSensitiveTest {
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -163,7 +159,7 @@ public class PatientDataServiceImplTest extends BaseModuleContextSensitiveTest {
         PersonAttributeCohortDefinition cohortDefinition = new PersonAttributeCohortDefinition();
         cohortDefinition.setName("Test Patients");
         cohortDefinition.setAttributeType(testAttributeType);
-        cohortDefinition.setValues(Arrays.asList("true"));
+        cohortDefinition.setValues(Collections.singletonList("true"));
         Context.getService(CohortDefinitionService.class).saveDefinition(cohortDefinition);
         return cohortDefinition;
     }
@@ -203,7 +199,7 @@ public class PatientDataServiceImplTest extends BaseModuleContextSensitiveTest {
         public CohortDefinition getTestPatients() {
             PersonAttributeCohortDefinition cohortDefinition = new PersonAttributeCohortDefinition();
             cohortDefinition.setAttributeType(Context.getPersonService().getPersonAttributeTypeByUuid(TEST_PATIENT_ATTR_TYPE_UUID));
-            cohortDefinition.setValues(Arrays.asList("true"));
+            cohortDefinition.setValues(Collections.singletonList("true"));
             return cohortDefinition;
         }
 

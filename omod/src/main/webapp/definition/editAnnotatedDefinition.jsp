@@ -90,7 +90,7 @@
 		</c:choose>
 	</h1>
 
-	<springform:form method="post" commandName="definition" action="saveAnnotatedDefinition.form">
+	<springform:form method="post" modelAttribute="definition" action="saveAnnotatedDefinition.form">
 		<input type="hidden" name="uuid" value="${definition.uuid}"/>
 		<input type="hidden" name="type" value="${definition['class'].name}"/>
 		<input type="hidden" name="parentType" value="${parentType.name}"/>

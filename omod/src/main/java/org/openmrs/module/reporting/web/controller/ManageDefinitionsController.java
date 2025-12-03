@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.reporting.web.controller;
 
 import java.util.ArrayList;
@@ -43,7 +52,7 @@ public class ManageDefinitionsController {
 	/**
 	 * Manage Definitions Controller
 	 */
-	@RequestMapping("/module/reporting/definition/manageDefinitions")
+	@RequestMapping("/module/reporting/definition/manageDefinitions.form")
 	public void manageDefinitions(
 			@RequestParam(required=true, value="type") Class<? extends Definition> type,
 			@RequestParam(required=false, value="includeRetired") Boolean includeRetired,
@@ -105,7 +114,7 @@ public class ManageDefinitionsController {
 	/**
 	 * Edit Definition Controller
 	 */
-	@RequestMapping("/module/reporting/definition/editDefinition")
+	@RequestMapping("/module/reporting/definition/editDefinition.form")
 	public String editDefinition(
 			@RequestParam(required=true, value="type") Class<? extends Definition> type,
 			@RequestParam(required=false, value="uuid") String uuid,
@@ -124,7 +133,7 @@ public class ManageDefinitionsController {
 	/**
 	 * Purge Definition Controller
 	 */
-	@RequestMapping("/module/reporting/definition/purgeDefinition")
+	@RequestMapping("/module/reporting/definition/purgeDefinition.form")
 	public String purgeDefinition(
 			@RequestParam(required=true, value="type") Class<? extends Definition> type,
 			@RequestParam(required=true, value="uuid") String uuid,
@@ -137,7 +146,7 @@ public class ManageDefinitionsController {
 	/**
 	 * Retire Definition Controller
 	 */
-	@RequestMapping("/module/reporting/definition/retireDefinition")
+	@RequestMapping("/module/reporting/definition/retireDefinition.form")
 	public String retireDefinition(
 			@RequestParam(required=true, value="type") Class<? extends Definition> type,
 			@RequestParam(required=true, value="uuid") String uuid,
@@ -151,7 +160,7 @@ public class ManageDefinitionsController {
 	/**
 	 * Retire Definition Controller
 	 */
-	@RequestMapping("/module/reporting/definition/unretireDefinition")
+	@RequestMapping("/module/reporting/definition/unretireDefinition.form")
 	public String unretireDefinition(
 			@RequestParam(required=true, value="type") Class<? extends Definition> type,
 			@RequestParam(required=true, value="uuid") String uuid,

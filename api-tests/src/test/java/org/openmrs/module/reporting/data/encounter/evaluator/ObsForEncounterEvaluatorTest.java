@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.reporting.data.encounter.evaluator;
 
 import org.junit.Before;
@@ -21,8 +30,11 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNull;
@@ -207,5 +219,40 @@ public class ObsForEncounterEvaluatorTest extends BaseModuleContextSensitiveTest
 
     }
 
+    @Test
+    public void testEvaluateForObsWithAnswer() throws Exception {
 
+        Concept civilStatus = conceptService.getConcept(4);
+        Concept single = conceptService.getConcept(5);
+        Concept married = conceptService.getConcept(6);
+
+        // create an obs with a few members
+        Patient patient = data.randomPatient().save();
+        Encounter enc1 = data.randomEncounter().patient(patient).save();
+        Obs obs1 = data.obs().concept(civilStatus).value(single).encounter(enc1).save();
+        Obs obs2 = data.obs().concept(civilStatus).value(married).encounter(enc1).save();
+
+        EncounterEvaluationContext context = new EncounterEvaluationContext();
+        context.setBaseEncounters(new EncounterIdSet(enc1.getId()));
+
+        ObsForEncounterDataDefinition def = new ObsForEncounterDataDefinition();
+        def.setQuestion(civilStatus);
+        def.setSingleObs(false);
+
+        def.addAnswer(single);
+        EvaluatedEncounterData results = encounterDataService.evaluate(def, context);
+
+        assertThat(results.getData().size(), is(1));
+        List<Obs> obsList = (List<Obs>)results.getData().get(enc1.getId());
+        assertThat(obsList.size(), is(1));
+        assertThat(obsList, contains(obs1));
+
+        def.addAnswer(married);
+        results = encounterDataService.evaluate(def, context);
+
+        assertThat(results.getData().size(), is(1));
+        obsList = (List<Obs>)results.getData().get(enc1.getId());
+        assertThat(obsList.size(), is(2));
+        assertThat(obsList, contains(obs1, obs2));
+    }
 }

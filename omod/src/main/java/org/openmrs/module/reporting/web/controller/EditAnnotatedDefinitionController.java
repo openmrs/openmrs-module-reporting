@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.reporting.web.controller;
 
 import java.util.ArrayList;
@@ -52,7 +61,7 @@ public class EditAnnotatedDefinitionController {
 	/**
 	 * Basically acts as the formBackingObject() method for saving a CohortDefinition.
 	 */
-	@RequestMapping("/module/reporting/definition/editAnnotatedDefinition")
+	@RequestMapping("/module/reporting/definition/editAnnotatedDefinition.form")
 	public String editAnnotatedDefinition(ModelMap model, 
 										  @RequestParam(required = true, value = "parentType") Class<? extends Definition> parentType,
 										  @ModelAttribute("definition") Definition definition) {
@@ -64,7 +73,7 @@ public class EditAnnotatedDefinitionController {
 	/**
 	 * Saves a cohort definition.
 	 */
-	@RequestMapping("/module/reporting/definition/saveAnnotatedDefinition")
+	@RequestMapping("/module/reporting/definition/saveAnnotatedDefinition.form")
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	public String saveAnnotatedDefinition(@RequestParam(required = true, value = "parentType") Class<? extends Definition> parentType,
 										  @ModelAttribute("definition") Definition definition, 

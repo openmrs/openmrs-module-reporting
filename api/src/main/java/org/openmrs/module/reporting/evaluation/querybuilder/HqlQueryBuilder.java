@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.reporting.evaluation.querybuilder;
 
 import org.apache.commons.logging.Log;
@@ -43,7 +52,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 
 	protected Log log = LogFactory.getLog(getClass());
 
-	private Map<String, Class<?>> fromTypes = new LinkedHashMap<String, Class<?>>();
+	private Map<String, String> fromTypes = new LinkedHashMap<String, String>();
 	private boolean includeVoided = false;
 	private List<String> columns = new ArrayList<String>();
 	private List<String> joinClauses = new ArrayList<String>();
@@ -84,10 +93,15 @@ public class HqlQueryBuilder implements QueryBuilder {
 	}
 
 	public HqlQueryBuilder from(Class<?> fromType, String fromAlias) {
-		fromTypes.put(fromAlias, fromType);
+		fromTypes.put(fromAlias, fromType.getName());
 		if (!includeVoided && Voidable.class.isAssignableFrom(fromType)) {
 			whereEqual((ObjectUtil.notNull(fromAlias) ? fromAlias + "." : "")+"voided", false);
 		}
+		return this;
+	}
+
+	public HqlQueryBuilder from(String entityName, String fromAlias) {
+		fromTypes.put(fromAlias, entityName);
 		return this;
 	}
 
@@ -218,6 +232,17 @@ public class HqlQueryBuilder implements QueryBuilder {
 		return this;
 	}
 
+	public HqlQueryBuilder whereNotInAny(String propertyName, Collection<?> values) {
+		if (values != null) {
+			if (values.isEmpty()) {
+				where("1=1");
+			} else {
+				where(propertyName + " not in (:" + nextPositionIndex() + ")").withValue(values);
+			}
+		}
+		return this;
+	}
+	
 	public HqlQueryBuilder wherePatientIn(String propertyName, EvaluationContext context) {
 		if (context != null) {
 			if (context.getBaseCohort() != null) {
@@ -434,10 +459,11 @@ public class HqlQueryBuilder implements QueryBuilder {
 		Query q = buildQuery(sessionFactory);
 		String[] returnAliases = q.getReturnAliases();
 		Type[] returnTypes = q.getReturnTypes();
-		for (int i=0; i<returnAliases.length; i++) {
+		for (int i=0; i < returnAliases.length; i++) {
 			DataSetColumn column = new DataSetColumn();
-			column.setName(returnAliases[i]);
-			column.setLabel(returnAliases[i]);
+			String returnAlias = ObjectUtil.nvl(returnAliases[i], "" + i);
+			column.setName(returnAlias);
+			column.setLabel(returnAlias);
 			column.setDataType(returnTypes[i].getReturnedClass());
 			l.add(column);
 		}
@@ -513,7 +539,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 		for (int i=0; i<aliases.size(); i++) {
 			String alias = aliases.get(i);
 			q.append(i == 0 ? " from " : ", ");
-			q.append(fromTypes.get(alias).getSimpleName());
+			q.append(fromTypes.get(alias));
 			if (ObjectUtil.notNull(alias)) {
 				q.append(" as ").append(alias);
 			}
