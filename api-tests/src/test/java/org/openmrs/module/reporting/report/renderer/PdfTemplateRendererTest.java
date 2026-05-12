@@ -323,6 +323,41 @@ public class PdfTemplateRendererTest extends BaseModuleContextSensitiveTest {
         }
     }
 
+    @Test
+    public void shouldRenderCode128BarcodeInHtmlTemplate() throws Exception {
+        ReportDefinition reportDef = new ReportDefinition();
+        EvaluationContext context = new EvaluationContext();
+        context.addParameterValue("dispenseId", "550e8400-e29b-41d4-a716-446655440000");
+
+        final ReportDesign design = new ReportDesign();
+        design.setRendererType(PdfTemplateRenderer.class);
+
+        ReportDesignResource template = new ReportDesignResource();
+        template.setName("template");
+        template.setExtension("html");
+        template.setContents(
+            ("<!DOCTYPE html><html><body>"
+            + "<p>ID: #parameter.dispenseId#</p>"
+            + "<img src='barcode://#parameter.dispenseId#' style='width:3in;height:0.5in;'/>"
+            + "</body></html>")
+                .getBytes("UTF-8"));
+        design.addResource(template);
+
+        ReportData reportData = Context.getService(ReportDefinitionService.class)
+                .evaluate(reportDef, context);
+
+        PdfTemplateRenderer renderer = new PdfTemplateRenderer() {
+            @Override public ReportDesign getDesign(String argument) { return design; }
+        };
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        renderer.render(reportData, "test", baos);
+
+        Assert.assertTrue("Expected non-empty PDF with barcode", baos.size() > 0);
+        byte[] pdfBytes = baos.toByteArray();
+        Assert.assertTrue("Expected valid PDF header", new String(pdfBytes, 0, 4).equals("%PDF"));
+    }
+
     // -----------------------------------------------------------------------
     // Helper: build a minimal in-memory AcroForm PDF
     // -----------------------------------------------------------------------

@@ -9,6 +9,11 @@
  */
 package org.openmrs.module.reporting.report.renderer;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
 import com.openhtmltopdf.extend.FSStream;
 import com.openhtmltopdf.extend.FSStreamFactory;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
@@ -34,6 +39,7 @@ import org.openmrs.module.reporting.report.renderer.template.TemplateEngine;
 import org.openmrs.module.reporting.report.renderer.template.TemplateEngineManager;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -154,6 +160,7 @@ public class PdfTemplateRenderer extends ReportTemplateRenderer {
         builder.useFastMode();
         builder.withHtmlContent(html, null);
         builder.useProtocolsStreamImplementation(new ReportDesignFSStreamFactory(design), "resource");
+        builder.useProtocolsStreamImplementation(new BarcodeStreamFactory(), "barcode");
         builder.toStream(out);
         builder.run();
     }
@@ -186,6 +193,32 @@ public class PdfTemplateRenderer extends ReportTemplateRenderer {
                 @Override public InputStream getStream() { return new ByteArrayInputStream(new byte[0]); }
                 @Override public Reader getReader() { return new StringReader(""); }
             };
+        }
+    }
+
+    private class BarcodeStreamFactory implements FSStreamFactory {
+
+        @Override
+        public FSStream getUrl(String url) {
+            try {
+                String content = url.replaceFirst("barcode://", "");
+                Map<EncodeHintType, Object> hints = new HashMap<EncodeHintType, Object>();
+                hints.put(EncodeHintType.MARGIN, 0);
+                BitMatrix matrix = new MultiFormatWriter().encode(content, BarcodeFormat.CODE_128, 600, 100, hints);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                MatrixToImageWriter.writeToStream(matrix, "PNG", baos);
+                final byte[] imageBytes = baos.toByteArray();
+                return new FSStream() {
+                    @Override public InputStream getStream() { return new ByteArrayInputStream(imageBytes); }
+                    @Override public Reader getReader() { return new InputStreamReader(new ByteArrayInputStream(imageBytes), StandardCharsets.UTF_8); }
+                };
+            } catch (Exception e) {
+                log.warn("Unable to generate barcode for: " + url + ": " + e.getMessage());
+                return new FSStream() {
+                    @Override public InputStream getStream() { return new ByteArrayInputStream(new byte[0]); }
+                    @Override public Reader getReader() { return new StringReader(""); }
+                };
+            }
         }
     }
 }

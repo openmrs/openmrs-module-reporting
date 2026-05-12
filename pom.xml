@@ -48,6 +48,7 @@
 		<jodatimeVersion>2.12.5</jodatimeVersion>
 		<handlebarsVersion>1.1.2</handlebarsVersion>
 		<openhtmltopdfVersion>1.0.10</openhtmltopdfVersion>
+		<zxingVersion>3.5.3</zxingVersion>
 		<openmrsTestutilsVersion>1.7.0</openmrsTestutilsVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<MODULE_ID>${project.parent.artifactId}</MODULE_ID>
@@ -127,6 +128,18 @@
                     <artifactId>slf4j-api</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>${zxingVersion}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>${zxingVersion}</version>
         </dependency>
 
         <dependency>
