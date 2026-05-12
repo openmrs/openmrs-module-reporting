@@ -40,6 +40,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -137,7 +138,7 @@ public class PdfTemplateRenderer extends ReportTemplateRenderer {
 
     private void renderFromHtml(ReportData reportData, ReportDesign design,
                                  ReportDesignResource template, OutputStream out) throws IOException {
-        String html = new String(template.getContents(), "UTF-8");
+        String html = new String(template.getContents(), StandardCharsets.UTF_8);
         Map<String, Object> replacements = getBaseReplacementData(reportData, design);
 
         String engineName = design.getPropertyValue(TEMPLATE_TYPE_PROPERTY, null);
@@ -184,7 +185,7 @@ public class PdfTemplateRenderer extends ReportTemplateRenderer {
             final byte[] contents = resource.getContents();
             return new FSStream() {
                 @Override public InputStream getStream() { return new ByteArrayInputStream(contents); }
-                @Override public Reader getReader() { return new InputStreamReader(new ByteArrayInputStream(contents), "UTF-8"); }
+                @Override public Reader getReader() { return new InputStreamReader(new ByteArrayInputStream(contents), StandardCharsets.UTF_8); }
             };
         }
 
