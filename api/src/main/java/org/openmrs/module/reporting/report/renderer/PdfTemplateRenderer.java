@@ -71,8 +71,7 @@ public class PdfTemplateRenderer extends ReportTemplateRenderer {
     }
 
     @Override
-    public void render(ReportData reportData, String argument, OutputStream out)
-            throws IOException, RenderingException {
+    public void render(ReportData reportData, String argument, OutputStream out) throws IOException, RenderingException {
         try {
             ReportDesign design = getDesign(argument);
             ReportDesignResource template = getTemplate(design);
@@ -95,8 +94,7 @@ public class PdfTemplateRenderer extends ReportTemplateRenderer {
         return "pdf".equalsIgnoreCase(template.getExtension());
     }
 
-    private void renderFromPdfForm(ReportData reportData, ReportDesign design,
-                                    ReportDesignResource template, OutputStream out) throws IOException {
+    private void renderFromPdfForm(ReportData reportData, ReportDesign design, ReportDesignResource template, OutputStream out) throws IOException {
         Map<String, Object> replacements = getBaseReplacementData(reportData, design);
         try (PDDocument doc = PDDocument.load(template.getContents())) {
             PDAcroForm acroForm = doc.getDocumentCatalog().getAcroForm();
@@ -109,20 +107,18 @@ public class PdfTemplateRenderer extends ReportTemplateRenderer {
                     if (replacements.containsKey(fieldName)) {
                         Object value = replacements.get(fieldName);
                         String format = design.getPropertyValue(fieldName + ".format", null);
-                        String displayValue = format != null
-                                ? ObjectUtil.format(value, format)
-                                : ObjectUtil.format(value);
+                        String displayValue = format != null ? ObjectUtil.format(value, format) : ObjectUtil.format(value);
                         try {
-                            if (field instanceof PDTextField) {
-                                ((PDTextField) field).setValue(displayValue);
-                            } else if (field instanceof PDCheckBox) {
+                            if (field instanceof PDCheckBox) {
+                                PDCheckBox pdCheckBox = (PDCheckBox) field;
                                 if (Boolean.parseBoolean(displayValue)) {
-                                    ((PDCheckBox) field).check();
+                                    pdCheckBox.check();
                                 } else {
-                                    ((PDCheckBox) field).unCheck();
+                                    pdCheckBox.unCheck();
                                 }
-                            } else if (field instanceof PDComboBox) {
-                                ((PDComboBox) field).setValue(displayValue);
+                            }
+                            else {
+                                field.setValue(displayValue);
                             }
                         } catch (Exception e) {
                             log.warn("Unable to set value for PDF field '" + fieldName + "': " + e.getMessage());
@@ -136,11 +132,9 @@ public class PdfTemplateRenderer extends ReportTemplateRenderer {
         }
     }
 
-    private void renderFromHtml(ReportData reportData, ReportDesign design,
-                                 ReportDesignResource template, OutputStream out) throws IOException {
+    private void renderFromHtml(ReportData reportData, ReportDesign design, ReportDesignResource template, OutputStream out) throws IOException {
         String html = new String(template.getContents(), StandardCharsets.UTF_8);
         Map<String, Object> replacements = getBaseReplacementData(reportData, design);
-
         String engineName = design.getPropertyValue(TEMPLATE_TYPE_PROPERTY, null);
         TemplateEngine engine = TemplateEngineManager.getTemplateEngineByName(engineName);
         if (engine != null) {
@@ -153,11 +147,9 @@ public class PdfTemplateRenderer extends ReportTemplateRenderer {
             bindings.put("msg", new MessageUtil());
             html = engine.evaluate(html, bindings);
         }
-
         String prefix = getExpressionPrefix(design);
         String suffix = getExpressionSuffix(design);
         html = EvaluationUtil.evaluateExpression(html, replacements, prefix, suffix).toString();
-
         PdfRendererBuilder builder = new PdfRendererBuilder();
         builder.useFastMode();
         builder.withHtmlContent(html, null);
@@ -179,7 +171,7 @@ public class PdfTemplateRenderer extends ReportTemplateRenderer {
             String resourceName = url.replaceFirst("resource://", "");
             ReportDesignResource resource = design.getResourceByName(resourceName);
             if (resource == null) {
-                log.info("PDF template referenced resource not found in report design: " + resourceName);
+                log.warn("PDF template referenced resource not found in report design: " + resourceName);
                 return emptyStream();
             }
             final byte[] contents = resource.getContents();
