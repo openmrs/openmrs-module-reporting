@@ -184,7 +184,7 @@ public class PdfTemplateRenderer extends ReportTemplateRenderer {
             final byte[] contents = resource.getContents();
             return new FSStream() {
                 @Override public InputStream getStream() { return new ByteArrayInputStream(contents); }
-                @Override public Reader getReader() { return new InputStreamReader(new ByteArrayInputStream(contents)); }
+                @Override public Reader getReader() { return new InputStreamReader(new ByteArrayInputStream(contents), "UTF-8"); }
             };
         }
 
