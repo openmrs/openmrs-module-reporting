@@ -47,6 +47,7 @@
 		<poiVersion>3.12</poiVersion>
 		<jodatimeVersion>2.12.5</jodatimeVersion>
 		<handlebarsVersion>1.1.2</handlebarsVersion>
+		<openhtmltopdfVersion>1.0.10</openhtmltopdfVersion>
 		<openmrsTestutilsVersion>1.7.0</openmrsTestutilsVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<MODULE_ID>${project.parent.artifactId}</MODULE_ID>
@@ -108,6 +109,18 @@
             <groupId>com.github.jknack</groupId>
             <artifactId>handlebars</artifactId>
             <version>${handlebarsVersion}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.openhtmltopdf</groupId>
+            <artifactId>openhtmltopdf-pdfbox</artifactId>
+            <version>${openhtmltopdfVersion}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
