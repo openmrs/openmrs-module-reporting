@@ -22,9 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.apache.pdfbox.pdmodel.interactive.form.PDCheckBox;
-import org.apache.pdfbox.pdmodel.interactive.form.PDComboBox;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
-import org.apache.pdfbox.pdmodel.interactive.form.PDTextField;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.Localized;
@@ -202,7 +200,7 @@ public class PdfTemplateRenderer extends ReportTemplateRenderer {
         public FSStream getUrl(String url) {
             try {
                 String content = url.replaceFirst("barcode://", "");
-                Map<EncodeHintType, Object> hints = new HashMap<EncodeHintType, Object>();
+                Map<EncodeHintType, Object> hints = new HashMap<>();
                 hints.put(EncodeHintType.MARGIN, 0);
                 BitMatrix matrix = new MultiFormatWriter().encode(content, BarcodeFormat.CODE_128, 600, 100, hints);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
