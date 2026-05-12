@@ -3,6 +3,7 @@ package org.openmrs.module.reporting.config;
 import org.junit.Test;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
+import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.renderer.ReportDesignRenderer;
 
@@ -13,6 +14,7 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -133,6 +135,81 @@ public class ReportLoaderTest {
         assertThat(reportDesigns.get(0).getPropertyValue("characterEncoding", null), is("ISO-8859-1"));
         assertThat(reportDesigns.get(0).getPropertyValue("blacklistRegex", null), is("[^\\p{InBasicLatin}\\p{L}]"));
 
+    }
+
+    @Test
+    public void shouldConstructPdfDesignWithTemplate() throws Exception {
+        File configDir = new File(getClass().getClassLoader().getResource("config").getFile());
+
+        ReportDefinition reportDefinition = new ReportDefinition();
+        reportDefinition.setName("My Label Report");
+
+        DesignDescriptor designDescriptor = new DesignDescriptor();
+        designDescriptor.setType("PdfTemplateRenderer");
+        designDescriptor.setTemplate("templates/label.html");
+
+        ReportDescriptor reportDescriptor = new ReportDescriptor();
+        reportDescriptor.setPath(configDir);
+        reportDescriptor.setDesigns(new ArrayList<DesignDescriptor>());
+        reportDescriptor.getDesigns().add(designDescriptor);
+
+        List<ReportDesign> designs = ReportLoader.constructReportDesigns(reportDefinition, reportDescriptor);
+        assertThat(designs.size(), is(1));
+        ReportDesign design = designs.get(0);
+        assertThat(design.getRendererType().getSimpleName(), is("PdfTemplateRenderer"));
+        ReportDesignResource template = design.getResourceByName("template");
+        assertThat(template.getExtension(), is("html"));
+        assertThat(template.getContents().length > 0, is(true));
+    }
+
+    @Test
+    public void shouldConstructPdfDesignWithTemplateAndResources() throws Exception {
+        File configDir = new File(getClass().getClassLoader().getResource("config").getFile());
+
+        ReportDefinition reportDefinition = new ReportDefinition();
+        reportDefinition.setName("My Label Report");
+
+        DesignDescriptor designDescriptor = new DesignDescriptor();
+        designDescriptor.setType("PdfTemplateRenderer");
+        designDescriptor.setTemplate("templates/label.html");
+        designDescriptor.setResources(new HashMap<String, String>());
+        designDescriptor.getResources().put("styles.css", "css/label.css");
+
+        ReportDescriptor reportDescriptor = new ReportDescriptor();
+        reportDescriptor.setPath(configDir);
+        reportDescriptor.setDesigns(new ArrayList<DesignDescriptor>());
+        reportDescriptor.getDesigns().add(designDescriptor);
+
+        List<ReportDesign> designs = ReportLoader.constructReportDesigns(reportDefinition, reportDescriptor);
+        assertThat(designs.size(), is(1));
+        ReportDesign design = designs.get(0);
+        ReportDesignResource template = design.getResourceByName("template");
+        assertThat(template.getExtension(), is("html"));
+        ReportDesignResource css = design.getResourceByName("styles.css");
+        assertThat(css, is(notNullValue()));
+        assertThat(css.getContents().length > 0, is(true));
+    }
+
+    @Test
+    public void shouldConstructPdfDesignWithNullResources() throws Exception {
+        File configDir = new File(getClass().getClassLoader().getResource("config").getFile());
+
+        ReportDefinition reportDefinition = new ReportDefinition();
+        reportDefinition.setName("My Label Report");
+
+        DesignDescriptor designDescriptor = new DesignDescriptor();
+        designDescriptor.setType("PdfTemplateRenderer");
+        designDescriptor.setTemplate("templates/label.html");
+        // resources intentionally left null
+
+        ReportDescriptor reportDescriptor = new ReportDescriptor();
+        reportDescriptor.setPath(configDir);
+        reportDescriptor.setDesigns(new ArrayList<DesignDescriptor>());
+        reportDescriptor.getDesigns().add(designDescriptor);
+
+        List<ReportDesign> designs = ReportLoader.constructReportDesigns(reportDefinition, reportDescriptor);
+        assertThat(designs.size(), is(1));
+        assertThat(designs.get(0).getResources().size(), is(1)); // only the template resource
     }
 
     @Test

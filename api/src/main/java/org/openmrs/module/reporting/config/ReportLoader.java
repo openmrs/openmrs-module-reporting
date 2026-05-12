@@ -268,8 +268,10 @@ public class ReportLoader {
                     if (StringUtils.isNotBlank(designDescriptor.getTemplate())) {
                         addReportDesignResource(reportDescriptor, design, "template", designDescriptor.getTemplate());
                     }
-                    for (String resource : designDescriptor.getResources().keySet()) {
-                        addReportDesignResource(reportDescriptor, design, resource, designDescriptor.getResources().get(resource));
+                    if (designDescriptor.getResources() != null) {
+                        for (Map.Entry<String, String> entry : designDescriptor.getResources().entrySet()) {
+                            addReportDesignResource(reportDescriptor, design, entry.getKey(), entry.getValue());
+                        }
                     }
                 }
                 catch (Exception e) {
@@ -331,12 +333,11 @@ public class ReportLoader {
     }
 
     private static Class<? extends ReportRenderer> getRendererClass(String rendererType) throws ClassNotFoundException {
+        String fqn = rendererType.contains(".") ? rendererType : "org.openmrs.module.reporting.report.renderer." + rendererType;
         try {
-            return (Class<? extends ReportRenderer>)Context.loadClass(rendererType);
-        }
-        catch (Exception e) {
-            rendererType = "org.openmrs.module.reporting.report.renderer." + rendererType;
-            return (Class<? extends ReportRenderer>)Context.loadClass(rendererType);
+            return (Class<? extends ReportRenderer>) Context.loadClass(fqn);
+        } catch (Exception e) {
+            return (Class<? extends ReportRenderer>) Class.forName(fqn);
         }
     }
 
