@@ -38,6 +38,9 @@ import java.io.Writer;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -565,6 +568,12 @@ public class ObjectUtil {
 			}
 			if (o instanceof Date) {
 				return formatDate((Date)o, format, locale);
+			}
+			if (o instanceof LocalDateTime) {
+				return formatDate(Date.from(((LocalDateTime)o).atZone(ZoneId.systemDefault()).toInstant()), format, locale);
+			}
+			if (o instanceof LocalDate) {
+				return formatDate(Date.from(((LocalDate)o).atStartOfDay(ZoneId.systemDefault()).toInstant()), format, locale);
 			}
 			if (o instanceof Map) {
 				return toString((Map)o, nvl(format, ","));

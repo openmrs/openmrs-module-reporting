@@ -304,6 +304,14 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
 	}
 
 	@Test
+	public void shouldFormatLocalDateTimeWithAppropriateFormat() {
+		java.time.LocalDateTime ldt = java.time.LocalDateTime.of(2014, 1, 14, 15, 31, 7);
+		Assert.assertEquals("14-Jan-2014", ObjectUtil.format(ldt, "dd-MMM-yyyy"));
+		java.time.LocalDate ld = java.time.LocalDate.of(2014, 1, 14);
+		Assert.assertEquals("14-Jan-2014", ObjectUtil.format(ld, "dd-MMM-yyyy"));
+	}
+
+	@Test
 	public void shouldFormatDateWithAppropriateFormat() {
 		String previousLocale = TestUtil.getGlobalProperty(ReportingConstants.DEFAULT_LOCALE_GP_NAME);
 		String previousFormat = TestUtil.getGlobalProperty(ReportingConstants.GLOBAL_PROPERTY_DEFAULT_DATE_FORMAT);
