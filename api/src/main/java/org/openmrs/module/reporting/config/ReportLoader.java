@@ -264,24 +264,12 @@ public class ReportLoader {
                     design = new ReportDesign();
                     design.setName(designDescriptor.getName());
                     design.setReportDefinition(reportDefinition);
-                    design.setRendererType((Class<? extends ReportRenderer>)Context.loadClass(designDescriptor.getType()));
-
+                    design.setRendererType(getRendererClass(designDescriptor.getType()));
                     if (StringUtils.isNotBlank(designDescriptor.getTemplate())) {
-                        String template = designDescriptor.getTemplate();
-                        ReportDesignResource resource = new ReportDesignResource();
-                        resource.setName("template");
-                        for (ContentType contentType : ContentType.values()) {
-                            if (template.toLowerCase().endsWith("." + contentType.getExtension())) {
-                                resource.setExtension(contentType.getExtension());
-                                resource.setContentType(contentType.getContentType());
-                            }
-                        }
-                        File templateFile = new File(reportDescriptor.getPath(), template);
-
-                        byte[] templateBytes = FileUtils.readFileToByteArray(templateFile);
-                        resource.setContents(templateBytes);
-                        resource.setReportDesign(design);
-                        design.addResource(resource);
+                        addReportDesignResource(reportDescriptor, design, "template", designDescriptor.getTemplate());
+                    }
+                    for (String resource : designDescriptor.getResources().keySet()) {
+                        addReportDesignResource(reportDescriptor, design, resource, designDescriptor.getResources().get(resource));
                     }
                 }
                 catch (Exception e) {
@@ -340,6 +328,32 @@ public class ReportLoader {
         }
 
         return reportDesigns;
+    }
+
+    private static Class<? extends ReportRenderer> getRendererClass(String rendererType) throws ClassNotFoundException {
+        try {
+            return (Class<? extends ReportRenderer>)Context.loadClass(rendererType);
+        }
+        catch (Exception e) {
+            rendererType = "org.openmrs.module.reporting.report.renderer." + rendererType;
+            return (Class<? extends ReportRenderer>)Context.loadClass(rendererType);
+        }
+    }
+
+    private static void addReportDesignResource(ReportDescriptor reportDescriptor, ReportDesign reportDesign, String name, String resourcePath) throws IOException {
+        ReportDesignResource resource = new ReportDesignResource();
+        resource.setName(name);
+        for (ContentType contentType : ContentType.values()) {
+            if (resourcePath.toLowerCase().endsWith("." + contentType.getExtension())) {
+                resource.setExtension(contentType.getExtension());
+                resource.setContentType(contentType.getContentType());
+            }
+        }
+        File templateFile = new File(reportDescriptor.getPath(), resourcePath);
+        byte[] templateBytes = FileUtils.readFileToByteArray(templateFile);
+        resource.setContents(templateBytes);
+        resource.setReportDesign(reportDesign);
+        reportDesign.addResource(resource);
     }
 
     public static ReportDesign constructCSVReportDesign(ReportDefinition reportDefinition) {
