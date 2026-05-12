@@ -157,16 +157,12 @@ public class PdfTemplateRenderer extends ReportTemplateRenderer {
         String suffix = getExpressionSuffix(design);
         html = EvaluationUtil.evaluateExpression(html, replacements, prefix, suffix).toString();
 
-        try {
-            PdfRendererBuilder builder = new PdfRendererBuilder();
-            builder.useFastMode();
-            builder.withHtmlContent(html, null);
-            builder.useProtocolsStreamImplementation(new ReportDesignFSStreamFactory(design), "resource");
-            builder.toStream(out);
-            builder.run();
-        } catch (Exception e) {
-            throw new RenderingException("Failed to convert HTML to PDF: " + e, e);
-        }
+        PdfRendererBuilder builder = new PdfRendererBuilder();
+        builder.useFastMode();
+        builder.withHtmlContent(html, null);
+        builder.useProtocolsStreamImplementation(new ReportDesignFSStreamFactory(design), "resource");
+        builder.toStream(out);
+        builder.run();
     }
 
     private class ReportDesignFSStreamFactory implements FSStreamFactory {
@@ -182,7 +178,7 @@ public class PdfTemplateRenderer extends ReportTemplateRenderer {
             String resourceName = url.replaceFirst("resource://", "");
             ReportDesignResource resource = design.getResourceByName(resourceName);
             if (resource == null) {
-                log.warn("PDF template referenced resource not found in report design: " + resourceName);
+                log.info("PDF template referenced resource not found in report design: " + resourceName);
                 return emptyStream();
             }
             final byte[] contents = resource.getContents();
