@@ -262,7 +262,10 @@ public class ReportLoader {
             else {
                 try {
                     design = new ReportDesign();
-                    design.setName(designDescriptor.getName());
+                    String designName = StringUtils.isNotBlank(designDescriptor.getName())
+                            ? designDescriptor.getName()
+                            : "reporting." + designDescriptor.getType().toLowerCase();
+                    design.setName(designName);
                     design.setReportDefinition(reportDefinition);
                     design.setRendererType(getRendererClass(designDescriptor.getType()));
                     if (StringUtils.isNotBlank(designDescriptor.getTemplate())) {
