@@ -9,6 +9,9 @@
  */
 package org.openmrs.module.reporting.report.renderer;
 
+import com.openhtmltopdf.extend.FSStream;
+import com.openhtmltopdf.extend.FSStreamFactory;
+import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -18,15 +21,26 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDComboBox;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.apache.pdfbox.pdmodel.interactive.form.PDTextField;
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.Localized;
+import org.openmrs.module.reporting.common.MessageUtil;
 import org.openmrs.module.reporting.common.ObjectUtil;
+import org.openmrs.module.reporting.evaluation.EvaluationUtil;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.ReportRequest;
+import org.openmrs.module.reporting.report.renderer.template.TemplateEngine;
+import org.openmrs.module.reporting.report.renderer.template.TemplateEngineManager;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -67,7 +81,7 @@ public class PdfTemplateRenderer extends ReportTemplateRenderer {
             if (isPdfFormTemplate(template)) {
                 renderFromPdfForm(reportData, design, template, out);
             } else {
-                throw new RenderingException("HTML-to-PDF rendering not yet implemented");
+                renderFromHtml(reportData, design, template, out);
             }
         } catch (RenderingException re) {
             throw re;
@@ -118,6 +132,71 @@ public class PdfTemplateRenderer extends ReportTemplateRenderer {
                 acroForm.flatten();
             }
             doc.save(out);
+        }
+    }
+
+    private void renderFromHtml(ReportData reportData, ReportDesign design,
+                                 ReportDesignResource template, OutputStream out) throws IOException {
+        String html = new String(template.getContents(), "UTF-8");
+        Map<String, Object> replacements = getBaseReplacementData(reportData, design);
+
+        String engineName = design.getPropertyValue(TEMPLATE_TYPE_PROPERTY, null);
+        TemplateEngine engine = TemplateEngineManager.getTemplateEngineByName(engineName);
+        if (engine != null) {
+            Map<String, Object> bindings = new HashMap<String, Object>();
+            bindings.put("reportData", reportData);
+            bindings.put("reportDesign", design);
+            bindings.put("data", replacements);
+            bindings.put("util", new ObjectUtil());
+            bindings.put("dateUtil", new DateUtil());
+            bindings.put("msg", new MessageUtil());
+            html = engine.evaluate(html, bindings);
+        }
+
+        String prefix = getExpressionPrefix(design);
+        String suffix = getExpressionSuffix(design);
+        html = EvaluationUtil.evaluateExpression(html, replacements, prefix, suffix).toString();
+
+        try {
+            PdfRendererBuilder builder = new PdfRendererBuilder();
+            builder.useFastMode();
+            builder.withHtmlContent(html, null);
+            builder.useProtocolsStreamImplementation(new ReportDesignFSStreamFactory(design), "resource");
+            builder.toStream(out);
+            builder.run();
+        } catch (Exception e) {
+            throw new RenderingException("Failed to convert HTML to PDF: " + e, e);
+        }
+    }
+
+    private class ReportDesignFSStreamFactory implements FSStreamFactory {
+
+        private final ReportDesign design;
+
+        ReportDesignFSStreamFactory(ReportDesign design) {
+            this.design = design;
+        }
+
+        @Override
+        public FSStream getUrl(String url) {
+            String resourceName = url.replaceFirst("resource://", "");
+            ReportDesignResource resource = design.getResourceByName(resourceName);
+            if (resource == null) {
+                log.warn("PDF template referenced resource not found in report design: " + resourceName);
+                return emptyStream();
+            }
+            final byte[] contents = resource.getContents();
+            return new FSStream() {
+                @Override public InputStream getStream() { return new ByteArrayInputStream(contents); }
+                @Override public Reader getReader() { return new InputStreamReader(new ByteArrayInputStream(contents)); }
+            };
+        }
+
+        private FSStream emptyStream() {
+            return new FSStream() {
+                @Override public InputStream getStream() { return new ByteArrayInputStream(new byte[0]); }
+                @Override public Reader getReader() { return new StringReader(""); }
+            };
         }
     }
 }

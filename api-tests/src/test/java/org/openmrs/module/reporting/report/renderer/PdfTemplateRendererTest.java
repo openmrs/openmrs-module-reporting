@@ -139,6 +139,191 @@ public class PdfTemplateRendererTest extends BaseModuleContextSensitiveTest {
     }
 
     // -----------------------------------------------------------------------
+    // HTML→PDF tests
+    // -----------------------------------------------------------------------
+
+    @Test
+    public void shouldRenderHtmlTemplateWithVariableReplacement() throws Exception {
+        ReportDefinition reportDef = new ReportDefinition();
+        EvaluationContext context = new EvaluationContext();
+        context.addParameterValue("reportName", "HTML Test Report");
+
+        final ReportDesign design = new ReportDesign();
+        design.setRendererType(PdfTemplateRenderer.class);
+
+        ReportDesignResource template = new ReportDesignResource();
+        template.setName("template");
+        template.setExtension("html");
+        template.setContents(
+            "<!DOCTYPE html><html><body><p>Name: #parameter.reportName#</p></body></html>"
+                .getBytes("UTF-8"));
+        design.addResource(template);
+
+        ReportData reportData = Context.getService(ReportDefinitionService.class)
+                .evaluate(reportDef, context);
+
+        PdfTemplateRenderer renderer = new PdfTemplateRenderer() {
+            @Override public ReportDesign getDesign(String argument) { return design; }
+        };
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        renderer.render(reportData, "test", baos);
+
+        byte[] pdfBytes = baos.toByteArray();
+        Assert.assertTrue("Output must start with %PDF header",
+            pdfBytes.length > 4
+            && pdfBytes[0] == '%' && pdfBytes[1] == 'P'
+            && pdfBytes[2] == 'D' && pdfBytes[3] == 'F');
+
+        try (PDDocument rendered = PDDocument.load(pdfBytes)) {
+            String text = new PDFTextStripper().getText(rendered);
+            Assert.assertTrue("Expected report name in PDF text", text.contains("HTML Test Report"));
+        }
+    }
+
+    @Test
+    public void shouldApplyPipeFormatSeparatorInHtmlTemplate() throws Exception {
+        Date startDate = DateUtil.getDateTime(2023, 1, 15);
+
+        ReportDefinition reportDef = new ReportDefinition();
+        EvaluationContext context = new EvaluationContext();
+        context.addParameterValue("startDate", startDate);
+
+        final ReportDesign design = new ReportDesign();
+        design.setRendererType(PdfTemplateRenderer.class);
+
+        ReportDesignResource template = new ReportDesignResource();
+        template.setName("template");
+        template.setExtension("html");
+        template.setContents(
+            "<!DOCTYPE html><html><body><p>Date: #parameter.startDate|dd/MM/yyyy#</p></body></html>"
+                .getBytes("UTF-8"));
+        design.addResource(template);
+
+        ReportData reportData = Context.getService(ReportDefinitionService.class)
+                .evaluate(reportDef, context);
+
+        PdfTemplateRenderer renderer = new PdfTemplateRenderer() {
+            @Override public ReportDesign getDesign(String argument) { return design; }
+        };
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        renderer.render(reportData, "test", baos);
+
+        try (PDDocument rendered = PDDocument.load(baos.toByteArray())) {
+            String text = new PDFTextStripper().getText(rendered);
+            Assert.assertTrue("Expected formatted date '15/01/2023'", text.contains("15/01/2023"));
+        }
+    }
+
+    @Test
+    public void shouldResolveAdditionalCssResourceFromDesign() throws Exception {
+        ReportDefinition reportDef = new ReportDefinition();
+        EvaluationContext context = new EvaluationContext();
+        context.addParameterValue("reportName", "Styled Report");
+
+        final ReportDesign design = new ReportDesign();
+        design.setRendererType(PdfTemplateRenderer.class);
+
+        ReportDesignResource template = new ReportDesignResource();
+        template.setName("template");
+        template.setExtension("html");
+        template.setContents(
+            ("<!DOCTYPE html><html>"
+            + "<head><link rel='stylesheet' href='resource://styles.css'/></head>"
+            + "<body><p>Name: #parameter.reportName#</p></body></html>")
+                .getBytes("UTF-8"));
+        design.addResource(template);
+
+        ReportDesignResource css = new ReportDesignResource();
+        css.setName("styles.css");
+        css.setContents("p { font-size: 12pt; }".getBytes("UTF-8"));
+        design.addResource(css);
+
+        ReportData reportData = Context.getService(ReportDefinitionService.class)
+                .evaluate(reportDef, context);
+
+        PdfTemplateRenderer renderer = new PdfTemplateRenderer() {
+            @Override public ReportDesign getDesign(String argument) { return design; }
+        };
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        renderer.render(reportData, "test", baos);
+
+        try (PDDocument rendered = PDDocument.load(baos.toByteArray())) {
+            String text = new PDFTextStripper().getText(rendered);
+            Assert.assertTrue("Expected report name in PDF with CSS resource", text.contains("Styled Report"));
+        }
+    }
+
+    @Test
+    public void shouldRenderGracefullyWhenReferencedResourceIsMissing() throws Exception {
+        ReportDefinition reportDef = new ReportDefinition();
+        EvaluationContext context = new EvaluationContext();
+        context.addParameterValue("reportName", "No CSS Report");
+
+        final ReportDesign design = new ReportDesign();
+        design.setRendererType(PdfTemplateRenderer.class);
+
+        ReportDesignResource template = new ReportDesignResource();
+        template.setName("template");
+        template.setExtension("html");
+        template.setContents(
+            ("<!DOCTYPE html><html>"
+            + "<head><link rel='stylesheet' href='resource://missing.css'/></head>"
+            + "<body><p>Name: #parameter.reportName#</p></body></html>")
+                .getBytes("UTF-8"));
+        design.addResource(template);
+
+        ReportData reportData = Context.getService(ReportDefinitionService.class)
+                .evaluate(reportDef, context);
+
+        PdfTemplateRenderer renderer = new PdfTemplateRenderer() {
+            @Override public ReportDesign getDesign(String argument) { return design; }
+        };
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        renderer.render(reportData, "test", baos);
+        Assert.assertTrue("Expected non-empty PDF even when CSS resource is missing", baos.size() > 0);
+    }
+
+    @Test
+    public void shouldRenderGroovyHtmlTemplate() throws Exception {
+        ReportDefinition reportDef = new ReportDefinition();
+        EvaluationContext context = new EvaluationContext();
+        context.addParameterValue("reportName", "Groovy Report");
+
+        final ReportDesign design = new ReportDesign();
+        design.setRendererType(PdfTemplateRenderer.class);
+        design.addPropertyValue(PdfTemplateRenderer.TEMPLATE_TYPE_PROPERTY, "Groovy");
+
+        ReportDesignResource template = new ReportDesignResource();
+        template.setName("template");
+        template.setExtension("html");
+        template.setContents(
+            ("<!DOCTYPE html><html><body>"
+            + "<p>Name: ${data['parameter.reportName']}</p>"
+            + "</body></html>")
+                .getBytes("UTF-8"));
+        design.addResource(template);
+
+        ReportData reportData = Context.getService(ReportDefinitionService.class)
+                .evaluate(reportDef, context);
+
+        PdfTemplateRenderer renderer = new PdfTemplateRenderer() {
+            @Override public ReportDesign getDesign(String argument) { return design; }
+        };
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        renderer.render(reportData, "test", baos);
+
+        try (PDDocument rendered = PDDocument.load(baos.toByteArray())) {
+            String text = new PDFTextStripper().getText(rendered);
+            Assert.assertTrue("Expected 'Groovy Report' in PDF", text.contains("Groovy Report"));
+        }
+    }
+
+    // -----------------------------------------------------------------------
     // Helper: build a minimal in-memory AcroForm PDF
     // -----------------------------------------------------------------------
 
