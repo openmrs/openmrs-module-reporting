@@ -19,6 +19,7 @@ import java.util.Set;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition.CohortIndicatorAndDimensionColumn;
@@ -95,13 +96,22 @@ public class PeriodIndicatorReportController {
 							@RequestParam("key") String key,
 							@RequestParam("displayName") String displayName,
 							@RequestParam("indicator") CohortIndicator indicator,
-							@RequestParam("cohortQuery") CohortDefinition cohortDefinition,
+							@RequestParam("cohortQuery") String cohortQueryUuid, // CHANGED: From CohortDefinition to String
 							@RequestParam(value = "createFromCohortQuery", required = false) String createFromCohortQuery,
 							WebRequest request) {
 		
 		PeriodIndicatorReportDefinition report = (PeriodIndicatorReportDefinition) Context.getService(ReportDefinitionService.class).getDefinitionByUuid(uuid);
 		PeriodIndicatorReportUtil.ensureDataSetDefinition(report);
 		CohortIndicatorDataSetDefinition cidsd = report.getIndicatorDataSetDefinition();
+		
+		// ADDED: Fetch the CohortDefinition using the UUID
+		CohortDefinitionService cohortDefinitionService = Context.getService(CohortDefinitionService.class);
+		CohortDefinition cohortDefinition = cohortDefinitionService.getDefinitionByUuid(cohortQueryUuid);
+		
+		// ADDED: Safety check
+		if (cohortDefinition == null) {
+			throw new IllegalArgumentException("Could not find a CohortDefinition with UUID: " + cohortQueryUuid);
+		}
 		
 		CohortIndicatorAndDimensionColumn column = null;
 		if (ObjectUtil.notNull(index)) {
@@ -145,7 +155,7 @@ public class PeriodIndicatorReportController {
 		PeriodIndicatorReportUtil.saveDataSetDefinition(report);
 		
 		return "redirect:periodIndicatorReport.form?uuid=" + uuid;
-	} 
+	}
 	
 	@RequestMapping("/module/reporting/reports/periodIndicatorReportRemoveColumn.form")
 	public String removeColumn(@RequestParam("uuid") String uuid,
