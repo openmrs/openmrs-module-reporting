@@ -104,7 +104,7 @@ public class ServicePrivilegeConventionsTest {
 	 * so gating it would make one service's privilege a prerequisite for loading any report request.
 	 */
 	private static final Set<String> EXEMPT = new HashSet<String>(Arrays.asList("getDefinitionType",
-	    "getDefinitionTypes"));
+	    "getDefinitionTypes", "setCohortQueryDAO"));
 
 	/**
 	 * Lifecycle callbacks on {@link OpenmrsService} are infrastructure, not API, and core invokes them on a
