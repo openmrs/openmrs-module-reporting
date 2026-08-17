@@ -37,8 +37,7 @@ import org.openmrs.util.PrivilegeConstants;
 @Transactional(readOnly=true)
 public interface CohortQueryService extends OpenmrsService {
 	
-	@Authorized({ ReportingConstants.PRIV_MANAGE_REPORTS })
-	public void setCohortQueryDAO(CohortQueryDAO dao);	
+	public void setCohortQueryDAO(CohortQueryDAO dao);
 	
 	@Authorized({ PrivilegeConstants.GET_PATIENTS })
 	public Cohort getPatientsWithGender(boolean includeMales, boolean includeFemales, boolean includeUnknownGender);
