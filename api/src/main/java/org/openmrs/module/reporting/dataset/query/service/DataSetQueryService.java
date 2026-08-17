@@ -16,6 +16,8 @@ import java.util.Set;
 import org.openmrs.OpenmrsObject;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.springframework.transaction.annotation.Transactional;
+import org.openmrs.annotation.Authorized;
+import org.openmrs.module.reporting.ReportingConstants;
 
 /**
  * DataSetEvaluation DAO Queries
@@ -27,15 +29,18 @@ public interface DataSetQueryService {
 	/** 
 	 * @return the List of Objects that result from the passed hql query and parameters
 	 */
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public List<Object> executeHqlQuery(String hqlQuery, Map<String, Object> parameterValues);
 	
 	/**
 	 * @return all properties with the given name on the given type for the given ids
 	 */
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public Map<Integer, Object> getPropertyValues(Class<? extends OpenmrsObject> type, String property, EvaluationContext context);
 
 	/** 
 	 * @return a Set<Integer> given passed data
 	*/	 
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public Map<Integer, Integer> convertData(Class<?> fromType, String fromJoin, Set<Integer> fromIds, Class<?> toType, String toJoin, Set<Integer> toIds);
 }

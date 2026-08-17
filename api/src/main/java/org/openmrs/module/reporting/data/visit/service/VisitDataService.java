@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.reporting.data.visit.service;
 
+import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.data.visit.EvaluatedVisitData;
 import org.openmrs.module.reporting.data.visit.definition.VisitDataDefinition;
 import org.openmrs.module.reporting.definition.service.DefinitionService;
@@ -16,6 +17,9 @@ import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.annotation.Authorized;
+import org.openmrs.util.PrivilegeConstants;
+import org.openmrs.api.APIException;
 
 /**
  * API for evaluating a VisitDataDefinition across a set of Visits
@@ -23,13 +27,18 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 public interface VisitDataService extends DefinitionService<VisitDataDefinition> {
 
 	/**
-	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
+	 * @see DefinitionService#saveDefinition(Definition)
 	 */
+	@Authorized({ ReportingConstants.PRIV_MANAGE_DATA_SET_DEFINITIONS })
+	public <D extends VisitDataDefinition> D saveDefinition(D definition) throws APIException;
+	
+    @Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
     public EvaluatedVisitData evaluate(VisitDataDefinition definition, EvaluationContext context) throws EvaluationException;
 
 	/**
 	 * @see DefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
+    @Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
     public EvaluatedVisitData evaluate(Mapped<? extends VisitDataDefinition> mappedDefinition, EvaluationContext context) throws EvaluationException;
 
 }

@@ -16,20 +16,28 @@ import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.annotation.Authorized;
+import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.api.APIException;
 
 /**
  * Interface for methods used to manage and evaluate CohortDefinitions
  */
 public interface CohortDefinitionService extends DefinitionService<CohortDefinition> {
-	
+
 	/**
-	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
+	 * @see DefinitionService#saveDefinition(Definition)
 	 */
+	@Authorized({ ReportingConstants.PRIV_MANAGE_DATA_SET_DEFINITIONS })
+	public <D extends CohortDefinition> D saveDefinition(D definition) throws APIException;
+	
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public EvaluatedCohort evaluate(CohortDefinition definition, EvaluationContext context) throws EvaluationException;
 	
 	/**
 	 * @see DefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public EvaluatedCohort evaluate(Mapped<? extends CohortDefinition> definition, EvaluationContext context) throws EvaluationException;
 
     /**
@@ -40,6 +48,7 @@ public interface CohortDefinitionService extends DefinitionService<CohortDefinit
      * is used internally by the reporting framework in special cases, e.g. to determine <em>which</em> patients are
      * test patients.
      */
+    @Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
     public EvaluatedCohort evaluateBypassingExclusionOfTestPatients(CohortDefinition definition, EvaluationContext context) throws EvaluationException;
 
 }

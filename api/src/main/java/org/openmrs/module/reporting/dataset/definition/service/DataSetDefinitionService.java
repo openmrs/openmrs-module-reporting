@@ -16,6 +16,9 @@ import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.annotation.Authorized;
+import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.api.APIException;
 
 /**
  *  DataSetService
@@ -25,10 +28,18 @@ public interface DataSetDefinitionService extends DefinitionService<DataSetDefin
 	/**
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
+	/**
+	 * @see DefinitionService#saveDefinition(Definition)
+	 */
+	@Authorized({ ReportingConstants.PRIV_MANAGE_DATA_SET_DEFINITIONS })
+	public <D extends DataSetDefinition> D saveDefinition(D definition) throws APIException;
+	
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public DataSet evaluate(DataSetDefinition definition, EvaluationContext context) throws EvaluationException;
 	
 	/**
 	 * @see DefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public DataSet evaluate(Mapped<? extends DataSetDefinition> definition, EvaluationContext context) throws EvaluationException;
 }

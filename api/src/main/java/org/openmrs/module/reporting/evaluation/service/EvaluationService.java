@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import org.openmrs.annotation.Authorized;
+import org.openmrs.module.reporting.ReportingConstants;
 
 /**
  * DataSetEvaluation DAO Queries
@@ -27,12 +29,14 @@ public interface EvaluationService extends OpenmrsService {
 	 * Returns the columns that the query builder returns
 	*/
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public List<DataSetColumn> getColumns(QueryBuilder queryBuilder);
 
 	/**
 	 * Evaluates the passed QueryBuilder and returns the results as a List of Object[]
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public List<Object[]> evaluateToList(QueryBuilder queryBuilder, EvaluationContext context);
 
 	/**
@@ -41,6 +45,7 @@ public interface EvaluationService extends OpenmrsService {
 	 * returned will result in an IllegalArgumentException
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public <T> List<T> evaluateToList(QueryBuilder queryBuilder, Class<T> type, EvaluationContext context);
 
 	/**
@@ -49,11 +54,13 @@ public interface EvaluationService extends OpenmrsService {
 	 * will result in an IllegalArgumentException
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public <K, V> Map<K, V> evaluateToMap(QueryBuilder queryBuilder, Class<K> keyType, Class<V> valueType, EvaluationContext context);
 
 	/**
 	 * Evaluates the passed QueryBuilder and returns a single object result, throwing an exception if more than one row or more than one column is found
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public <T> T evaluateToObject(QueryBuilder queryBuilder, Class<T> type, EvaluationContext context);
 }

@@ -10,11 +10,21 @@
 package org.openmrs.module.reporting.indicator.dimension.service;
 
 import org.openmrs.module.reporting.definition.service.DefinitionService;
+import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.indicator.dimension.Dimension;
+import org.openmrs.annotation.Authorized;
+import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.api.APIException;
 
 /**
  * Contains methods pertaining to creating/updating/deleting/retiring/registering/evaluating Dimensions
  */
 public interface DimensionService extends DefinitionService<Dimension> {
+	
+	/**
+	 * @see DefinitionService#saveDefinition(Definition)
+	 */
+	@Authorized({ ReportingConstants.PRIV_MANAGE_DIMENSION_DEFINITIONS })
+	public <D extends Dimension> D saveDefinition(D definition) throws APIException;
 	
 }

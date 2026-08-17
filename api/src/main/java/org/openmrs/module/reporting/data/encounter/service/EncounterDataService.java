@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.reporting.data.encounter.service;
 
+import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.definition.service.DefinitionService;
@@ -16,6 +17,8 @@ import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.annotation.Authorized;
+import org.openmrs.api.APIException;
 
 /**
  * API for evaluating a EncounterDataDefinition across a set of Encounters
@@ -25,10 +28,18 @@ public interface EncounterDataService extends DefinitionService<EncounterDataDef
 	/**
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
+	/**
+	 * @see DefinitionService#saveDefinition(Definition)
+	 */
+	@Authorized({ ReportingConstants.PRIV_MANAGE_DATA_SET_DEFINITIONS })
+	public <D extends EncounterDataDefinition> D saveDefinition(D definition) throws APIException;
+	
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException;
 	
 	/**
 	 * @see DefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public EvaluatedEncounterData evaluate(Mapped<? extends EncounterDataDefinition> mappedDefinition, EvaluationContext context) throws EvaluationException;
 }
