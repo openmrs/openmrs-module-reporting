@@ -24,16 +24,16 @@ import org.openmrs.api.APIException;
  *  DataSetService
  */
 public interface DataSetDefinitionService extends DefinitionService<DataSetDefinition> {
-	
-	/**
-	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
-	 */
+
 	/**
 	 * @see DefinitionService#saveDefinition(Definition)
 	 */
 	@Authorized({ ReportingConstants.PRIV_MANAGE_DATA_SET_DEFINITIONS })
 	public <D extends DataSetDefinition> D saveDefinition(D definition) throws APIException;
-	
+
+	/**
+	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
+	 */
 	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public DataSet evaluate(DataSetDefinition definition, EvaluationContext context) throws EvaluationException;
 	

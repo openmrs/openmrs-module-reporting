@@ -24,16 +24,16 @@ import org.openmrs.api.APIException;
  * Interface for methods used to manage and evaluate EncounterQueries
  */
 public interface EncounterQueryService extends DefinitionService<EncounterQuery> {
-	
-	/**
-	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
-	 */
+
 	/**
 	 * @see DefinitionService#saveDefinition(Definition)
 	 */
 	@Authorized({ ReportingConstants.PRIV_MANAGE_DATA_SET_DEFINITIONS })
 	public <D extends EncounterQuery> D saveDefinition(D definition) throws APIException;
-	
+
+	/**
+	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
+	 */
 	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public EncounterQueryResult evaluate(EncounterQuery query, EvaluationContext context) throws EvaluationException;
 	

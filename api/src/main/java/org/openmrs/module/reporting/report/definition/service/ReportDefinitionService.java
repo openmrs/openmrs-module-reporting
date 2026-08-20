@@ -30,17 +30,17 @@ public interface ReportDefinitionService extends DefinitionService<ReportDefinit
 	 */
 	@Authorized({ ReportingConstants.PRIV_VIEW_REPORTS })
 	public ReportDefinition getDefinition(Integer id);
-	
-	/**
-	 * This method evaluates a ReportDefinition object for the given EvaluationContext and returns a ReportData
-	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
-	 */
+
 	/**
 	 * @see DefinitionService#saveDefinition(Definition)
 	 */
 	@Authorized({ ReportingConstants.PRIV_MANAGE_REPORT_DEFINITIONS })
 	public <D extends ReportDefinition> D saveDefinition(D definition) throws APIException;
-	
+
+	/**
+	 * This method evaluates a ReportDefinition object for the given EvaluationContext and returns a ReportData
+	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
+	 */
 	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public ReportData evaluate(ReportDefinition reportDefinition, EvaluationContext context) throws EvaluationException;
 	

@@ -25,16 +25,16 @@ import org.openmrs.api.APIException;
  * Interface for methods used to manage and evaluate PatientDataDefinitions
  */
 public interface PatientDataService extends DefinitionService<PatientDataDefinition> {
-	
-	/**
-	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
-	 */
+
 	/**
 	 * @see DefinitionService#saveDefinition(Definition)
 	 */
 	@Authorized({ ReportingConstants.PRIV_MANAGE_DATA_SET_DEFINITIONS })
 	public <D extends PatientDataDefinition> D saveDefinition(D definition) throws APIException;
-	
+
+	/**
+	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
+	 */
 	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context) throws EvaluationException;
 	

@@ -31,6 +31,9 @@ public interface ObsDataService extends DefinitionService<ObsDataDefinition> {
 	@Authorized({ ReportingConstants.PRIV_MANAGE_DATA_SET_DEFINITIONS })
 	public <D extends ObsDataDefinition> D saveDefinition(D definition) throws APIException;
 
+	/**
+	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
+	 */
 	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
     public EvaluatedObsData evaluate(ObsDataDefinition definition, EvaluationContext context) throws EvaluationException;
 

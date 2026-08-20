@@ -27,14 +27,14 @@ import org.openmrs.api.APIException;
 public interface PersonDataService extends DefinitionService<PersonDataDefinition> {
 	
 	/**
-	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
-	 */
-	/**
 	 * @see DefinitionService#saveDefinition(Definition)
 	 */
 	@Authorized({ ReportingConstants.PRIV_MANAGE_DATA_SET_DEFINITIONS })
 	public <D extends PersonDataDefinition> D saveDefinition(D definition) throws APIException;
-	
+
+	/**
+	 * @see DefinitionService#evaluate(Definition, EvaluationContext) 
+	 */
 	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException;
 	

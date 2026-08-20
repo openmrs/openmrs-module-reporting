@@ -31,7 +31,10 @@ public interface PersonQueryService extends DefinitionService<PersonQuery> {
 	 */
 	@Authorized({ ReportingConstants.PRIV_MANAGE_DATA_SET_DEFINITIONS })
 	public <D extends PersonQuery> D saveDefinition(D definition) throws APIException;
-	
+
+	/**
+	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
+	 */
 	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public PersonQueryResult evaluate(PersonQuery query, EvaluationContext context) throws EvaluationException;
 	

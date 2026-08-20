@@ -31,7 +31,10 @@ public interface VisitDataService extends DefinitionService<VisitDataDefinition>
 	 */
 	@Authorized({ ReportingConstants.PRIV_MANAGE_DATA_SET_DEFINITIONS })
 	public <D extends VisitDataDefinition> D saveDefinition(D definition) throws APIException;
-	
+
+	/**
+	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
+	 */
     @Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
     public EvaluatedVisitData evaluate(VisitDataDefinition definition, EvaluationContext context) throws EvaluationException;
 

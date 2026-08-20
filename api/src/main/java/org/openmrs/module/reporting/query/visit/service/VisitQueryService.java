@@ -26,15 +26,15 @@ import org.openmrs.api.APIException;
  */
 public interface VisitQueryService extends DefinitionService<VisitQuery> {
 
-    /**
-     * @see DefinitionService#evaluate(Definition, EvaluationContext)
-     */
 	/**
 	 * @see DefinitionService#saveDefinition(Definition)
 	 */
 	@Authorized({ ReportingConstants.PRIV_MANAGE_DATA_SET_DEFINITIONS })
 	public <D extends VisitQuery> D saveDefinition(D definition) throws APIException;
-	
+
+    /**
+     * @see DefinitionService#evaluate(Definition, EvaluationContext)
+     */
     @Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
     public VisitQueryResult evaluate(VisitQuery query, EvaluationContext context) throws EvaluationException;
 
