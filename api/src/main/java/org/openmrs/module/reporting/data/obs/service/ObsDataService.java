@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.reporting.data.obs.service;
 
+import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.data.obs.EvaluatedObsData;
 import org.openmrs.module.reporting.data.obs.definition.ObsDataDefinition;
 import org.openmrs.module.reporting.definition.service.DefinitionService;
@@ -16,6 +17,8 @@ import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.annotation.Authorized;
+import org.openmrs.api.APIException;
 
 /**
  * API for evaluating an ObsDataDefinition across a set of Obs
@@ -23,13 +26,21 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 public interface ObsDataService extends DefinitionService<ObsDataDefinition> {
 
 	/**
+	 * @see DefinitionService#saveDefinition(Definition)
+	 */
+	@Authorized({ ReportingConstants.PRIV_MANAGE_DATA_SET_DEFINITIONS })
+	public <D extends ObsDataDefinition> D saveDefinition(D definition) throws APIException;
+
+	/**
 	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
 	 */
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
     public EvaluatedObsData evaluate(ObsDataDefinition definition, EvaluationContext context) throws EvaluationException;
 
 	/**
 	 * @see DefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
     public EvaluatedObsData evaluate(Mapped<? extends ObsDataDefinition> mappedDefinition, EvaluationContext context) throws EvaluationException;
 
 }

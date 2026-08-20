@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.reporting.report.service;
 
+import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.report.Report;
@@ -39,18 +40,21 @@ public interface ReportService extends OpenmrsService {
 	 * @return the ReportDesign with the given uuid
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_MANAGE_REPORT_DESIGNS })
 	public ReportDesign getReportDesignByUuid(String uuid);
 	
 	/**
 	 * @return the {@link ReportDesign} with the given id
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_MANAGE_REPORT_DESIGNS })
 	public ReportDesign getReportDesign(Integer id);
 	
 	/**
 	 * @return return a list of {@link ReportDesign}, optionally including those that are retired
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_MANAGE_REPORT_DESIGNS })
 	public List<ReportDesign> getAllReportDesigns(boolean includeRetired);
 	
 	/**
@@ -64,6 +68,7 @@ public interface ReportService extends OpenmrsService {
 	 * @return a List<ReportDesign> object containing all of the {@link ReportDesign}s
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_VIEW_REPORTS })
 	public List<ReportDesign> getReportDesigns(ReportDefinition reportDefinition, Class<? extends ReportRenderer> rendererType, boolean includeRetired);
 	
 	/**
@@ -73,6 +78,7 @@ public interface ReportService extends OpenmrsService {
 	 * @param reportDesign The <code>ReportDesign</code> to save or update
 	 */
 	@Transactional
+	@Authorized({ ReportingConstants.PRIV_MANAGE_REPORT_DESIGNS })
 	public ReportDesign saveReportDesign(ReportDesign reportDesign);
 	
 	/**
@@ -80,52 +86,60 @@ public interface ReportService extends OpenmrsService {
 	 * @param reportDesign The <code>ReportDesign</code> to remove from the system
 	 */
 	@Transactional
+	@Authorized({ ReportingConstants.PRIV_MANAGE_REPORT_DESIGNS })
 	public void purgeReportDesign(ReportDesign reportDesign);
 	
 	/**
 	 * @return a Collection<ReportRenderer> of all registered ReportRenderers
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_MANAGE_REPORTS })
 	public Collection<ReportRenderer> getReportRenderers();
-	
+
 	/**
 	 * @return the preferred ReportRenderer for the given class name
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_MANAGE_REPORTS })
 	public ReportRenderer getReportRenderer(String className);
-	
+
 	/**
 	 * @return	the preferred ReportRenderer for the given object type
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_MANAGE_REPORTS })
 	public ReportRenderer getPreferredReportRenderer(Class<Object> objectType);
-	
+
 	/**
 	 * @return a List of {@link RenderingMode}s that the passed {@link ReportDefinition} supports, in their preferred order
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_MANAGE_REPORTS })
 	public List<RenderingMode> getRenderingModes(ReportDefinition schema);
-	
+
 	//****** REPORT REQUESTS *****
-	
+
 	/**
 	 * Saves a {@link ReportRequest} to the database and returns it
 	 */
 	@Transactional
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public ReportRequest saveReportRequest(ReportRequest request);
 
 	/**
 	 * @return the {@link ReportRequest} with the passed id
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public ReportRequest getReportRequest(Integer id);
 
 	/**
 	 * @return the {@link ReportRequest} with the passed uuid
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public ReportRequest getReportRequestByUuid(String uuid);
-	
+
 	/**
 	 * Get Report Requests by Report Definition, request date, having given status.
 	 * The list is sorted descending by evaluateCompleteDatetime, evaluateStartDatetime, priority, requestDate.
@@ -141,6 +155,7 @@ public interface ReportService extends OpenmrsService {
 	 * @should retrieve report requests by definition
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Status...statuses);
 
 	/**
@@ -160,6 +175,7 @@ public interface ReportService extends OpenmrsService {
 	 * @should retrieve report requests by definition
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer mostRecentNum, Status...statuses);
 
 	/**
@@ -179,6 +195,7 @@ public interface ReportService extends OpenmrsService {
 	 * @since 1.27.0
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer firstResult, Integer maxResults, Status...statuses);
 
 	/**
@@ -194,12 +211,18 @@ public interface ReportService extends OpenmrsService {
 	 * @return the count of Report Requests that match the passed parameters
 	 * @since 1.27.0
 	 */
+	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public long getReportRequestsCount(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Status...statuses);
 
 	/**
 	 * Deletes the passed {@link ReportRequest}
+	 * <p/>
+	 * Requires "Delete Reports", which is therefore also needed by the scheduled reports screen's delete
+	 * action and by the cascade from purging a {@link ReportDefinition}.
 	 */
 	@Transactional
+	@Authorized({ ReportingConstants.PRIV_MANAGE_REPORTS })
 	public void purgeReportRequest(ReportRequest request);
 	
 	//****** REPORT PROCESSOR CONFIGURATIONS *****
@@ -209,6 +232,7 @@ public interface ReportService extends OpenmrsService {
 	 * @should save a report processor configuration
 	 */
 	@Transactional
+	@Authorized({ ReportingConstants.PRIV_MANAGE_REPORT_DESIGNS })
 	public ReportProcessorConfiguration saveReportProcessorConfiguration(ReportProcessorConfiguration processorConfiguration);
 
 	/**
@@ -216,6 +240,7 @@ public interface ReportService extends OpenmrsService {
 	 * @should retrieve a saved report processor configuration by id
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_MANAGE_REPORTS })
 	public ReportProcessorConfiguration getReportProcessorConfiguration(Integer id);
 
 	/**
@@ -223,6 +248,7 @@ public interface ReportService extends OpenmrsService {
 	 * @should retrieve a saved report processor configuration by uuid
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_MANAGE_REPORTS })
 	public ReportProcessorConfiguration getReportProcessorConfigurationByUuid(String uuid);
 	
 	/**
@@ -230,6 +256,7 @@ public interface ReportService extends OpenmrsService {
 	 * @should retrieve all saved report processor configurations including retired if specified
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_MANAGE_REPORTS })
 	public List<ReportProcessorConfiguration> getAllReportProcessorConfigurations(boolean includeRetired);
 	
 	/**
@@ -237,6 +264,7 @@ public interface ReportService extends OpenmrsService {
 	 * @should retrieve all saved report processor configurations with reportDesign = null, and retired = false;
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_MANAGE_REPORTS })
 	public List<ReportProcessorConfiguration> getGlobalReportProcessorConfigurations();
 	
 	/**
@@ -244,6 +272,7 @@ public interface ReportService extends OpenmrsService {
 	 * @should retrieve all non-retired report processor configurations that are assignable to the passed type
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_MANAGE_REPORTS })
 	public List<ReportProcessorConfiguration> getReportProcessorConfigurations(Class<? extends ReportProcessor> processorType);
 
 	/**
@@ -251,6 +280,7 @@ public interface ReportService extends OpenmrsService {
 	 * @should delete a saved report processor configuration
 	 */
 	@Transactional
+	@Authorized({ ReportingConstants.PRIV_MANAGE_REPORTS })
 	public void purgeReportProcessorConfiguration(ReportProcessorConfiguration processorConfiguration);
 	
 	//***** REPORTS *****
@@ -259,50 +289,55 @@ public interface ReportService extends OpenmrsService {
 	 * @return the File that may contain the serialized {@link ReportData} for a given {@link ReportRequest}
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_VIEW_REPORTS })
 	public File getReportDataFile(ReportRequest request);
 	
 	/**
 	 * @return the File that may contain any errors when evaluating a given {@link ReportRequest}
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_VIEW_REPORTS })
 	public File getReportErrorFile(ReportRequest request);
 	
 	/**
 	 * @return the File that may contain the rendered output from the evaluation of a {@link ReportRequest}
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_VIEW_REPORTS })
 	public File getReportOutputFile(ReportRequest request);
 	
 	/**
 	 * @return the File that may contain any log messages when evaluating a given {@link ReportRequest}
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_VIEW_REPORTS })
 	public File getReportLogFile(ReportRequest request);
 
     /**
      * @return the File that may contain any log messages when evaluating a given {@link ReportRequest}
      */
     @Transactional(readOnly = true)
+    @Authorized({ ReportingConstants.PRIV_VIEW_REPORTS })
     public File getReportLogFile(String requestUuid);
-	
+
 	/**
 	 * <pre>
 	 * Runs a report synchronously, blocking until the report is ready. This method populates the uuid
 	 * field on the ReportRequest that is passed in, and adds the Request to the history.
-	 * 
+	 *
 	 * If request specifies a WebRenderer, then the ReportDefinition will be evaluated, and the Report
 	 * returned will contain the raw ReportData output, but no rendering will happen.
-	 * 
+	 *
 	 * If request specifies a non-WebRenderer, the ReportDefinition will be evaluated <i>and</i> the
 	 * data will be rendered, and the Report returned will include raw ReportData and a File.
-	 * 
+	 *
 	 * Implementations of this service may choose to run the report directly, or to queue it,
 	 * but if they queue it they should do so with HIGHEST priority.
 	 * </pre>
-	 * 
+	 *
 	 * @param request the report request to run
 	 * @return the result of running the report.
-	 * 
+	 *
 	 * @should set uuid on the request
 	 * @should render the report if a plain renderer is specified
 	 * @should not render the report if a web renderer is specified
@@ -310,57 +345,67 @@ public interface ReportService extends OpenmrsService {
 	 * @should set the evaluationDate on the context from the request
 	 * @should use current date as evaluationDate if not provided by the request
 	 */
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public Report runReport(ReportRequest request);
 
 	/**
 	 * Adds a {@link ReportRequest} to the queue to be run asynchronously
 	 */
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public ReportRequest queueReport(ReportRequest request);
-	
+
 	/**
 	 * Returns the number in the queue for this report request, or null if processing has already started
 	 */
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public Integer getPositionInQueue(ReportRequest request);
-	
+
 	/**
 	 * Immediately try to process the next reports scheduled for processing off of the queue
 	 */
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public void processNextQueuedReports();
-	
+
 	/**
 	 * Saves a Report, including the underlying report data, optionally providing a description
 	 */
 	@Transactional
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public Report saveReport(Report report, String description);
-	
+
 	/**
 	 * Loads the ReportData previously generated Report for the given ReportRequest, first checking the cache
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_VIEW_REPORTS })
 	public ReportData loadReportData(ReportRequest request);
-	
+
 	/**
 	 * Loads the Rendered Output for a previously generated Report for the given ReportRequest, first checking the cache
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_VIEW_REPORTS })
 	public byte[] loadRenderedOutput(ReportRequest request);
-	
+
 	/**
 	 * Loads the Error message for a previously generated Report for the given ReportRequest, first checking the cache
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_VIEW_REPORTS })
 	public String loadReportError(ReportRequest request);
-	
+
 	/**
 	 * Loads the Log messages for a previously generated Report for the given ReportRequest, first checking the cache
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_VIEW_REPORTS })
 	public List<String> loadReportLog(ReportRequest request);
-	
+
 	/**
 	 * @return the persisted Report for the given ReportRequest
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_VIEW_REPORTS })
 	public Report loadReport(ReportRequest request);
 
 	/**
@@ -368,22 +413,25 @@ public interface ReportService extends OpenmrsService {
 	 * {@link ReportingConstants#GLOBAL_PROPERTY_DELETE_REPORTS_AGE_IN_HOURS}
 	 */
 	@Transactional
+	@Authorized({ ReportingConstants.PRIV_MANAGE_REPORTS })
 	public void deleteOldReportRequests();
-	
+
 	/**
 	 * Persists reports that are cached but not on disk
 	 * Removes from Cache the oldest reports if the max cache size is exceeded
 	 * {@link ReportingConstants#GLOBAL_PROPERTY_MAX_CACHED_REPORTS()}
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_MANAGE_REPORTS })
 	public void persistCachedReports();
-	
+
 	/**
 	 * Saves the passed message to disk for the given report, in order to have a record of the report generation
 	 * @param request the request to save a message for
 	 * @param message the message to save
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public void logReportMessage(ReportRequest request, String message);
 
     /**
@@ -392,6 +440,7 @@ public interface ReportService extends OpenmrsService {
      * @param message the message to save
      */
     @Transactional(readOnly = true)
+    @Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
     public void logReportMessage(String requestUuid, String message);
 
 	/**
@@ -399,6 +448,7 @@ public interface ReportService extends OpenmrsService {
 	 * @param reportDefinitionUuid the uuid of the report definition
 	 */
 	@Transactional
+	@Authorized({ ReportingConstants.PRIV_MANAGE_REPORTS })
 	void purgeReportRequestsForReportDefinition(String reportDefinitionUuid);
 
 	/**
@@ -406,5 +456,6 @@ public interface ReportService extends OpenmrsService {
 	 * @param reportDefinitionUuid the uuid of the report definition
 	 */
 	@Transactional
+	@Authorized({ ReportingConstants.PRIV_MANAGE_REPORTS })
 	void purgeReportDesignsForReportDefinition(String reportDefinitionUuid);
 }

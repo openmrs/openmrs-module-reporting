@@ -58,6 +58,18 @@ public class ReportingConstants implements GlobalPropertyListener {
 			GLOBAL_PROPERTY_EVALUATION_LOGGER_ENABLED
 	);
 
+	public static final String PRIV_MANAGE_REPORTS = "Manage Reports";
+	public static final String PRIV_MANAGE_REPORT_DEFINITIONS = "Manage Report Definitions";
+	public static final String PRIV_MANAGE_DATA_SET_DEFINITIONS = "Manage Data Set Definitions";
+	public static final String PRIV_MANAGE_INDICATOR_DEFINITIONS = "Manage Indicator Definitions";
+	public static final String PRIV_MANAGE_DIMENSION_DEFINITIONS = "Manage Dimension Definitions";
+	public static final String PRIV_MANAGE_COHORT_DEFINITIONS = "Manage Cohort Definitions";
+	public static final String PRIV_MANAGE_REPORT_DESIGNS = "Manage Report Designs";
+	public static final String PRIV_MANAGE_SCHEDULED_REPORT_TASKS = "Manage Scheduled Report Tasks";
+	public static final String PRIV_RUN_REPORTS = "Run Reports";
+	public static final String PRIV_VIEW_REPORTS = "View Reports";
+	public static final String PRIV_DELETE_REPORTS = "Delete Reports";
+
 	// Constants used within sessions to key report data that can be retrieved
 	public static final String OPENMRS_REPORT_DATA = "__openmrs_report_data";
 	public static final String OPENMRS_REPORT_ARGUMENT = "__openmrs_report_argument";

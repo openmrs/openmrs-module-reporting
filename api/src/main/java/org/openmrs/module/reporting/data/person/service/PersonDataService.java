@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.reporting.data.person.service;
 
+import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.definition.service.DefinitionService;
@@ -16,6 +17,9 @@ import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.annotation.Authorized;
+import org.openmrs.util.PrivilegeConstants;
+import org.openmrs.api.APIException;
 
 /**
  * Interface for methods used to manage and evaluate PersonDataDefinitions
@@ -23,12 +27,20 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 public interface PersonDataService extends DefinitionService<PersonDataDefinition> {
 	
 	/**
-	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
+	 * @see DefinitionService#saveDefinition(Definition)
 	 */
+	@Authorized({ ReportingConstants.PRIV_MANAGE_DATA_SET_DEFINITIONS })
+	public <D extends PersonDataDefinition> D saveDefinition(D definition) throws APIException;
+
+	/**
+	 * @see DefinitionService#evaluate(Definition, EvaluationContext) 
+	 */
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException;
 	
 	/**
 	 * @see DefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public EvaluatedPersonData evaluate(Mapped<? extends PersonDataDefinition> mappedDefinition, EvaluationContext context) throws EvaluationException;
 }

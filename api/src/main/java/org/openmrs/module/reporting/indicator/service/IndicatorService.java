@@ -16,19 +16,27 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.Indicator;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
+import org.openmrs.annotation.Authorized;
+import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.api.APIException;
 
 /**
  * Contains methods pertaining to creating/updating/deleting/retiring/registering/evaluating Indicators
  */
 public interface IndicatorService extends DefinitionService<Indicator> {
-	
+
 	/**
-	 * @see DefinitionService#evaluate(Definition, EvaluationContext)
+	 * @see DefinitionService#saveDefinition(Definition)
 	 */
+	@Authorized({ ReportingConstants.PRIV_MANAGE_INDICATOR_DEFINITIONS })
+	public <D extends Indicator> D saveDefinition(D definition) throws APIException;
+	
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public IndicatorResult evaluate(Indicator indicator, EvaluationContext context) throws EvaluationException;
 	
 	/**
 	 * @see DefinitionService#evaluate(Mapped, EvaluationContext)
 	 */
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public IndicatorResult evaluate(Mapped<? extends Indicator> indicator, EvaluationContext context) throws EvaluationException;
 }
