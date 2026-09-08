@@ -20,7 +20,11 @@
 				document.location.href = '${pageContext.request.contextPath}/module/reporting/reports/renderers/editReportDesign.form?type=${design.rendererType.name}&reportDesignUuid=${design.uuid}';
 			});
 			$j('#${design.uuid}DesignRemoveLink').click(function(event){
-				if (confirm('Please confirm you wish to permanantly delete ${design.name}')) {
+				var encodedStr = "<c:out value='${design.name}'/>";
+				var parser = new DOMParser;
+				var dom = parser.parseFromString('<!doctype html><body>' + encodedStr,'text/html');
+				var decodedString = dom.body.textContent;
+				if (confirm('Please confirm you wish to permanantly delete '+decodedString)) {
 					document.location.href='${pageContext.request.contextPath}/module/reporting/reports/deleteReportDesign.form?uuid=${design.uuid}';
 				}
 			});
@@ -31,7 +35,10 @@
 		} );
 		
 		$j('#designAddLink').click(function(event){
-			document.location.href = '${pageContext.request.contextPath}/module/reporting/reports/renderers/editReportDesign.form?type=' + $j( this ).attr( 'href' );
+			if($j("#rendererType").val()==="")
+				alert("Please select a value from Dropdown");
+			else	
+				document.location.href = '${pageContext.request.contextPath}/module/reporting/reports/renderers/editReportDesign.form?type=' + $j( this ).attr( 'href' );
 		});
 	});
 </script>
@@ -57,9 +64,9 @@
 				<c:forEach items="${reportDesigns}" var="design" varStatus="designStatus">
 					<tr>
 						<td width="20%" nowrap="true">
-							<a id="${design.uuid}DesignEditLink" href="#">${design.name}</a>
+							<a id="${design.uuid}DesignEditLink" href="#"><c:out value='${design.name}' /></a>
 						</td>
-						<td>${design.description}</td>
+						<td><c:out value="${design.description}"/></td>
 						<td width="20%">${design.reportDefinition.name}</td>
 						<td width="20%"><rpt:displayLabel type="${design.rendererType.name}"/></td>
 						<td width="5%" align="center"><a id="${design.uuid}DesignRemoveLink" href="#">

@@ -1,15 +1,11 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
 package org.openmrs.module.reporting.definition.service;
 
@@ -24,6 +20,8 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import org.openmrs.annotation.Authorized;
+import org.openmrs.module.reporting.ReportingConstants;
 
 /**
  * Interface for methods used to manage and evaluate Definitions
@@ -46,6 +44,7 @@ public interface DefinitionService<T extends Definition> extends OpenmrsService 
 	 * @return the Definition that matches the given type and id
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_MANAGE_REPORT_DEFINITIONS })
 	public <D extends T> D getDefinition(Class<D> type, Integer id) throws APIException;
 	
 	/**
@@ -54,6 +53,7 @@ public interface DefinitionService<T extends Definition> extends OpenmrsService 
 	 * @should deserialize CohortIndicatorAndDimensionDataSetDefinition
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_VIEW_REPORTS })
 	public T getDefinitionByUuid(String uuid) throws APIException;
 	
 	/**
@@ -66,6 +66,7 @@ public interface DefinitionService<T extends Definition> extends OpenmrsService 
 	 * @return the Definition with the given uuid and type
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_VIEW_REPORTS })
 	public T getDefinition(String uuid, Class<? extends T> type);
 	
 	/**
@@ -73,6 +74,7 @@ public interface DefinitionService<T extends Definition> extends OpenmrsService 
 	 * @return All {@link Definition} whose persistence is managed by this persister
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_VIEW_REPORTS })
 	public List<T> getAllDefinitions(boolean includeRetired);
 	
 	/**
@@ -80,6 +82,7 @@ public interface DefinitionService<T extends Definition> extends OpenmrsService 
 	 * @return lightweight summaries for all definitions managed by this service
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_VIEW_REPORTS })
 	public List<DefinitionSummary> getAllDefinitionSummaries(boolean includeRetired);
 	
 	/**
@@ -87,6 +90,7 @@ public interface DefinitionService<T extends Definition> extends OpenmrsService 
 	 * @return the number of saved Cohort Definitions
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_VIEW_REPORTS })
 	public int getNumberOfDefinitions(boolean includeRetired);
 	
 	/**
@@ -99,6 +103,7 @@ public interface DefinitionService<T extends Definition> extends OpenmrsService 
 	 * @return a List<Definition> objects whose name contains the passed name
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_VIEW_REPORTS })
 	public List<T> getDefinitions(String name, boolean exactMatchOnly);
 	
 	/**
@@ -106,6 +111,7 @@ public interface DefinitionService<T extends Definition> extends OpenmrsService 
 	 * @return all Definitions that are tagged with the given tagName
 	 */
 	@Transactional(readOnly = true)
+	@Authorized({ ReportingConstants.PRIV_VIEW_REPORTS })
 	public List<T> getDefinitionsByTag(String tagName);
 	
 	/**
@@ -115,6 +121,7 @@ public interface DefinitionService<T extends Definition> extends OpenmrsService 
 	 * @return the Definition that was passed in
 	 */
 	@Transactional
+	@Authorized({ ReportingConstants.PRIV_MANAGE_REPORT_DEFINITIONS })
 	public <D extends T> D saveDefinition(D definition) throws APIException;
 	
 	/**
@@ -123,6 +130,7 @@ public interface DefinitionService<T extends Definition> extends OpenmrsService 
 	 * @param definition the Definition to purge
 	 */
 	@Transactional
+	@Authorized({ ReportingConstants.PRIV_MANAGE_REPORT_DEFINITIONS })
 	public void purgeDefinition(T definition);
 	
 	/**
@@ -132,6 +140,7 @@ public interface DefinitionService<T extends Definition> extends OpenmrsService 
 	 * @param context context to use during evaluation
 	 * @return the evaluated definition
 	 */
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public Evaluated<T> evaluate(Mapped<? extends T> definition, EvaluationContext context) throws EvaluationException;
 	
 	/**
@@ -141,5 +150,6 @@ public interface DefinitionService<T extends Definition> extends OpenmrsService 
 	 * @param context context to use during evaluation
 	 * @return the evaluated definition
 	 */
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public Evaluated<T> evaluate(T definition, EvaluationContext context) throws EvaluationException;
 }

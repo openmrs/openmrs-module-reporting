@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.reporting.web.controller;
 
 import org.apache.commons.logging.Log;
@@ -17,13 +26,13 @@ public class ManageIndicatorsController {
 
 	protected Log log = LogFactory.getLog(this.getClass());
 
-    @RequestMapping("/module/reporting/indicators/manageIndicators")
+    @RequestMapping("/module/reporting/indicators/manageIndicators.form")
     public void manageIndicators(ModelMap model) {
     	List<Indicator> indicators = Context.getService(IndicatorService.class).getAllDefinitions(false);
     	model.addAttribute("indicators", indicators);
     }
 
-    @RequestMapping("/module/reporting/indicators/purgeIndicator")
+    @RequestMapping("/module/reporting/indicators/purgeIndicator.form")
     public String purgeIndicator(@RequestParam(required=false, value="uuid") String uuid) {
     	Indicator indicator = Context.getService(IndicatorService.class).getDefinitionByUuid(uuid);
     	if (indicator != null) {     		

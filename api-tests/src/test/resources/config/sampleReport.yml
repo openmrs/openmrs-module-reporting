@@ -1,0 +1,46 @@
+key: "sampledataexport"
+uuid: "9e7dc296-2aad-11e3-a840-5b9e0b589afb"
+name: "sample.export.name"
+description: "sample.export.description"
+parameters:    # should be able to parse comments!
+  - key: "startDate"
+    type: "date"
+    label: "startDate.label"
+  - key: "endDate"
+    type: "date"
+    label: "endDate.label"
+datasets:
+  - key: "males"
+    type: "sql"
+    config: "persons.sql"
+    parameters:
+      - key: "gender"
+        value: "M"
+  - key: "females"
+    type: "sql"
+    config: "persons.sql"
+    parameters:
+      - key: "gender"
+        value: "F"
+  - key: "orders"
+    type: "sql"
+    config: "orders.sql"
+  - key: "encounters"
+    type: "sql"
+    config: "encounters.sql"
+designs:
+  - type: "csv"
+    properties:
+      "characterEncoding": "ISO-8859-1"
+      "blacklistRegex": "[^\\p{InBasicLatin}\\p{L}]"
+  - type: "excel"
+    template: "ExcelTemplate.xls"
+config:
+  includeTestPatients: "true"
+  categories:
+    - "DATA_EXPORT"
+    - "DAILY"
+  components:
+    - "encounters"
+
+

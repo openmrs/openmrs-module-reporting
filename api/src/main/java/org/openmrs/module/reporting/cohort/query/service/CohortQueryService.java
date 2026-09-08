@@ -1,15 +1,11 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
 package org.openmrs.module.reporting.cohort.query.service;
 
@@ -34,23 +30,35 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import org.openmrs.annotation.Authorized;
+import org.openmrs.module.reporting.ReportingConstants;
+import org.openmrs.util.PrivilegeConstants;
 
 @Transactional(readOnly=true)
 public interface CohortQueryService extends OpenmrsService {
 	
-	public void setCohortQueryDAO(CohortQueryDAO dao);	
+	public void setCohortQueryDAO(CohortQueryDAO dao);
 	
+	@Authorized({ PrivilegeConstants.GET_PATIENTS })
 	public Cohort getPatientsWithGender(boolean includeMales, boolean includeFemales, boolean includeUnknownGender);
+	@Authorized({ PrivilegeConstants.GET_PATIENTS })
 	public Cohort getPatientsWithAgeRange(Integer minAge, DurationUnit minAgeUnit, Integer maxAge, DurationUnit maxAgeUnit, boolean unknownAgeIncluded, Date effectiveDate);
 
+	@Authorized({ PrivilegeConstants.GET_PATIENTS })
 	public Cohort getPatientsHavingProgramEnrollment(List<Program> programs, Date enrolledOnOrAfter, Date enrolledOnOrBefore, Date completedOnOrAfter, Date completedOnOrBefore);
+	@Authorized({ PrivilegeConstants.GET_PATIENTS })
 	public Cohort getPatientsInProgram(List<Program> programs, Date onOrAfter, Date onOrBefore);
 
+	@Authorized({ PrivilegeConstants.GET_PATIENTS })
 	public Cohort getPatientsHavingStates(List<ProgramWorkflowState> states, Date startedOnOrAfter, Date startedOnOrBefore, Date endedOnOrAfter, Date endedOnOrBefore);
+	@Authorized({ PrivilegeConstants.GET_PATIENTS })
 	public Cohort getPatientsInStates(List<ProgramWorkflowState> states, Date onOrAfter, Date onOrBefore);
 	
+    @Authorized({ PrivilegeConstants.GET_PATIENTS })
     public Cohort getPatientsHavingActiveDrugOrders(List<Drug> drugs, Date asOfDate);
+    @Authorized({ PrivilegeConstants.GET_PATIENTS })
     public Cohort getPatientsHavingStartedDrugOrders(List<Drug> drugs, List<Concept> drugSetConcepts, Date startedOnOrAfter, Date startedOnOrBefore);
+    @Authorized({ PrivilegeConstants.GET_PATIENTS })
     public Cohort getPatientsHavingCompletedDrugOrders(List<Drug> drugs, List<Concept> drugSetConcepts, Date completedOnOrAfter, Date completedOnOrBefore);
 
 
@@ -66,6 +74,7 @@ public interface CohortQueryService extends OpenmrsService {
 	 * @param atMostCount
 	 * @return cohort of patients matching the query
 	 */
+	@Authorized({ PrivilegeConstants.GET_PATIENTS })
 	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore, List<Location> locationList,
                                               List<EncounterType> encounterTypeList, List<Form> formList,
                                               Integer atLeastCount, Integer atMostCount);
@@ -85,6 +94,7 @@ public interface CohortQueryService extends OpenmrsService {
 	 * @param createdOnOrBefore 
 	 * @return cohort of patients matching the query
 	 */
+	@Authorized({ PrivilegeConstants.GET_PATIENTS })
 	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore, TimeQualifier timeQualifier, List<Location> locationList,
                                               List<EncounterType> encounterTypeList, List<Form> formList,
                                               Integer atLeastCount, Integer atMostCount, User createdBy, Date createdOnOrAfter, Date createdOnOrBefore);
@@ -95,6 +105,7 @@ public interface CohortQueryService extends OpenmrsService {
 	 * @should should get patients having encounters with a specified provider
 	 * @return cohort of patients matching the query
 	 */
+	@Authorized({ PrivilegeConstants.GET_PATIENTS })
 	public Cohort getPatientsHavingEncounters(Date onOrAfter, Date onOrBefore, TimeQualifier timeQualifier, List<Location> locationList,
                                               List<Person> providerList, List<EncounterType> encounterTypeList, List<Form> formList,
                                               Integer atLeastCount, Integer atMostCount, User createdBy, Date createdOnOrAfter, Date createdOnOrBefore);
@@ -110,6 +121,7 @@ public interface CohortQueryService extends OpenmrsService {
 	 * @param values
 	 * @return	cohort of patients matching the query
 	 */
+	@Authorized({ PrivilegeConstants.GET_PATIENTS })
 	public Cohort getPatientsHavingPersonAttributes(PersonAttributeType attributeType, List<String> values);
 		
 	/**
@@ -131,6 +143,7 @@ public interface CohortQueryService extends OpenmrsService {
 	 * @param paramMap 	a map of parameter values indexed by the string parameter name
 	 * @return	a {@link Cohort} of patients matching the given sqlQuery
 	 */
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public Cohort executeSqlQuery(String sqlQuery, Map<String,Object> paramMap); 
 	
 	/**
@@ -142,6 +155,7 @@ public interface CohortQueryService extends OpenmrsService {
 	 * @param sqlQuery	the sql query string to be executed
 	 * @return	a List of {@link Parameter}s 
 	 */
+	@Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
 	public List<Parameter> getNamedParameters(String sqlQuery);
 	
 	/**
@@ -153,6 +167,7 @@ public interface CohortQueryService extends OpenmrsService {
 	 * @param diedOnOrBefore
 	 * @return
 	 */
+	@Authorized({ PrivilegeConstants.GET_PATIENTS })
 	public Cohort getPatientsHavingBirthAndDeath(Date bornOnOrAfter, Date bornOnOrBefore,
 	                                             Date diedOnOrAfter, Date diedOnOrBefore);
 
@@ -166,6 +181,7 @@ public interface CohortQueryService extends OpenmrsService {
      * @param baseCohort if not null, only look at patients in this cohort
      * @return
      */
+    @Authorized({ ReportingConstants.PRIV_RUN_REPORTS })
     public Cohort executeLogicQuery(String logicExpression, Map<String, Object> parameterValues, Cohort baseCohort);
 
 }

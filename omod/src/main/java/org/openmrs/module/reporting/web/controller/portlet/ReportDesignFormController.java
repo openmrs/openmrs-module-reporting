@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.reporting.web.controller.portlet;
 
 import java.util.HashSet;
@@ -40,7 +49,7 @@ public class ReportDesignFormController {
     /**
      * Saves report design
      */
-    @RequestMapping("/module/reporting/reports/saveReportDesign")
+    @RequestMapping("/module/reporting/reports/saveReportDesign.form")
     @SuppressWarnings("unchecked")
     public String saveReportDesign(ModelMap model, HttpServletRequest request,
     		@RequestParam(required=false, value="uuid") String uuid,
@@ -124,7 +133,7 @@ public class ReportDesignFormController {
     /**
      * Delete report design
      */
-    @RequestMapping("/module/reporting/reports/deleteReportDesign")
+    @RequestMapping("/module/reporting/reports/deleteReportDesign.form")
     public String deleteReportDesign(ModelMap model, HttpServletRequest request,
     		@RequestParam(required=true, value="uuid") String uuid,
             @RequestParam(required=false, value="returnUrl") String returnUrl) {

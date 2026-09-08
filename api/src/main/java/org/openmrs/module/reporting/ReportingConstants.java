@@ -1,15 +1,11 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
 package org.openmrs.module.reporting;
 
@@ -54,12 +50,25 @@ public class ReportingConstants implements GlobalPropertyListener {
 	public static final String GLOBAL_PROPERTY_DEFAULT_DATE_FORMAT = "reporting.defaultDateFormat";
     public static final String GLOBAL_PROPERTY_TEST_PATIENTS_COHORT_DEFINITION = "reporting.testPatientsCohortDefinition";
 	public static final String GLOBAL_PROPERTY_EVALUATION_LOGGER_ENABLED = "reporting.evaluationLoggerEnabled";
+	public static final String GLOBAL_PROPERTY_LOAD_REPORTS_FROM_CONFIGURATION_AT_STARTUP = "reporting.loadReportsFromConfigurationAtStartup";
 	public static final String DEFAULT_LOCALE_GP_NAME = "reporting.defaultLocale";
 
 	public static final List<String> CACHED_PROPERTIES = Arrays.asList(
 			GLOBAL_PROPERTY_DEFAULT_DATE_FORMAT, DEFAULT_LOCALE_GP_NAME, GLOBAL_PROPERTY_DATA_EVALUATION_BATCH_SIZE,
 			GLOBAL_PROPERTY_EVALUATION_LOGGER_ENABLED
 	);
+
+	public static final String PRIV_MANAGE_REPORTS = "Manage Reports";
+	public static final String PRIV_MANAGE_REPORT_DEFINITIONS = "Manage Report Definitions";
+	public static final String PRIV_MANAGE_DATA_SET_DEFINITIONS = "Manage Data Set Definitions";
+	public static final String PRIV_MANAGE_INDICATOR_DEFINITIONS = "Manage Indicator Definitions";
+	public static final String PRIV_MANAGE_DIMENSION_DEFINITIONS = "Manage Dimension Definitions";
+	public static final String PRIV_MANAGE_COHORT_DEFINITIONS = "Manage Cohort Definitions";
+	public static final String PRIV_MANAGE_REPORT_DESIGNS = "Manage Report Designs";
+	public static final String PRIV_MANAGE_SCHEDULED_REPORT_TASKS = "Manage Scheduled Report Tasks";
+	public static final String PRIV_RUN_REPORTS = "Run Reports";
+	public static final String PRIV_VIEW_REPORTS = "View Reports";
+	public static final String PRIV_DELETE_REPORTS = "Delete Reports";
 
 	// Constants used within sessions to key report data that can be retrieved
 	public static final String OPENMRS_REPORT_DATA = "__openmrs_report_data";
@@ -111,6 +120,10 @@ public class ReportingConstants implements GlobalPropertyListener {
 	
 	public static final boolean GLOBAL_PROPERTY_INCLUDE_DATA_EXPORTS() {
 		return getPropertyValueAsBoolean(GLOBAL_PROPERTY_INCLUDE_DATA_EXPORTS, false);
+	}
+
+	public static final boolean GLOBAL_PROPERTY_LOAD_REPORTS_FROM_CONFIGURATION_AT_STARTUP() {
+		return getPropertyValueAsBoolean(GLOBAL_PROPERTY_LOAD_REPORTS_FROM_CONFIGURATION_AT_STARTUP, false);
 	}
 
     // this property is fetched a lot, so we cache it

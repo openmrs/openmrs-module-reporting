@@ -1,15 +1,11 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
 package org.openmrs.module.reporting.web.reports.renderers;
 
@@ -83,7 +79,7 @@ public class TextTemplateFormController {
 	 *  prepares a new form for the a TextTemplateRenderer
 	 * @throws UnsupportedEncodingException 
 	 */
-	@RequestMapping("/module/reporting/reports/renderers/textTemplateReportRenderer")
+	@RequestMapping("/module/reporting/reports/renderers/textTemplateReportRenderer.form")
 	public void textTemplateReportRenderer(ModelMap model, 
 								@RequestParam(required=false, value="reportDesignUuid") String reportDesignUuid, 
 								@RequestParam(required=false, value="reportDefinitionUuid") String reportDefinitionUuid,
@@ -128,7 +124,7 @@ public class TextTemplateFormController {
 	 * Saves report design
 	 * @throws UnsupportedEncodingException 
 	 */
-	@RequestMapping("/module/reporting/reports/renderers/saveTextTemplateReportRendererDesign")
+	@RequestMapping("/module/reporting/reports/renderers/saveTextTemplateReportRendererDesign.form")
 	public String saveTextTemplateReportRendererDesign(ModelMap model, HttpServletRequest request,
 					@RequestParam(required=false, value="uuid") String uuid,
 					@RequestParam(required=true,  value="name") String name,
@@ -207,7 +203,7 @@ public class TextTemplateFormController {
 		return userParams;
 	}
 	
-	@RequestMapping( value="/module/reporting/reports/renderers/previewTextTemplateReportRenderer", method=RequestMethod.GET)
+	@RequestMapping( value="/module/reporting/reports/renderers/previewTextTemplateReportRenderer.form", method=RequestMethod.GET)
 	public void initPreviewForm(ModelMap model, HttpServletRequest request,
 			@RequestParam(required=true, value="reportDefinition") String reportDefinitionUuid,
 			@RequestParam(required=false, value="uuid") String uuid,
@@ -261,7 +257,7 @@ public class TextTemplateFormController {
 	}
 		
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value="/module/reporting/reports/renderers/previewTextTemplateReportRenderer", method=RequestMethod.POST)
+	@RequestMapping(value="/module/reporting/reports/renderers/previewTextTemplateReportRenderer.form", method=RequestMethod.POST)
 	public void previewScript(ModelMap model, HttpServletRequest request,
 			@RequestParam(required=true, value="reportDefinition") String reportDefinitionUuid,
 			@RequestParam(required=true, value="uuid") String uuid,

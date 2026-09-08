@@ -15,7 +15,7 @@
 	</description>
 	<activator>@MODULE_PACKAGE@.ReportingModuleActivator</activator>
 	<updateURL>https://dev.openmrs.org/modules/download/@MODULE_ID@/update.rdf</updateURL>
-	<require_version>1.11.3 - 1.11.*, 1.10.2 - 1.10.*, 1.9.9 - 1.9.*, 1.12</require_version>
+	<require_version>${openMRSVersion}</require_version>
 
 	<require_modules>
 	   	<require_module version="${serializationVersion}">org.openmrs.module.serialization.xstream</require_module>
@@ -25,8 +25,8 @@
 
     <!-- Required to support data export data set definition, which was moved out of core and into reportingcompatibility in 1.12 -->
     <aware_of_modules>
-        <aware_of_module>org.openmrs.module.reportingcompatibility</aware_of_module>
         <aware_of_module>org.openmrs.module.legacyui</aware_of_module>
+        <aware_of_module>org.openmrs.module.logic</aware_of_module>
     </aware_of_modules>
 
 	<!-- Extensions -->
@@ -147,6 +147,16 @@
         <defaultValue>false</defaultValue>
         <description>If false, will disable the built in use of the evaluation logger to log evaluation information for performance diagnostics</description>
     </globalProperty>
+	<globalProperty>
+		<property>reporting.loadReportsFromConfigurationAtStartup</property>
+		<defaultValue>false</defaultValue>
+		<description>If true, this will automatically load reports defined by report descriptors in .OpenMRS/configuration/reports/reportdescriptors at startup</description>
+	</globalProperty>
+    <globalProperty>
+        <property>reporting.serializer.whitelist.types</property>
+        <defaultValue>org.openmrs.module.reporting.**</defaultValue>
+        <description>White-list of classes that are allowed for deserialization by the reporting module</description>
+    </globalProperty>
 
 	<!--  Message Properties -->
 	<messages>
@@ -168,15 +178,5 @@
 		ReportRequest.hbm.xml
 	</mappingFiles>
 	
-	<conditionalResources>
-		<conditionalResource>
-			<path>/lib/reporting-api-1.9.*</path>
-			<openmrsVersion>1.9.9 - 1.12.*</openmrsVersion>
-		</conditionalResource>
-		<conditionalResource>
-			<path>/lib/reporting-api-2.0.*</path>
-			<openmrsVersion>2.*</openmrsVersion>
-		</conditionalResource>
-	</conditionalResources>
-	
+
 </module>
