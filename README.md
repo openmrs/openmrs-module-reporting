@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/openmrs/openmrs-module-reporting.svg?branch=master)](https://travis-ci.org/openmrs/openmrs-module-reporting)
+[![Build Status](https://github.com/openmrs/openmrs-module-reporting/actions/workflows/build.yml/badge.svg)](https://github.com/openmrs/openmrs-module-reporting/actions/workflows/build.yml)
 
 Reporting Module
 ================
