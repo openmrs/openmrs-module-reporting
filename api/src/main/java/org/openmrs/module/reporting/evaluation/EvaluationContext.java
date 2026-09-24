@@ -9,6 +9,12 @@
  */
 package org.openmrs.module.reporting.evaluation;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -18,6 +24,7 @@ import org.openmrs.Patient;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
+import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.CohortUtil;
 import org.openmrs.module.reporting.cohort.PatientIdSet;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -27,11 +34,6 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.query.IdSet;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * The EvaluationContext provides the following capabilities: 
@@ -235,6 +237,7 @@ public class EvaluationContext implements PatientCalculationContext {
 	/**
 	 * Add a value to the cache with a given key
 	 */
+	@Override
 	public void addToCache(String key, Object value) {
 		getCache().put(key, value);
 	}
@@ -244,6 +247,7 @@ public class EvaluationContext implements PatientCalculationContext {
 	 * 
 	 * @param key
 	 */
+	@Override
 	public void removeFromCache(String key) {
 		getCache().remove(key);
 	}
@@ -253,6 +257,7 @@ public class EvaluationContext implements PatientCalculationContext {
 	 * 
 	 * @param key
 	 */
+	@Override
 	public Object getFromCache(String key) {
 		return getCache().get(key);
 	}
@@ -403,5 +408,13 @@ public class EvaluationContext implements PatientCalculationContext {
 	 */
 	public int getEvaluationLevel() {
 		return evaluationLevel;
+	}
+	
+	public static Locale getDefaultLocale(Locale locale) {
+		if (locale == null) {
+			locale = ReportingConstants.GLOBAL_PROPERTY_DEFAULT_LOCALE();
+			return locale;
+		}
+		return locale = Context.getLocale();
 	}
 }
