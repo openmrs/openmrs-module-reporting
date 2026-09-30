@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.reporting.web.controller.portlet;
 
 import java.util.Properties;
@@ -5,6 +14,7 @@ import java.util.Properties;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.owasp.encoder.Encode;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
@@ -32,7 +42,7 @@ public class ReportProcessorFormController {
     /**
      * Saves report design
      */
-    @RequestMapping("/module/reporting/reports/saveReportProcessor")
+    @RequestMapping("/module/reporting/reports/saveReportProcessor.form")
     public String saveReportProcessor(ModelMap model, HttpServletRequest request,
     		@RequestParam(required=false, value="uuid") String uuid,
     		@RequestParam(required=true, value="name") String name,
@@ -52,7 +62,7 @@ public class ReportProcessorFormController {
 			c = new ReportProcessorConfiguration();
 		}
 
-		c.setName(name);
+		c.setName(Encode.forHtml(name));
 		c.setDescription(description);
     	c.setProcessorType(processorType);
     	c.setProcessorMode(processorMode);
@@ -71,7 +81,7 @@ public class ReportProcessorFormController {
     /**
      * Delete report design
      */
-    @RequestMapping("/module/reporting/reports/deleteReportProcessor")
+    @RequestMapping("/module/reporting/reports/deleteReportProcessor.form")
     public String deleteReportDesign(ModelMap model, HttpServletRequest request,
     		@RequestParam(required=true, value="uuid") String uuid,
             @RequestParam(required=false, value="returnUrl") String returnUrl) {

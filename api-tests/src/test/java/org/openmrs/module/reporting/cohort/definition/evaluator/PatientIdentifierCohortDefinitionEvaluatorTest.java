@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
 import org.junit.Assert;
@@ -45,20 +54,20 @@ public class PatientIdentifierCohortDefinitionEvaluatorTest extends BaseModuleCo
 			PatientIdentifierCohortDefinition picd = new PatientIdentifierCohortDefinition();
 			picd.addTypeToMatch(new PatientIdentifierType(2));
 			EvaluatedCohort c = Context.getService(CohortDefinitionService.class).evaluate(picd, new EvaluationContext());
-			Assert.assertEquals(8, c.getSize());
+			Assert.assertEquals(8, c.getMemberIds().size());
 		}
 		{
 			PatientIdentifierCohortDefinition picd = new PatientIdentifierCohortDefinition();
 			picd.addTypeToMatch(new PatientIdentifierType(1));
 			EvaluatedCohort c = Context.getService(CohortDefinitionService.class).evaluate(picd, new EvaluationContext());
-			Assert.assertEquals(3, c.getSize());
+			Assert.assertEquals(3, c.getMemberIds().size());
 		}
 		{
 			PatientIdentifierCohortDefinition picd = new PatientIdentifierCohortDefinition();
 			picd.addTypeToMatch(new PatientIdentifierType(1));
 			picd.addTypeToMatch(new PatientIdentifierType(2));
 			EvaluatedCohort c = Context.getService(CohortDefinitionService.class).evaluate(picd, new EvaluationContext());
-			Assert.assertEquals(10, c.getSize());
+			Assert.assertEquals(10, c.getMemberIds().size());
 		}
 	}
 
@@ -70,9 +79,9 @@ public class PatientIdentifierCohortDefinitionEvaluatorTest extends BaseModuleCo
 	public void evaluate_shouldReturnPatientsWhoHaveIdentifiersMatchingThePassedLocations() throws Exception {
 		PatientIdentifierCohortDefinition picd = new PatientIdentifierCohortDefinition();
 		picd.addTypeToMatch(new PatientIdentifierType(2));
-		Assert.assertEquals(8, Context.getService(CohortDefinitionService.class).evaluate(picd, new EvaluationContext()).size());
+		Assert.assertEquals(8, Context.getService(CohortDefinitionService.class).evaluate(picd, new EvaluationContext()).getMemberIds().size());
 		picd.addLocationToMatch(new Location(3));
-		Assert.assertEquals(1, Context.getService(CohortDefinitionService.class).evaluate(picd, new EvaluationContext()).size());
+		Assert.assertEquals(1, Context.getService(CohortDefinitionService.class).evaluate(picd, new EvaluationContext()).getMemberIds().size());
 	}
 
 	/**

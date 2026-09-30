@@ -1,0 +1,17 @@
+key: "sampleencounters.export"
+uuid: "752e386d-da67-4e3d-bddc-95157c58c54c"
+name: "sample.export.encounters.name"
+description: "sample.export.encounters.description"
+parameters:
+  - key: "startDate"
+    type: "java.util.Date"
+    label: "startDate.label"
+  - key: "endDate"
+    type: "java.util.Date"
+    label: "endDate.label"
+datasets:
+  - key: "encounters"
+    type: "sql"
+    config: "sql/encounters.sql"
+
+

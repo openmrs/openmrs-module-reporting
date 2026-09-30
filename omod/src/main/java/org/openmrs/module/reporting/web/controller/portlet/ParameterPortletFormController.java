@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.reporting.web.controller.portlet;
 
 import java.util.Collection;
@@ -15,6 +24,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.web.WebConstants;
+import org.openmrs.web.WebUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
@@ -34,7 +44,7 @@ public class ParameterPortletFormController {
     /**
      * Saves mapped parameters
      */
-    @RequestMapping("/module/reporting/parameters/saveParameter")
+    @RequestMapping("/module/reporting/parameters/saveParameter.form")
     public String saveParameter(ModelMap model, HttpServletRequest request,
     		@RequestParam(required=true, value="type") Class<? extends Parameterizable> parentType,
     		@RequestParam(required=true, value="uuid") String parentUuid,
@@ -46,6 +56,11 @@ public class ParameterPortletFormController {
             @RequestParam(required=false, value="widgetConfiguration") String widgetConfiguration,
             @RequestParam(required=false, value="shortcut") String shortcut
             	) {
+
+    	currentName = WebUtil.escapeHTML(currentName);
+    	newName = WebUtil.escapeHTML(newName);
+    	label = WebUtil.escapeHTML(label);
+    	widgetConfiguration = WebUtil.escapeHTML(widgetConfiguration);
     	
     	if (shortcut != null) {
     		if (shortcut.equals("date")) {
@@ -94,7 +109,7 @@ public class ParameterPortletFormController {
     /**
      * Remove mapped property
      */
-    @RequestMapping("/module/reporting/parameters/deleteParameter")
+    @RequestMapping("/module/reporting/parameters/deleteParameter.form")
     public String deleteParameter(ModelMap model, HttpServletRequest request,
     		@RequestParam(required=true, value="type") Class<? extends Parameterizable> parentType,
     		@RequestParam(required=true, value="uuid") String parentUuid,

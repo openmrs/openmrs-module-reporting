@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
 import java.util.ArrayList;
@@ -5,9 +14,9 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
@@ -25,17 +34,21 @@ import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.definition.DefinitionContext;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.SkipBaseSetup;
 import org.openmrs.test.Verifies;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
+@SkipBaseSetup
 public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
 	protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
 	
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
+		initializeInMemoryDatabase();
+		authenticate();
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
 	
@@ -192,7 +205,7 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 	 * @see EncounterCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)
 	 * @verifies return correct patients when provider parameters are set
 	 */
-	@Ignore
+	@Disabled
 	@Test
 	public void evaluate_shouldReturnCorrectPatientsWhenProviderParametersAreSet() throws Exception {
 		EncounterCohortDefinition cd = new EncounterCohortDefinition();
@@ -203,7 +216,7 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 	/**
 	 * @see {@link EncounterCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
 	 */
-	@Ignore
+	@Disabled
 	@Test
 	@Verifies(value = "should not return voided patients", method = "evaluate(CohortDefinition,EvaluationContext)")
 	public void evaluate_shouldNotReturnVoidedPatients() throws Exception {
@@ -232,8 +245,8 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 	public void evaluate_shouldFindPatientsWithEncountersOnTheOnOrBeforeDateIfPassedInTimeIsAtMidnight() throws Exception {
 		EncounterService es = Context.getEncounterService();
 		Encounter enc = es.getEncounter(3);
-		final Integer patentId = 7;
-		Assert.assertEquals(patentId, enc.getPatient().getPatientId());//sanity check
+		final Integer patientId = 7;
+		Assert.assertEquals(patientId, enc.getPatient().getPatientId());//sanity check
 		enc.setEncounterDatetime(DateUtil.getDateTime(2005, 8, 1, 11, 0, 0, 0));
 		es.saveEncounter(enc);
 		Context.flushSession();//because the query will compare with the value in the DB
@@ -241,7 +254,7 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 		EncounterCohortDefinition cd = new EncounterCohortDefinition();
 		cd.setOnOrBefore(DateUtil.getDateTime(2005, 8, 1));
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertTrue(c.contains(patentId));
+		Assert.assertTrue(c.contains(patientId));
 	}
 	
 	/**
@@ -251,17 +264,15 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 	@Verifies(value = "should find patients with encounters created on the specified date if passed in time is at midnight", method = "evaluate(CohortDefinition,EvaluationContext)")
 	public void evaluate_shouldFindPatientsWithEncountersCreatedOnTheSpecifiedDateIfPassedInTimeIsAtMidnight()
 	    throws Exception {
+		executeDataSet(XML_DATASET_PATH + "ReportTestDataset-encounter-before-midnight.xml");
 		EncounterService es = Context.getEncounterService();
-		Encounter enc = es.getEncounter(3);
-		final Integer patentId = 7;
-		Assert.assertEquals(patentId, enc.getPatient().getPatientId());
-		enc.setDateCreated(DateUtil.getDateTime(2005, 8, 1, 11, 0, 0, 0));
-		es.saveEncounter(enc);
-		Context.flushSession();
+		Encounter enc = es.getEncounter(13);
+		final Integer patientId = 7;
+		Assert.assertEquals(patientId, enc.getPatient().getPatientId());
 		
 		EncounterCohortDefinition cd = new EncounterCohortDefinition();
 		cd.setCreatedOnOrBefore(DateUtil.getDateTime(2005, 8, 1));
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertTrue(c.contains(patentId));
+		Assert.assertTrue(c.contains(patientId));
 	}
 }

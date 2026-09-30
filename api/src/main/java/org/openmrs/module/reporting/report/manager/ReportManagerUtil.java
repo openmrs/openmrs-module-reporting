@@ -1,15 +1,11 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
 package org.openmrs.module.reporting.report.manager;
 
@@ -26,6 +22,7 @@ import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
+import org.openmrs.module.reporting.report.renderer.TextTemplateRenderer;
 import org.openmrs.module.reporting.report.renderer.XlsReportRenderer;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.module.reporting.report.util.ReportUtil;
@@ -164,6 +161,23 @@ public class ReportManagerUtil {
 	}
 
 	/**
+	 * @return a new ReportDesign for a JSON template, using a file on the classpath as the template
+	 */
+	public static ReportDesign createJSONTemplateDesign(String reportDesignUuid, ReportDefinition reportDefinition, String resourcePath) {
+		ReportDesign design =  createJSONReportDesign(reportDesignUuid,reportDefinition);
+		design.setReportDefinition(reportDefinition);
+		design.setRendererType(TextTemplateRenderer.class);
+		ReportDesignResource resource = new ReportDesignResource();
+		resource.setName("template");
+		resource.setExtension("json");
+		resource.setContentType("application/json");
+		resource.setContents(ReportUtil.readByteArrayFromResource(resourcePath));
+		resource.setReportDesign(design);
+		design.addResource(resource);
+		return design;
+	}
+
+	/**
 	 * @return a new ReportDesign for a standard Excel output
 	 */
 	public static ReportDesign createExcelDesign(String reportDesignUuid, ReportDefinition reportDefinition) {
@@ -185,6 +199,18 @@ public class ReportManagerUtil {
 		design.setName("CSV");
 		design.setReportDefinition(reportDefinition);
 		design.setRendererType(CsvReportRenderer.class);
+		return design;
+	}
+
+	/**
+	 * @return a new ReportDesign for a standard CSV output
+	 */
+	public static ReportDesign createJSONReportDesign(String reportDesignUuid, ReportDefinition reportDefinition) {
+		ReportDesign design = new ReportDesign();
+		design.setUuid(reportDesignUuid);
+		design.setName("JSON");
+		design.setReportDefinition(reportDefinition);
+		design.setRendererType(TextTemplateRenderer.class);
 		return design;
 	}
 }

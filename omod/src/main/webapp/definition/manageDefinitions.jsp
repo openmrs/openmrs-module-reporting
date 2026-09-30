@@ -50,8 +50,8 @@
 		$j('#typeRowAll').css('background-color', '#E6E6E6');
 	});
 
-	function confirmDelete(name, uuid, type) {
-		if (confirm("Are you sure you want to delete " + name + "?")) {
+	function confirmDelete(uuid, type) {
+		if (confirm("Are you sure you want to delete it?")) {
 			document.location.href = 'purgeDefinition.form?uuid='+uuid+'&type='+type;
 		}
 	}
@@ -115,10 +115,10 @@
 							<c:forEach items="${definitions}" var="entry" varStatus="entryStatus">
 								<c:forEach items="${entry.value}" var="definition" varStatus="definitionStatus">
 									<tr class="definitionRow">
-										<td>${definition.name}</td>
+										<td><c:out value="${definition.name}"/></td>
 										<td><rpt:displayLabel type="${entry.key.name}"/></td>
 										<td width="5%" nowrap="nowrap">
-											${definition.creator}
+											<c:out value="${definition.creator}"/>
 										</td>
 										<td width="5%" nowrap="nowrap">
 										<openmrs:formatDate date="${definition.dateCreated}" format="yyyy-MM-dd HH:mm:ss" />	
@@ -127,7 +127,7 @@
 											&nbsp;
 											<a href="editDefinition.form?uuid=${definition.uuid}&type=${definition['class'].name}"><img src="<c:url value='/images/edit.gif'/>" border="0"/></a>
 											&nbsp;
-											<a href="javascript:confirmDelete('${definition.name}','${definition.uuid}','${type.name}');"><img src="<c:url value='/images/trash.gif'/>" border="0"/></a>
+											<a href="javascript:confirmDelete('${definition.uuid}','${type.name}');"><img src="<c:url value='/images/trash.gif'/>" border="0"/></a>
 											&nbsp;
 											<a href="javascript:void(0);" id="preview-${definition.uuid}"><img src="<c:url value='/images/play.gif'/>" border="0"/></a>
 										</td>

@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.reporting.common;
 
 import org.apache.commons.io.IOUtils;
@@ -29,6 +38,9 @@ import java.io.Writer;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -556,6 +568,12 @@ public class ObjectUtil {
 			}
 			if (o instanceof Date) {
 				return formatDate((Date)o, format, locale);
+			}
+			if (o instanceof LocalDateTime) {
+				return formatDate(Date.from(((LocalDateTime)o).atZone(ZoneId.systemDefault()).toInstant()), format, locale);
+			}
+			if (o instanceof LocalDate) {
+				return formatDate(Date.from(((LocalDate)o).atStartOfDay(ZoneId.systemDefault()).toInstant()), format, locale);
 			}
 			if (o instanceof Map) {
 				return toString((Map)o, nvl(format, ","));

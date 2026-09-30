@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.reporting.web.cohorts;
 
 import java.util.List;
@@ -20,7 +29,7 @@ import org.springframework.web.context.request.WebRequest;
 @Controller
 public class SqlCohortDefinitionController {
 	
-	@RequestMapping("/module/reporting/cohorts/sqlCohortDefinition")
+	@RequestMapping("/module/reporting/cohorts/sqlCohortDefinition.form")
 	public void showForm(ModelMap model,
 	                     @RequestParam(value="uuid", required=false) String uuid,
 	                     @RequestParam(value="copyFromUuid", required=false) String copyFromUuid) {
@@ -38,7 +47,7 @@ public class SqlCohortDefinitionController {
 		}
 	}
 	
-	@RequestMapping("/module/reporting/cohorts/sqlCohortDefinitionAssignQueryString")
+	@RequestMapping("/module/reporting/cohorts/sqlCohortDefinitionAssignQueryString.form")
 	public String saveQueryString(
 			HttpSession httpSession,
 			WebRequest webRequest,
@@ -67,7 +76,7 @@ public class SqlCohortDefinitionController {
 	 * Copies the SQL cohort definition with the given uuid into another one with the same
 	 * parameters and searches, but blank name/description and SQL string
 	 */
-	@RequestMapping("/module/reporting/cohorts/sqlCohortDefinitionClone")
+	@RequestMapping("/module/reporting/cohorts/sqlCohortDefinitionClone.form")
 	public String cloneDefinition(WebRequest request,
 	                              @RequestParam("name") String name,
 	                              @RequestParam(value="description", required=false) String description,

@@ -20,8 +20,8 @@
         $j("#indicatorNameColumn").click();
 	} );
 	
-	function confirmDelete(name, uuid) {
-		if (confirm("Are you sure you want to delete " + name + "?")) {
+	function confirmDelete(uuid) {
+		if (confirm("Are you sure you want to delete it?")) {
 			document.location.href = '${pageContext.request.contextPath}/module/reporting/indicators/purgeIndicator.form?uuid=' + uuid;
 		}
 	}
@@ -97,7 +97,7 @@
 									</a>
 								</span>
 								<span style="padding-left: 10px;">
-									<a href="javascript:confirmDelete('${indicator.name}','${indicator.uuid}');"><img src="<c:url value='/images/trash.gif'/>" border="0" style="vertical-align:middle;" /></a>
+									<a href="javascript:confirmDelete('${indicator.uuid}');"><img src="<c:url value='/images/trash.gif'/>" border="0" style="vertical-align:middle;" /></a>
 								</span>
 								<span style="padding-left: 10px;">
 									<a href="javascript:void(0)" id="preview-indicator-${indicator.uuid}">
@@ -106,7 +106,7 @@
 								</span>
 							</td>
 							<td width="65%">
-                                <span style="display:none">${indicator.name}</span>
+                                <span style="display:none"><c:out value="${indicator.name}"/></span>
 								<c:url var="simpleIndicatorImage" value="/moduleResources/reporting/images/indicator-type-simple.png"/>
 								<c:url var="fractionIndicatorImage" value="/moduleResources/reporting/images/indicator-type-fraction.png"/>
 								<c:url var="customIndicatorImage" value="/moduleResources/reporting/images/indicator-type-custom.png"/>
@@ -132,7 +132,7 @@
 										<img src="${simpleIndicatorImage}" width="24" height="24" border="0" alt="period indicator" style="vertical-align:middle"/>												
 									</c:otherwise>
 								</c:choose>						
-								<a href="${editUrl}">${indicator.name}</a>
+								<a href="${editUrl}"><c:out value="${indicator.name}"/></a>
 							</td>	
 							<td nowrap width="10%" align="center">
 								${indicator.creator}

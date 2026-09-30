@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.reporting.web.datasets;
 
 import org.apache.commons.logging.Log;
@@ -8,13 +17,19 @@ import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.ReflectionUtil;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
+import org.openmrs.module.reporting.definition.DefinitionSummary;
 import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.definition.configuration.Property;
+import org.openmrs.module.reporting.evaluation.Definition;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -27,11 +42,11 @@ import java.util.Map;
 public class ManageDatasetsController {
 
 	protected Log log = LogFactory.getLog(this.getClass());
-
+	
     /**
      * Controller for the edit data set page
      */
-	@RequestMapping("/module/reporting/datasets/editDataSet")
+	@RequestMapping("/module/reporting/datasets/editDataSet.form")
     public String editDataSet(
     		@RequestParam(required=false, value="uuid") String uuid,
             @RequestParam(required=false, value="type") Class<? extends DataSetDefinition> type,
@@ -57,12 +72,36 @@ public class ManageDatasetsController {
 	 	model.addAttribute("groupedProperties", groups);
 	
 	    return "/module/reporting/datasets/datasetEditor";
-    }
+    }	
+	
+	/*
+	 * Load Affected Report Definitions.
+	 */
+	@RequestMapping("/module/reporting/datasets/loadAffectedDatasetDefs.form")
+	@ResponseBody()
+	public List<DefinitionSummary> loadAffectedDatasetDefs(@RequestParam(required=true,value="uuid")String uuid){
+		List<ReportDefinition> reportDefinitions = Context.getService(ReportDefinitionService.class).getAllDefinitions(false);	
+		List<DefinitionSummary> affectedReportDefs = new ArrayList<DefinitionSummary>();
+		for (ReportDefinition reportDef : reportDefinitions) {
+			List<Mapped<? extends DataSetDefinition>> dsds = new 
+					ArrayList<Mapped<? extends DataSetDefinition>>(reportDef.getDataSetDefinitions().values());
+			if (!dsds.isEmpty()) {
+				for (Mapped<? extends DataSetDefinition> dataSet : dsds) {    
+					  if (uuid.equals(dataSet.getUuidOfMappedOpenmrsObject())) {
+						  DefinitionSummary affectedRep = new DefinitionSummary(dataSet.getParameterizable());
+						  affectedReportDefs.add(affectedRep);
+					  }
+				}
+			} 
+		}
+		
+		return affectedReportDefs;
+	}
     
     /**
      * Save DataSetDefinition
      */
-    @RequestMapping("/module/reporting/datasets/saveDataSet")
+    @RequestMapping("/module/reporting/datasets/saveDataSet.form")
     @SuppressWarnings("unchecked")
     public String saveDataSet(
     		@RequestParam(required=false, value="uuid") String uuid,
@@ -110,4 +149,5 @@ public class ManageDatasetsController {
 
         return "redirect:/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.dataset.definition.DataSetDefinition";
     }
+      	
 }

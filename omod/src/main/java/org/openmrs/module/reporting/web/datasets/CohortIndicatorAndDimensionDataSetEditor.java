@@ -1,3 +1,12 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.reporting.web.datasets;
 
 import java.util.ArrayList;
@@ -39,7 +48,7 @@ public class CohortIndicatorAndDimensionDataSetEditor {
     	binder.registerCustomEditor(Indicator.class, new IndicatorEditor());
     }
 
-	@RequestMapping("/module/reporting/datasets/cohortIndicatorAndDimensionDatasetEditor")
+	@RequestMapping("/module/reporting/datasets/cohortIndicatorAndDimensionDatasetEditor.form")
 	public void editDataSet(ModelMap model, @RequestParam(value="uuid", required=false) String uuid) {
 		DataSetDefinition dsd = new CohortIndicatorAndDimensionDataSetDefinition();
 		if (uuid != null) {
@@ -48,7 +57,7 @@ public class CohortIndicatorAndDimensionDataSetEditor {
 		model.addAttribute("dsd", dsd);
 	}
 	
-	@RequestMapping("/module/reporting/datasets/cohortIndicatorAndDimensionAddSpecification")
+	@RequestMapping("/module/reporting/datasets/cohortIndicatorAndDimensionAddSpecification.form")
 	public String addSpecification(@RequestParam("dsdUuid") String dsdUuid,
 							@RequestParam("index") Integer index,
 	                        @RequestParam("indicatorNumber") String indicatorNumber,
@@ -124,7 +133,7 @@ public class CohortIndicatorAndDimensionDataSetEditor {
 		return "redirect:/module/reporting/closeWindow.htm";
 	}
 	
-	@RequestMapping("/module/reporting/datasets/cohortIndicatorAndDimensionRemoveIndicator")
+	@RequestMapping("/module/reporting/datasets/cohortIndicatorAndDimensionRemoveIndicator.form")
 	public String removeIndicator(@RequestParam("dsdUuid") String dsdUuid,
 	                           	  @RequestParam("index") Integer index) {
 		
@@ -136,7 +145,7 @@ public class CohortIndicatorAndDimensionDataSetEditor {
 		return "redirect:cohortIndicatorAndDimensionDatasetEditor.form?uuid=" + dsdUuid;
 	}
 	
-	@RequestMapping("/module/reporting/datasets/cohortIndicatorAndDimensionRemoveDimension")
+	@RequestMapping("/module/reporting/datasets/cohortIndicatorAndDimensionRemoveDimension.form")
 	public String removeDimension(@RequestParam("uuid") String uuid,
 	                              @RequestParam("key") String key) {
 		

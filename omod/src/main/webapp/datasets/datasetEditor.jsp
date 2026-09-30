@@ -3,8 +3,7 @@
 
 <script type="text/javascript" charset="utf-8">
 
-	$j(document).ready(function() {
-	
+	$j(document).ready(function() { 
 		// Redirect to listing page
 		$j('#cancel-button').click(function(event){
 			window.location.href='<c:url value="/module/reporting/definition/manageDefinitions.form?type=org.openmrs.module.reporting.dataset.definition.DataSetDefinition"/>';
@@ -38,9 +37,35 @@
 				$j('#fixedValue${p.field.name}').show();
 			}
 		</c:forEach>
+		
+		$j('#loadAffectedReports').click(function() {
+			$j.ajax({
+				type: 'POST',
+			    contentType : "application/json",
+			    url: 'loadAffectedDatasetDefs.form?uuid=' + '${dataSetDefinition.uuid}',
+			    dataType: 'json',
+			    success: function(json) {
+			    	$j('#affectedReports').html('');
+				    $j('#affectedReports').append('<ul></ul>')
+		                if (json.length > 0) {
+		            	    for (i in json) {
+		        		         var uuid = uuid = json[i].uuid;
+		                         var url = "${pageContext.request.contextPath}/module/reporting/reports/reportEditor.form?uuid=" + uuid;
+		        		         $j('#affectedReports ul').append('<li><a href=' + url + '>' + json[i].name + "</a></li>");	        	 
+		                    }
+		                } else {
+		        	        $j('#affectedReports').append('<li><b><spring:message code="reporting.noAffectedReportDefs.label" /></b></li>');
+		                }
+			    },
+			    error: function() {
+				    $j('#error-load-affected-defs').text('<spring:message code="dao.error.title" />');
+			    }
+			});
+		});
 
+		
 	} );
-
+	
 </script>
 
 <style>
@@ -48,6 +73,10 @@
 	form li { display:block; margin:0; padding:6px 5px 9px 9px; clear:both; color:#444; }
 	label.desc { line-height:150%; margin:0; padding:0 0 3px 0; border:none; color:#222; display:block; font-weight:bold; }
 	#cohort-definition-property-table td { font-size: small; }
+	#loadAffectedReports {font-weight:bold;}
+	#affectedReports {padding:5px; }
+	#affectedReports li {padding:1.5px;font-weight:bold; }
+	#error-load-affected-defs {font-weight:bold; color:#ff0000; padding:1.5px; }
 </style>
 
 <div id="page">
@@ -134,7 +163,22 @@
 						</li>
 					</ul>
 				</td>
-			</tr>
+			 </tr>
+                         <tr>
+        			<td>
+		      			<c:if test="${!empty dataSetDefinition.name}">
+			      			<div>
+		          				<fieldset>
+		        	   				<legend><spring:message code="reporting.affectedReportDefinitions.label" /></legend>
+		             					<div id="affectedReports">
+		                					<a href="javascript:void(0);" id="loadAffectedReports"><spring:message code="reporting.loadAffectedReportDefinitions.label" /></a><br/>
+		                					<span id="error-load-affected-defs"></span>
+		             					</div>
+		          				</fieldset>         
+		        			</div>
+		      			</c:if>
+	      			</td>
+       			 </tr>
 		</table>
 	</form>
 </div>
