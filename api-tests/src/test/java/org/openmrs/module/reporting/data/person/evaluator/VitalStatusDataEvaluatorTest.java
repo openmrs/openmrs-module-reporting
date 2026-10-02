@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.data.person.evaluator;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
@@ -23,8 +23,8 @@ import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.VitalStatusDataDefinition;
 import org.openmrs.module.reporting.data.person.service.PersonDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 public class VitalStatusDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
@@ -33,12 +33,12 @@ public class VitalStatusDataEvaluatorTest extends BaseModuleContextSensitiveTest
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -55,16 +55,16 @@ public class VitalStatusDataEvaluatorTest extends BaseModuleContextSensitiveTest
 		Concept unknown = Context.getConceptService().getConcept(22);
 
 		EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(d, context);
-		Assert.assertEquals(2, pd.getData().size());
+		Assertions.assertEquals(2, pd.getData().size());
 
 		VitalStatus deadStatus = (VitalStatus)pd.getData().get(20);
-		Assert.assertEquals(true, deadStatus.getDead());
-		Assert.assertEquals("2005-02-08", DateUtil.formatDate(deadStatus.getDeathDate(), "yyyy-MM-dd"));
-		Assert.assertEquals(unknown, deadStatus.getCauseOfDeath());
+		Assertions.assertEquals(true, deadStatus.getDead());
+		Assertions.assertEquals("2005-02-08", DateUtil.formatDate(deadStatus.getDeathDate(), "yyyy-MM-dd"));
+		Assertions.assertEquals(unknown, deadStatus.getCauseOfDeath());
 
 		VitalStatus alive = (VitalStatus)pd.getData().get(21);
-		Assert.assertEquals(false, alive.getDead());
-		Assert.assertNull(alive.getDeathDate());
-		Assert.assertNull(alive.getCauseOfDeath());
+		Assertions.assertEquals(false, alive.getDead());
+		Assertions.assertNull(alive.getDeathDate());
+		Assertions.assertNull(alive.getCauseOfDeath());
 	}
 }

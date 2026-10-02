@@ -19,13 +19,13 @@ import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Properties;
 
-import org.junit.Assert;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.context.Context;
 import org.openmrs.util.OpenmrsUtil;
 
-@Ignore
+@Disabled
 public class TestUtil {
 
 	public static final String TEST_DATASETS_PROPERTIES_FILE = "test-datasets.properties";
@@ -93,10 +93,10 @@ public class TestUtil {
 	}
 
 	public static void assertCollectionsEqual(Collection c1, Collection c2) {
-		Assert.assertEquals("Size of two collections does not match", c1.size(), c2.size());
+		Assertions.assertEquals(c1.size(), c2.size(), "Size of two collections does not match");
 		for (Object o : c1) {
 			if (!c2.contains(o)) {
-				Assert.fail("Second collection does not contain " + o);
+				Assertions.fail("Second collection does not contain " + o);
 			}
 		}
 	}

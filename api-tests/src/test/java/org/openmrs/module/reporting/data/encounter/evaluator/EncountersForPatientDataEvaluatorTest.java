@@ -11,7 +11,7 @@ package org.openmrs.module.reporting.data.encounter.evaluator;
 
 import org.databene.benerator.util.SimpleRandom;
 import org.joda.time.LocalDate;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
@@ -27,14 +27,14 @@ import org.openmrs.module.reporting.data.patient.definition.EncountersForPatient
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class EncountersForPatientDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 

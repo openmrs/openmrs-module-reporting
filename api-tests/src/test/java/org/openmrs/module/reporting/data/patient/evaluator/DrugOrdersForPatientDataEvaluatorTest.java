@@ -9,9 +9,10 @@
  */
 package org.openmrs.module.reporting.data.patient.evaluator;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -25,8 +26,8 @@ import org.openmrs.module.reporting.data.patient.definition.DrugOrdersForPatient
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.SkipBaseSetup;
 
 /**
@@ -40,16 +41,24 @@ public class DrugOrdersForPatientDataEvaluatorTest extends BaseModuleContextSens
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		initializeInMemoryDatabase();
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
-	    authenticate();
+		// commit, as core resolves role privileges on a separate thread that cannot see uncommitted rows
+		getConnection().commit();
+		authenticate();
+	}
+
+	@AfterEach
+	public void tearDown() {
+		// removes the data committed in setup
+		deleteAllData();
 	}
 	
 	/**
@@ -64,11 +73,11 @@ public class DrugOrdersForPatientDataEvaluatorTest extends BaseModuleContextSens
 		DrugOrdersForPatientDataDefinition def = new DrugOrdersForPatientDataDefinition();
 		def.addDrugToInclude(Context.getConceptService().getDrug(2));
 		DrugOrderSet history = (DrugOrderSet)Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
-		Assert.assertEquals(2, history.size());
+		Assertions.assertEquals(2, history.size());
 		
 		def.addDrugToInclude(Context.getConceptService().getDrug(3));
 		history = (DrugOrderSet)Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
-		Assert.assertEquals(4, history.size());
+		Assertions.assertEquals(4, history.size());
 		
 		CollectionConverter drugOrderListConverter = new CollectionConverter(new ObjectFormatter("{drug}"), true, null);
 		ObjectFormatter drugOrderFormatter = new ObjectFormatter(" + ");
@@ -88,12 +97,12 @@ public class DrugOrdersForPatientDataEvaluatorTest extends BaseModuleContextSens
 		def.addDrugConceptToInclude(Context.getConceptService().getConcept(792));
 		EvaluatedPatientData evaluated = Context.getService(PatientDataService.class).evaluate(def, context);
 		DrugOrderSet history = (DrugOrderSet)evaluated.getData().get(2);
-		Assert.assertEquals(2, history.size());
+		Assertions.assertEquals(2, history.size());
 		
 		def.addDrugConceptToInclude(Context.getConceptService().getConcept(88));
 		evaluated = Context.getService(PatientDataService.class).evaluate(def, context);
 		history = (DrugOrderSet)evaluated.getData().get(2);
-		Assert.assertEquals(4, history.size());
+		Assertions.assertEquals(4, history.size());
 	}
 
 	/**
@@ -108,7 +117,7 @@ public class DrugOrdersForPatientDataEvaluatorTest extends BaseModuleContextSens
 		DrugOrdersForPatientDataDefinition def = new DrugOrdersForPatientDataDefinition();
 		def.addDrugConceptSetToInclude(Context.getConceptService().getConcept(24));
 		DrugOrderSet history = (DrugOrderSet)Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
-		Assert.assertEquals(4, history.size());
+		Assertions.assertEquals(4, history.size());
 	}
 
 	/**
@@ -124,18 +133,18 @@ public class DrugOrdersForPatientDataEvaluatorTest extends BaseModuleContextSens
 		
 		def.setActiveOnDate(DateUtil.getDateTime(2008, 8, 5));
 		DrugOrderSet history = (DrugOrderSet)Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
-		Assert.assertEquals(1, history.size());
-		Assert.assertEquals(2, history.iterator().next().getOrderId().intValue());
+		Assertions.assertEquals(1, history.size());
+		Assertions.assertEquals(2, history.iterator().next().getOrderId().intValue());
 
 		// Edge case where a drug is changed on this date
 		def.setActiveOnDate(DateUtil.getDateTime(2008, 8, 8));
 		history = (DrugOrderSet)Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
-		Assert.assertEquals(1, history.size());
-		Assert.assertEquals(3, history.iterator().next().getOrderId().intValue());
+		Assertions.assertEquals(1, history.size());
+		Assertions.assertEquals(3, history.iterator().next().getOrderId().intValue());
 		
 		def.setActiveOnDate(DateUtil.getDateTime(2008, 8, 19));
 		history = (DrugOrderSet)Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
-		Assert.assertEquals(2, history.size());
+		Assertions.assertEquals(2, history.size());
 	}
 
 	/**
@@ -151,15 +160,15 @@ public class DrugOrdersForPatientDataEvaluatorTest extends BaseModuleContextSens
 		
 		def.setStartedOnOrBefore(DateUtil.getDateTime(2008, 7, 1));
 		DrugOrderSet history = (DrugOrderSet)Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
-		Assert.assertEquals(1, history.size());
+		Assertions.assertEquals(1, history.size());
 
 		def.setStartedOnOrBefore(DateUtil.getDateTime(2008, 8, 1));
 		history = (DrugOrderSet)Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
-		Assert.assertEquals(2, history.size());
+		Assertions.assertEquals(2, history.size());
 		
 		def.setStartedOnOrBefore(DateUtil.getDateTime(2008, 9, 1));
 		history = (DrugOrderSet)Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
-		Assert.assertEquals(4, history.size());
+		Assertions.assertEquals(4, history.size());
 	}
 
 	/**
@@ -175,15 +184,15 @@ public class DrugOrdersForPatientDataEvaluatorTest extends BaseModuleContextSens
 		
 		def.setStartedOnOrAfter(DateUtil.getDateTime(2007, 8, 1));
 		DrugOrderSet history = (DrugOrderSet)Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
-		Assert.assertEquals(4, history.size());
+		Assertions.assertEquals(4, history.size());
 
 		def.setStartedOnOrAfter(DateUtil.getDateTime(2008, 8, 1));
 		history = (DrugOrderSet)Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
-		Assert.assertEquals(3, history.size());
+		Assertions.assertEquals(3, history.size());
 		
 		def.setStartedOnOrAfter(DateUtil.getDateTime(2008, 8, 19));
 		history = (DrugOrderSet)Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
-		Assert.assertEquals(1, history.size());	
+		Assertions.assertEquals(1, history.size());	
 	}
 
 	/**
@@ -199,15 +208,15 @@ public class DrugOrdersForPatientDataEvaluatorTest extends BaseModuleContextSens
 		
 		def.setCompletedOnOrBefore(DateUtil.getDateTime(2007, 8, 7));
 		DrugOrderSet history = (DrugOrderSet)Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
-		Assert.assertNull(history);
+		Assertions.assertNull(history);
 
 		def.setCompletedOnOrBefore(DateUtil.getDateTime(2008, 8, 7));
 		history = (DrugOrderSet)Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
-		Assert.assertEquals(1, history.size());
+		Assertions.assertEquals(1, history.size());
 		
 		def.setCompletedOnOrBefore(DateUtil.getDateTime(2008, 8, 8));
 		history = (DrugOrderSet)Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
-		Assert.assertEquals(2, history.size());	
+		Assertions.assertEquals(2, history.size());	
 	}
 
 	/**
@@ -223,14 +232,14 @@ public class DrugOrdersForPatientDataEvaluatorTest extends BaseModuleContextSens
 		
 		def.setCompletedOnOrAfter(DateUtil.getDateTime(2009, 8, 7));
 		DrugOrderSet history = (DrugOrderSet)Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
-		Assert.assertNull(history);
+		Assertions.assertNull(history);
 
 		def.setCompletedOnOrAfter(DateUtil.getDateTime(2008, 8, 7));
 		history = (DrugOrderSet)Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
-		Assert.assertEquals(1, history.size());
+		Assertions.assertEquals(1, history.size());
 		
 		def.setCompletedOnOrAfter(DateUtil.getDateTime(2007, 8, 7));
 		history = (DrugOrderSet)Context.getService(PatientDataService.class).evaluate(def, context).getData().get(2);
-		Assert.assertEquals(2, history.size());	
+		Assertions.assertEquals(2, history.size());	
 	}
 }

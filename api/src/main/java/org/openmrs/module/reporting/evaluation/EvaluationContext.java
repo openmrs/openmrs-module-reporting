@@ -11,7 +11,7 @@ package org.openmrs.module.reporting.evaluation;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.codehaus.jackson.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.openmrs.Cohort;
 import org.openmrs.OpenmrsData;
 import org.openmrs.Patient;

@@ -9,12 +9,12 @@
  */
 package org.openmrs.module.reporting.data.converter;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.EncounterType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.data.converter.PropertyConverter;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 public class PropertyConverterTest extends BaseModuleContextSensitiveTest {
 	
@@ -26,9 +26,9 @@ public class PropertyConverterTest extends BaseModuleContextSensitiveTest {
 	public void convert_shouldConvertAnObjectIntoItsPropertyWhoseNameIsTheConfiguredFormat() throws Exception {
 		EncounterType emergencyVisit = Context.getEncounterService().getEncounterType(2);
 		PropertyConverter c = new PropertyConverter(EncounterType.class, "name");
-		Assert.assertEquals(emergencyVisit.getName(), c.convert(emergencyVisit));
+		Assertions.assertEquals(emergencyVisit.getName(), c.convert(emergencyVisit));
 		c = new PropertyConverter(EncounterType.class, "description");
-		Assert.assertEquals(emergencyVisit.getDescription(), c.convert(emergencyVisit));
+		Assertions.assertEquals(emergencyVisit.getDescription(), c.convert(emergencyVisit));
 	}
 
 	/**
@@ -39,6 +39,6 @@ public class PropertyConverterTest extends BaseModuleContextSensitiveTest {
 	public void convert_shouldConvertAnObjectIntoItsStringRepresentationIfNotFormatIsConfigured() throws Exception {
 		EncounterType emergencyVisit = Context.getEncounterService().getEncounterType(2);
 		PropertyConverter c = new PropertyConverter(EncounterType.class, "");
-		Assert.assertEquals(emergencyVisit.toString(), c.convert(emergencyVisit));
+		Assertions.assertEquals(emergencyVisit.toString(), c.convert(emergencyVisit));
 	}
 }

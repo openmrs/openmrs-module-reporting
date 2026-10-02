@@ -9,70 +9,67 @@
  */
 package org.openmrs.module.reporting.report.service.db;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.type.Type;
+import org.hibernate.metamodel.spi.ValueAccess;
+import org.hibernate.property.access.internal.PropertyAccessStrategyCompositeUserTypeImpl;
 import org.hibernate.usertype.CompositeUserType;
 import org.hibernate.usertype.ParameterizedType;
-import org.hibernate.usertype.UserType;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.reporting.common.HibernateUtil;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.definition.DefinitionContext;
 import org.openmrs.module.reporting.evaluation.Definition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.serializer.ReportingSerializer;
 
 import java.io.Serializable;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
 /**
  * Custom User-Type for storing Mapped objects in a single table within 2 columns
- * This type takes in 2 properties and 1 parameter in the form:
+ * Hibernate 7 no longer supports multi-column property types, so this is mapped as a component whose class is a
+ * subclass of this type bound to the type of the Mapped Parameterizable, in the form:
  * <pre>
- *		<property name="reportDefinition">
- *			<column name="report_definition_uuid"/>
- *			<column name="report_definition_parameters"/>
- *			<type name="org.openmrs.module.reporting.report.service.db.MappedDefinitionType">
- *				<param name="mappedType">org.openmrs.module.reporting.report.definition.ReportDefinition</param>
- *			</type>
- *		</property>
+ *		<component name="reportDefinition" class="org.openmrs.module.reporting.report.service.db.MappedDefinitionType$MappedReportDefinitionType">
+ *			<property name="definition" column="report_definition_uuid" type="string" access="org.openmrs.module.reporting.report.service.db.MappedDefinitionType$Access"/>
+ *			<property name="parameterMappings" column="report_definition_parameters" type="text" access="org.openmrs.module.reporting.report.service.db.MappedDefinitionType$Access"/>
+ *		</component>
  * </pre>
+ * The component properties must be declared in alphabetical order, as Hibernate indexes them that way, and must use
+ * {@link Access} so that their values are read through {@link #getPropertyValue(Mapped, int)}.
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
-public class MappedDefinitionType implements CompositeUserType, ParameterizedType {
+public class MappedDefinitionType implements CompositeUserType<Mapped>, ParameterizedType {
 	
 	/**
 	 * Property via ParameterizedType for storing the type of the Mapped Parameterizable
 	 */
 	private Class<? extends Definition> mappedType;
 
-	/**
-	 * @see CompositeUserType#returnedClass()
-	 */
-	public Class returnedClass() {
-		return Mapped.class;
+	public MappedDefinitionType() {
 	}
-	
-	/**
-	 * @see CompositeUserType#getPropertyNames()
-	 */
-	public String[] getPropertyNames() {
-		return new String[] {"definition", "parameterMappings"};
+
+	protected MappedDefinitionType(Class<? extends Definition> mappedType) {
+		this.mappedType = mappedType;
 	}
 
 	/**
-	 * @see CompositeUserType#getPropertyTypes()
+	 * @see CompositeUserType#embeddable()
 	 */
-	public Type[] getPropertyTypes() {
-		return new Type[] { HibernateUtil.standardType("STRING"), HibernateUtil.standardType("TEXT") };
+	public Class<?> embeddable() {
+		return MappedColumns.class;
+	}
+
+	/**
+	 * @see CompositeUserType#returnedClass()
+	 */
+	public Class<Mapped> returnedClass() {
+		return Mapped.class;
 	}
 	
 	/**
@@ -83,45 +80,34 @@ public class MappedDefinitionType implements CompositeUserType, ParameterizedTyp
 	}
 
 	/**
+	 * @return the column value for the given property index: 0 = definition uuid, 1 = serialized parameter mappings
 	 * @see CompositeUserType#getPropertyValue(Object, int)
 	 */
-	public Object getPropertyValue(Object component, int property) throws HibernateException {
-		Mapped m = (Mapped) component;
-		return (property == 0 ? m.getParameterizable() : m.getParameterMappings());
-	}
-
-	/**
-	 * @see CompositeUserType#setPropertyValue(Object, int, Object)
-	 */
-	public void setPropertyValue(Object component, int property, Object value) throws HibernateException {
-		Mapped m = (Mapped) component;
+	public Object getPropertyValue(Mapped m, int property) throws HibernateException {
+		if (m == null || m.getParameterizable() == null) {
+			return null;
+		}
 		if (property == 0) {
-			m.setParameterizable((Parameterizable)value);
+			return m.getParameterizable().getUuid();
 		}
-		else {
-			m.setParameterMappings((Map)value);
+		if (m.getParameterMappings() != null && !m.getParameterMappings().isEmpty()) {
+			try {
+				return Context.getSerializationService().serialize(m.getParameterMappings(), ReportingSerializer.class);
+			}
+			catch (Exception e) {
+				throw new HibernateException("Unable to serialize mappings for definition", e);
+			}
 		}
-	}
-	
-	/**
-	 * @see CompositeUserType#deepCopy(Object)
-	 */
-	public Object deepCopy(Object value) throws HibernateException {
-		if (value == null) return null;
-		Mapped toCopy = (Mapped) value;
-		Mapped m = new Mapped();
-		m.setParameterizable(toCopy.getParameterizable());
-		m.setParameterMappings(new HashMap<String, Object>(toCopy.getParameterMappings()));
-		return m;
+		return null;
 	}
 
 	/**
-	 * @see CompositeUserType#nullSafeGet(ResultSet, String[], SessionImplementor, Object)
+	 * @see CompositeUserType#instantiate(ValueAccess)
 	 */
-	public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner) throws HibernateException, SQLException {
-		String parameterizableUuid = (String) HibernateUtil.standardType("STRING").nullSafeGet(rs, names[0], session, owner);
+	public Mapped instantiate(ValueAccess values) {
+		String parameterizableUuid = values.getValue(0, String.class);
 		if (StringUtils.isEmpty(parameterizableUuid)) { return null; }
-		String serializedMappings = (String) HibernateUtil.standardType("STRING").nullSafeGet(rs, names[1], session, owner);
+		String serializedMappings = values.getValue(1, String.class);
 		Definition d = DefinitionContext.getDefinitionByUuid(mappedType, parameterizableUuid);
 		Map<String, Object> mappings = new HashMap<String, Object>();
 		if (StringUtils.isNotBlank(serializedMappings)) {
@@ -134,64 +120,52 @@ public class MappedDefinitionType implements CompositeUserType, ParameterizedTyp
 		}
 		return new Mapped(d, mappings);
 	}
-
+	
 	/**
-	 * @see CompositeUserType#nullSafeSet(PreparedStatement, Object, int, SessionImplementor)
+	 * @see CompositeUserType#deepCopy(Object)
 	 */
-	public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session) throws HibernateException, SQLException {
-		String definitionUuid = null;
-		String serializedMappings = null;
-		if (value != null) {
-			Mapped m = (Mapped) value;
-			if (m.getParameterizable() != null) {
-				definitionUuid = m.getParameterizable().getUuid();
-				if (m.getParameterMappings() != null && !m.getParameterMappings().isEmpty()) {
-					try {
-						serializedMappings = Context.getSerializationService().serialize(m.getParameterMappings(), ReportingSerializer.class);
-					}
-					catch (Exception e) {
-						throw new HibernateException("Unable to serialize mappings for definition", e);
-					}
-				}
-			}
-		}
-		HibernateUtil.standardType("STRING").nullSafeSet(st, definitionUuid, index, session);
-		HibernateUtil.standardType("STRING").nullSafeSet(st, serializedMappings, index+1, session);
+	public Mapped deepCopy(Mapped value) throws HibernateException {
+		if (value == null) return null;
+		Mapped toCopy = value;
+		Mapped m = new Mapped();
+		m.setParameterizable(toCopy.getParameterizable());
+		m.setParameterMappings(new HashMap<String, Object>(toCopy.getParameterMappings()));
+		return m;
 	}
 
 	/**
-	 * @see CompositeUserType#replace(Object, Object, SessionImplementor, Object)
+	 * @see CompositeUserType#replace(Object, Object, Object)
 	 */
-	public Object replace(Object original, Object target, SharedSessionContractImplementor session, Object owner) throws HibernateException {
+	public Mapped replace(Mapped original, Mapped target, Object owner) throws HibernateException {
 		return original;
 	}
 	
 	/** 
-	 * @see UserType#equals(Object, Object)
+	 * @see CompositeUserType#equals(Object, Object)
 	 */
-	public boolean equals(Object x, Object y) throws HibernateException {
+	public boolean equals(Mapped x, Mapped y) throws HibernateException {
 		return x != null && x.equals(y);
 	}
 
 	/** 
-	 * @see UserType#hashCode(Object)
+	 * @see CompositeUserType#hashCode(Object)
 	 */
-	public int hashCode(Object x) throws HibernateException {
+	public int hashCode(Mapped x) throws HibernateException {
 		return x.hashCode();
 	}
 	
 	/**
-	 * @see CompositeUserType#disassemble(Object, SessionImplementor)
+	 * @see CompositeUserType#disassemble(Object)
 	 */
-	public Serializable disassemble(Object value, SharedSessionContractImplementor session) throws HibernateException {
-		return (Serializable) deepCopy(value);
+	public Serializable disassemble(Mapped value) throws HibernateException {
+		return deepCopy(value);
 	}
 
 	/**
-	 * @see CompositeUserType#assemble(Serializable, SessionImplementor, Object)
+	 * @see CompositeUserType#assemble(Serializable, Object)
 	 */
-	public Object assemble(Serializable cached, SharedSessionContractImplementor session, Object owner) throws HibernateException {
-		return deepCopy(cached);
+	public Mapped assemble(Serializable cached, Object owner) throws HibernateException {
+		return deepCopy((Mapped) cached);
 	}
 	
 	/**
@@ -204,6 +178,46 @@ public class MappedDefinitionType implements CompositeUserType, ParameterizedTyp
 		}
 		catch (Exception e) {
 			throw new HibernateException("Error setting the mappedType property to " + mappedTypeStr, e);
+		}
+	}
+
+	/**
+	 * Describes the 2 columns that a Mapped definition is stored in
+	 */
+	public static class MappedColumns {
+
+		private String definition;
+
+		private String parameterMappings;
+	}
+
+	/**
+	 * Reads the component properties through this type, as hbm.xml mappings cannot configure this themselves
+	 */
+	public static class Access extends PropertyAccessStrategyCompositeUserTypeImpl {
+
+		public Access() {
+			super(new MappedDefinitionType(), Arrays.asList("definition", "parameterMappings"), Arrays.<Type>asList(String.class, String.class));
+		}
+	}
+
+	/**
+	 * Type for storing a Mapped CohortDefinition
+	 */
+	public static class MappedCohortDefinitionType extends MappedDefinitionType {
+
+		public MappedCohortDefinitionType() {
+			super(CohortDefinition.class);
+		}
+	}
+
+	/**
+	 * Type for storing a Mapped ReportDefinition
+	 */
+	public static class MappedReportDefinitionType extends MappedDefinitionType {
+
+		public MappedReportDefinitionType() {
+			super(ReportDefinition.class);
 		}
 	}
 }

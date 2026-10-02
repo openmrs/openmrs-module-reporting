@@ -12,7 +12,7 @@ package org.openmrs.module.reporting.web.controller.portlet;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.report.ReportRequest;

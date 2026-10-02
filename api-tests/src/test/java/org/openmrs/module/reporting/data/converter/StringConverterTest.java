@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.data.converter;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.reporting.data.converter.StringConverter;
 
 public class StringConverterTest {
@@ -26,8 +26,8 @@ public class StringConverterTest {
 		c.getConversions().put("M", "Homme");
 		c.getConversions().put("F", "Femme");
 		c.setUnspecifiedValue("Inconnu");
-		Assert.assertEquals("Homme", c.convert("M"));
-		Assert.assertEquals("Femme", c.convert("F"));
-		Assert.assertEquals("Inconnu", c.convert(""));
+		Assertions.assertEquals("Homme", c.convert("M"));
+		Assertions.assertEquals("Femme", c.convert("F"));
+		Assertions.assertEquals("Inconnu", c.convert(""));
 	}
 }

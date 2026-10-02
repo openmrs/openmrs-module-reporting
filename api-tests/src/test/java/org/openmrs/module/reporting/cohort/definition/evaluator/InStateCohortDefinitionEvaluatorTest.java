@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.PatientState;
 import org.openmrs.ProgramWorkflowState;
@@ -23,7 +23,7 @@ import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionSe
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 import java.util.Collections;
@@ -35,7 +35,7 @@ public class InStateCohortDefinitionEvaluatorTest extends BaseModuleContextSensi
 	
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -50,7 +50,7 @@ public class InStateCohortDefinitionEvaluatorTest extends BaseModuleContextSensi
 		List<ProgramWorkflowState> states = Collections.singletonList(Context.getProgramWorkflowService().getStateByUuid("0d5f1bb4-2edb-4dd1-8d9f-34489bb4d9ea"));
 		cd.setStates(states);
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertEquals(0, c.size());
+		Assertions.assertEquals(0, c.size());
 	}
 	
 	/**
@@ -65,8 +65,8 @@ public class InStateCohortDefinitionEvaluatorTest extends BaseModuleContextSensi
 		cd.setStates(states);
 		cd.setOnDate(DateUtil.getDateTime(2009, 8, 15));
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertEquals(1, c.size());
-		Assert.assertTrue(c.contains(2));
+		Assertions.assertEquals(1, c.size());
+		Assertions.assertTrue(c.contains(2));
 	}
 	
 	/**
@@ -79,7 +79,7 @@ public class InStateCohortDefinitionEvaluatorTest extends BaseModuleContextSensi
 		cd.addState(Context.getProgramWorkflowService().getStateByUuid("e938129e-248a-482a-acea-f85127251472"));
 		cd.setOnOrBefore(DateUtil.getDateTime(2008, 8, 8));
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertTrue(c.contains(2));
+		Assertions.assertTrue(c.contains(2));
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class InStateCohortDefinitionEvaluatorTest extends BaseModuleContextSensi
 		cd.setStates(Collections.singletonList(patientState.getState()));
 		cd.setOnOrBefore(DateUtil.getDateTime(2008, 8, 1, 9, 0, 0, 0));
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertTrue(c.contains(patientState.getPatientProgram().getPatient().getPatientId()));
+		Assertions.assertTrue(c.contains(patientState.getPatientProgram().getPatient().getPatientId()));
 
 		//Check that a patient in the state after the specified date is excluded
 		patientState.setStartDate(DateUtil.getDateTime(2008, 8, 1, 10, 0, 0, 0));
@@ -108,7 +108,7 @@ public class InStateCohortDefinitionEvaluatorTest extends BaseModuleContextSensi
 		Context.flushSession();
 		
 		c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertFalse(c.contains(patientState.getPatientProgram().getPatient().getPatientId()));
+		Assertions.assertFalse(c.contains(patientState.getPatientProgram().getPatient().getPatientId()));
 	}
 	
 	/**
@@ -129,14 +129,14 @@ public class InStateCohortDefinitionEvaluatorTest extends BaseModuleContextSensi
 		cd.setStates(Collections.singletonList(patientState.getState()));
 		cd.setOnOrAfter(DateUtil.getDateTime(2012, 8, 1, 11, 0, 0, 0));
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertTrue(c.contains(patientState.getPatientProgram().getPatient().getPatientId()));
+		Assertions.assertTrue(c.contains(patientState.getPatientProgram().getPatient().getPatientId()));
 		
 		patientState.setEndDate(DateUtil.getDateTime(2012, 8, 1, 10, 0, 0, 0));
 		ps.savePatientProgram(patientState.getPatientProgram());
 		Context.flushSession();
 		
 		c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertFalse(c.contains(patientState.getPatientProgram().getPatient().getPatientId()));
+		Assertions.assertFalse(c.contains(patientState.getPatientProgram().getPatient().getPatientId()));
 	}
 
 	/**
@@ -152,9 +152,9 @@ public class InStateCohortDefinitionEvaluatorTest extends BaseModuleContextSensi
 		cd.addLocation(Context.getLocationService().getLocation(1));
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
 		System.out.println("Cohort: " + c);
-		Assert.assertTrue(c.contains(2));
-		Assert.assertTrue(c.contains(23));
-		Assert.assertEquals(2, c.getSize());
+		Assertions.assertTrue(c.contains(2));
+		Assertions.assertTrue(c.contains(23));
+		Assertions.assertEquals(2, c.getSize());
 	}
 
 	/**
@@ -167,10 +167,10 @@ public class InStateCohortDefinitionEvaluatorTest extends BaseModuleContextSensi
 		cd.addState(Context.getProgramWorkflowService().getStateByUuid("e938129e-248a-482a-acea-f85127251472"));
 		cd.addLocation(Context.getLocationService().getLocation(1));
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, new EvaluationContext(DateUtil.getDateTime(2012, 5, 15)));
-		Assert.assertEquals(2, c.getSize());
-		Assert.assertTrue(c.contains(2));
-		Assert.assertTrue(c.contains(23));
+		Assertions.assertEquals(2, c.getSize());
+		Assertions.assertTrue(c.contains(2));
+		Assertions.assertTrue(c.contains(23));
 		c = Context.getService(CohortDefinitionService.class).evaluate(cd, new EvaluationContext(DateUtil.getDateTime(2008, 1, 1)));
-		Assert.assertEquals(0, c.getSize());
+		Assertions.assertEquals(0, c.getSize());
 	}
 }

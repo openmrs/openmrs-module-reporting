@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.reporting.data.patient.library;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -18,13 +18,13 @@ import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinitio
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  *

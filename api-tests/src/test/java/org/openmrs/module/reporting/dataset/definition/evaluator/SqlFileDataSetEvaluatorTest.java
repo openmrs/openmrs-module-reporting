@@ -10,9 +10,9 @@
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
 import org.hibernate.cfg.Environment;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
@@ -25,7 +25,7 @@ import org.openmrs.module.reporting.dataset.definition.SqlFileDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.SkipBaseSetup;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -41,7 +41,7 @@ public class SqlFileDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 	@Autowired
     PersonService personService;
 	
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
         initializeInMemoryDatabase();
         executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
@@ -66,12 +66,12 @@ public class SqlFileDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 		SqlFileDataSetDefinition d = new SqlFileDataSetDefinition();
 		d.setSqlResource("org/openmrs/module/reporting/dataset/definition/evaluator/sqlFileNoParams.sql");
 		SimpleDataSet result = (SimpleDataSet) Context.getService(DataSetDefinitionService.class).evaluate(d, null);
-		Assert.assertEquals(1, result.getRows().size());
-		Assert.assertEquals(3, result.getMetaData().getColumnCount());
+		Assertions.assertEquals(1, result.getRows().size());
+		Assertions.assertEquals(3, result.getMetaData().getColumnCount());
 		DataSetRow firstRow = result.getRows().get(0);
-		Assert.assertEquals(2, firstRow.getColumnValue("patient_id"));
-		Assert.assertEquals("M", firstRow.getColumnValue("gender"));
-		Assert.assertEquals(DateUtil.getDateTime(1975, 4, 8), firstRow.getColumnValue("birthdate"));
+		Assertions.assertEquals(2, firstRow.getColumnValue("patient_id"));
+		Assertions.assertEquals("M", firstRow.getColumnValue("gender"));
+		Assertions.assertEquals(DateUtil.getDateTime(1975, 4, 8), firstRow.getColumnValue("birthdate"));
 	}
 
     /**
@@ -87,10 +87,10 @@ public class SqlFileDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
         context.addParameterValue("birthplace", personService.getPersonAttributeTypeByName("Birthplace"));
 
         SimpleDataSet result = (SimpleDataSet) Context.getService(DataSetDefinitionService.class).evaluate(d, context);
-        Assert.assertEquals(4, result.getRows().size());
-        Assert.assertEquals(4, result.getMetaData().getColumnCount());
+        Assertions.assertEquals(4, result.getRows().size());
+        Assertions.assertEquals(4, result.getMetaData().getColumnCount());
         DataSetRow firstRow = result.getRows().get(0);
-        Assert.assertEquals(2, firstRow.getColumnValue("patient_id"));
-        Assert.assertEquals("Mooresville, NC", firstRow.getColumnValue("birthplace"));
+        Assertions.assertEquals(2, firstRow.getColumnValue("patient_id"));
+        Assertions.assertEquals("Mooresville, NC", firstRow.getColumnValue("birthplace"));
     }
 }

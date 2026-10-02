@@ -54,7 +54,7 @@ public class ReportingTimerTask extends TimerTask {
 			task = getTaskClass().newInstance();
 			task.setScheduledExecutionTime(System.currentTimeMillis());
 			task.setSessionFactory(sessionFactory);
-			Daemon.runInDaemonThread(task, daemonToken);
+			Daemon.runInDaemonThreadWithoutResult(task, daemonToken);
 		}
 		catch (Exception e) {
 			log.error("An error occurred while running scheduled reporting task", e);

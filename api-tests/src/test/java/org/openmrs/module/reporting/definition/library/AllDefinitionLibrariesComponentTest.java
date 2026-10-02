@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.reporting.definition.library;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.library.BuiltInCohortDefinitionLibrary;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
@@ -27,13 +27,13 @@ import org.openmrs.module.reporting.definition.library.implementerconfigured
 import org.openmrs.module.reporting.definition.library.implementerconfigured
         .ImplementerConfiguredPatientDataDefinitionLibrary;
 import org.openmrs.module.reporting.definition.library.implementerconfigured.ImplementerConfiguredVisitDataDefinitionLibrary;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  *

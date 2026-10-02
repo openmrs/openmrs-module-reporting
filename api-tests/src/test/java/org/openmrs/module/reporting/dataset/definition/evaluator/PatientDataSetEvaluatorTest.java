@@ -11,9 +11,9 @@ package org.openmrs.module.reporting.dataset.definition.evaluator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -38,10 +38,11 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.query.encounter.definition.AllEncounterQuery;
 import org.openmrs.module.reporting.query.encounter.definition.MostRecentEncounterForPatientQuery;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 import java.util.Date;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Test the evaluation of the PatientDataSetDefinition
@@ -55,12 +56,12 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -70,7 +71,7 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 		PatientDataSetDefinition d = new PatientDataSetDefinition();
 		d.addColumn("Sexe", new GenderDataDefinition(), (String) null);
 		SimpleDataSet dataset = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
-		Assert.assertEquals("M", dataset.getColumnValue(2, "Sexe"));
+		Assertions.assertEquals("M", dataset.getColumnValue(2, "Sexe"));
 	}
 	
 	@Test
@@ -78,13 +79,15 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 		PatientDataSetDefinition d = new PatientDataSetDefinition();
 		d.addColumn("EMR ID", new PatientIdDataDefinition(), (String) null);
 		SimpleDataSet dataset = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
-		Assert.assertEquals(2, dataset.getColumnValue(2, "EMR ID"));
+		Assertions.assertEquals(2, dataset.getColumnValue(2, "EMR ID"));
 	}
 	
-    @Test(expected = IllegalArgumentException.class)
+    @Test
 	public void evaluate_shouldFailToExportEncounterData() throws Exception {
-		PatientDataSetDefinition d = new PatientDataSetDefinition();
-		d.addColumn("Encounter Date", new EncounterDatetimeDataDefinition(), (String) null);
+		assertThrows(IllegalArgumentException.class, () -> {
+			PatientDataSetDefinition d = new PatientDataSetDefinition();
+			d.addColumn("Encounter Date", new EncounterDatetimeDataDefinition(), (String) null);
+		});
 	}
 	
 	@Test
@@ -92,7 +95,7 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 		PatientDataSetDefinition d = new PatientDataSetDefinition();
 		d.addColumn("birthdate", new BirthdateDataDefinition(), (String) null, new BirthdateConverter("dd/MMM/yyyy"));
 		SimpleDataSet dataset = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
-		Assert.assertEquals("08/Apr/1975", dataset.getColumnValue(2, "birthdate"));
+		Assertions.assertEquals("08/Apr/1975", dataset.getColumnValue(2, "birthdate"));
 	}
 	
 	@Test
@@ -108,8 +111,8 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 		d.addColumn("Age in Months At End", ageOnDate, "effectiveDate=${endDate}", new AgeConverter("{m}"));
 		
 		SimpleDataSet dataset = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, getEvaluationContext());
-		Assert.assertEquals(35, dataset.getColumnValue(2, "Age At Start"));
-		Assert.assertEquals(36, dataset.getColumnValue(2, "Age At End"));
+		Assertions.assertEquals(35, dataset.getColumnValue(2, "Age At Start"));
+		Assertions.assertEquals(36, dataset.getColumnValue(2, "Age At End"));
 		//DataSetUtil.printDataSet(dataset, System.out);
 	}
 	
@@ -122,17 +125,17 @@ public class PatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest 
 		EvaluationContext context = new EvaluationContext();
 		
 		SimpleDataSet dataset = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, context);
-		Assert.assertEquals("M", dataset.getColumnValue(2, "Sexe"));
-		Assert.assertEquals("F", dataset.getColumnValue(7, "Sexe"));
-		Assert.assertNull(dataset.getColumnValue(501, "Sexe"));
-		Assert.assertEquals(9, dataset.getRows().size());
+		Assertions.assertEquals("M", dataset.getColumnValue(2, "Sexe"));
+		Assertions.assertEquals("F", dataset.getColumnValue(7, "Sexe"));
+		Assertions.assertNull(dataset.getColumnValue(501, "Sexe"));
+		Assertions.assertEquals(9, dataset.getRows().size());
 		
 		Cohort c = new Cohort("2,6,8");
 		context.setBaseCohort(c);
 		
 		dataset = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, context);
-		Assert.assertEquals("M", dataset.getColumnValue(2, "Sexe"));
-		Assert.assertEquals(3, dataset.getRows().size());
+		Assertions.assertEquals("M", dataset.getColumnValue(2, "Sexe"));
+		Assertions.assertEquals(3, dataset.getRows().size());
 	}
 	
 	@Test

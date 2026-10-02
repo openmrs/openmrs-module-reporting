@@ -11,17 +11,17 @@ package org.openmrs.module.reporting.cohort.definition.service;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.SqlCohortDefinitionEvaluator;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 /**
@@ -39,12 +39,12 @@ public class BaseCohortDefinitionServiceTest extends BaseModuleContextSensitiveT
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -72,10 +72,10 @@ public class BaseCohortDefinitionServiceTest extends BaseModuleContextSensitiveT
 		
 		log.warn("parameters = " + sqlCohortDefinition.getParameters());
 		
-		Assert.assertNotNull(savedCohortDefinition);
-		Assert.assertEquals(savedCohortDefinition.getName(), name);
-		Assert.assertEquals(savedCohortDefinition.getClass(), SqlCohortDefinition.class);		
-		Assert.assertEquals(savedSqlCohortDefinition.getQuery(), sqlQuery);
+		Assertions.assertNotNull(savedCohortDefinition);
+		Assertions.assertEquals(savedCohortDefinition.getName(), name);
+		Assertions.assertEquals(savedCohortDefinition.getClass(), SqlCohortDefinition.class);		
+		Assertions.assertEquals(savedSqlCohortDefinition.getQuery(), sqlQuery);
 		
 	}
 

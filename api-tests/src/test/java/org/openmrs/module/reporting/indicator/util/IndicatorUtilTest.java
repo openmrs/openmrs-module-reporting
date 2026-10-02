@@ -16,11 +16,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
@@ -67,7 +67,7 @@ public class IndicatorUtilTest {
 			toInclude.put("Location", Arrays.asList("Boston", "Indianapolis", "Rwinkwavu", "Eldoret"));
 	
 			Set<String> options = new HashSet<String>(IndicatorUtil.compileColumnDimensionOptions(toInclude));
-			Assert.assertEquals(59, options.size());
+			Assertions.assertEquals(59, options.size());
 		}
 
 		{
@@ -77,7 +77,7 @@ public class IndicatorUtilTest {
 			toInclude.put("Location", Arrays.asList("Boston", "Rwinkwavu"));
 	
 			Set<String> options = new HashSet<String>(IndicatorUtil.compileColumnDimensionOptions(toInclude));
-			Assert.assertEquals(26, options.size());
+			Assertions.assertEquals(26, options.size());
 		}
 		
 		{
@@ -86,7 +86,7 @@ public class IndicatorUtilTest {
 			toInclude.put("Gender", Arrays.asList("Male", "Female"));
 	
 			Set<String> options = new HashSet<String>(IndicatorUtil.compileColumnDimensionOptions(toInclude));
-			Assert.assertEquals(8, options.size());
+			Assertions.assertEquals(8, options.size());
 		}
 	}
 }

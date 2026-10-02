@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.reporting.report.util;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
 import java.util.Arrays;
@@ -23,25 +23,25 @@ public class SqlUtilsTest {
 
 	@Test
 	public void isSelectQuery_shouldAllowSelectStatements() {
-		Assert.assertTrue(SqlUtils.isSelectQuery("select * from foo where 1=1"));
-		Assert.assertTrue(SqlUtils.isSelectQuery("select * from foo_alter where bardrop = 1"));
+		Assertions.assertTrue(SqlUtils.isSelectQuery("select * from foo where 1=1"));
+		Assertions.assertTrue(SqlUtils.isSelectQuery("select * from foo_alter where bardrop = 1"));
 	}
 
 	@Test
 	public void isSelectQuery_shouldNotAllowInvalidKeywords() {
-		Assert.assertFalse(SqlUtils.isSelectQuery("alter foo add column bar"));
-		Assert.assertFalse(SqlUtils.isSelectQuery("insert into foo (bar) values (1, 2)"));
-		Assert.assertFalse(SqlUtils.isSelectQuery("update foo set bar = 1;"));
-		Assert.assertFalse(SqlUtils.isSelectQuery("delete bar from foo"));
-		Assert.assertFalse(SqlUtils.isSelectQuery("drop table foo"));
-		Assert.assertFalse(SqlUtils.isSelectQuery("create table bar"));
-		Assert.assertFalse(SqlUtils.isSelectQuery("rename table foo bar"));
-		Assert.assertFalse(SqlUtils.isSelectQuery("select foo from bar into foo2"));
+		Assertions.assertFalse(SqlUtils.isSelectQuery("alter foo add column bar"));
+		Assertions.assertFalse(SqlUtils.isSelectQuery("insert into foo (bar) values (1, 2)"));
+		Assertions.assertFalse(SqlUtils.isSelectQuery("update foo set bar = 1;"));
+		Assertions.assertFalse(SqlUtils.isSelectQuery("delete bar from foo"));
+		Assertions.assertFalse(SqlUtils.isSelectQuery("drop table foo"));
+		Assertions.assertFalse(SqlUtils.isSelectQuery("create table bar"));
+		Assertions.assertFalse(SqlUtils.isSelectQuery("rename table foo bar"));
+		Assertions.assertFalse(SqlUtils.isSelectQuery("select foo from bar into foo2"));
 	}
 
 	@Test
 	public void isSelectQuery_shouldHandleMultipleStatements() {
-		Assert.assertFalse(SqlUtils.isSelectQuery("select * from foo; delete bar from foo"));
-		Assert.assertTrue(SqlUtils.isSelectQuery("select * from foo;  select * from bar;"));
+		Assertions.assertFalse(SqlUtils.isSelectQuery("select * from foo; delete bar from foo"));
+		Assertions.assertTrue(SqlUtils.isSelectQuery("select * from foo;  select * from bar;"));
 	}
 }

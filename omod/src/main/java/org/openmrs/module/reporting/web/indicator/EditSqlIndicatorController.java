@@ -11,7 +11,7 @@ package org.openmrs.module.reporting.web.indicator;
 
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.query.service.CohortQueryService;

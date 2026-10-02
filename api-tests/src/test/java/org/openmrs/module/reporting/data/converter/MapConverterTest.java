@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.reporting.data.converter;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.reporting.common.DateUtil;
 
 import java.util.Date;
@@ -63,6 +63,6 @@ public class MapConverterTest {
 			m.put(keyVals[i], keyVals[i+1]);
 		}
 		Object val = converter.convert(m);
-		Assert.assertEquals(expected, val);
+		Assertions.assertEquals(expected, val);
 	}
 }

@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.reporting.query.encounter.evaluator;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
@@ -24,7 +24,7 @@ import org.openmrs.module.reporting.query.encounter.EncounterQueryResult;
 import org.openmrs.module.reporting.query.encounter.definition.BasicEncounterQuery;
 import org.openmrs.module.reporting.query.encounter.definition.MappedParametersEncounterQuery;
 import org.openmrs.module.reporting.query.encounter.service.EncounterQueryService;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
@@ -32,8 +32,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
@@ -44,7 +44,7 @@ public class MappedParametersEncounterQueryEvaluatorTest extends BaseModuleConte
 
     protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
     }

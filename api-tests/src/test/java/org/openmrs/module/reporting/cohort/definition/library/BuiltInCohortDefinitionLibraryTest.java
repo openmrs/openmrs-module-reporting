@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.reporting.cohort.definition.library;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
@@ -28,8 +28,8 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.openmrs.module.reporting.common.ReportingMatchers.hasParameter;
 
 /**
@@ -39,7 +39,7 @@ public class BuiltInCohortDefinitionLibraryTest {
 
     private BuiltInCohortDefinitionLibrary library;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         library = new BuiltInCohortDefinitionLibrary();
     }

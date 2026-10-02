@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.reporting.test;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.openmrs.Person;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
@@ -32,7 +32,7 @@ public class AuthenticatedUserTestHelper {
     protected User authenticatedUser;
     protected UserContext mockUserContext;
 
-    @Before
+    @BeforeEach
     public void setUpMockUserContext() throws Exception {
         authenticatedUser = new User();
         authenticatedUser.setPerson(new Person());
@@ -43,7 +43,7 @@ public class AuthenticatedUserTestHelper {
         Context.setUserContext(mockUserContext);
     }
 
-    @After
+    @AfterEach
     public void tearDownMockUserContext() throws Exception {
         Context.clearUserContext();
     }

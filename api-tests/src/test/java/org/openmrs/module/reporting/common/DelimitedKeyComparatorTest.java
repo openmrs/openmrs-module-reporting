@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.reporting.common;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.test.Verifies;
 
 /**
@@ -27,19 +27,19 @@ public class DelimitedKeyComparatorTest {
 		
 		DelimitedKeyComparator c =  new DelimitedKeyComparator();
 		
-		Assert.assertEquals(1, "2".compareTo("10"));
-		Assert.assertEquals(-1, c.compare("2", "10"));
+		Assertions.assertEquals(1, "2".compareTo("10"));
+		Assertions.assertEquals(-1, c.compare("2", "10"));
 		
-		Assert.assertEquals(1, "2".compareTo("1"));
-		Assert.assertEquals(1, c.compare("2", "1"));
+		Assertions.assertEquals(1, "2".compareTo("1"));
+		Assertions.assertEquals(1, c.compare("2", "1"));
 
-		Assert.assertEquals(1, "2.B".compareTo("10.A"));
-		Assert.assertEquals(-1, c.compare("2.B", "10.A"));
+		Assertions.assertEquals(1, "2.B".compareTo("10.A"));
+		Assertions.assertEquals(-1, c.compare("2.B", "10.A"));
 		
-		Assert.assertEquals(1, "2-B".compareTo("10-A"));
-		Assert.assertEquals(-1, c.compare("2-B", "10-A"));
+		Assertions.assertEquals(1, "2-B".compareTo("10-A"));
+		Assertions.assertEquals(-1, c.compare("2-B", "10-A"));
 		
-		Assert.assertEquals(1, "2_B".compareTo("10_A"));
-		Assert.assertEquals(-1, c.compare("2_B", "10_A"));
+		Assertions.assertEquals(1, "2_B".compareTo("10_A"));
+		Assertions.assertEquals(-1, c.compare("2_B", "10_A"));
 	}
 }

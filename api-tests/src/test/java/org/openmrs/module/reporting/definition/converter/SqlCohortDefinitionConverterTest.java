@@ -11,14 +11,14 @@ package org.openmrs.module.reporting.definition.converter;
 
 import java.util.List;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.db.SerializedObject;
 import org.openmrs.module.reporting.common.TestUtil;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 /**
@@ -31,12 +31,12 @@ public class SqlCohortDefinitionConverterTest extends BaseModuleContextSensitive
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -48,12 +48,12 @@ public class SqlCohortDefinitionConverterTest extends BaseModuleContextSensitive
 		SqlCohortDefinitionConverter converter = new SqlCohortDefinitionConverter();
 		
 		List<SerializedObject> before = converter.getInvalidDefinitions();
-		Assert.assertEquals(1, before.size());
+		Assertions.assertEquals(1, before.size());
 		
 		for (SerializedObject so : before) {
-			Assert.assertTrue(converter.convertDefinition(so));
+			Assertions.assertTrue(converter.convertDefinition(so));
 		}
 		
-		Assert.assertEquals(0, converter.getInvalidDefinitions().size());
+		Assertions.assertEquals(0, converter.getInvalidDefinitions().size());
 	}
 }

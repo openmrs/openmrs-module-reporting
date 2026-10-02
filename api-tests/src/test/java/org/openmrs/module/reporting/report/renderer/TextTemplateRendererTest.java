@@ -10,10 +10,10 @@
 package org.openmrs.module.reporting.report.renderer;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Patient;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
@@ -27,7 +27,7 @@ import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.util.OpenmrsClassLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -42,7 +42,7 @@ public class TextTemplateRendererTest extends BaseModuleContextSensitiveTest {
 	@Autowired
 	PatientService patientService;
 
-	@Before
+	@BeforeEach
 	// This is needed due to a change to standardTestDataset in the OpenMRS 2.2 release that changed person 6 birth year from 2007 to 1975
 	public void setup() {
 		Patient p = patientService.getPatient(6);
@@ -127,6 +127,6 @@ public class TextTemplateRendererTest extends BaseModuleContextSensitiveTest {
 		        + "</dataset>";
 		
 		xml = templateType != null ? StringUtils.deleteWhitespace(xml) : "Males=2Females=2";
-		Assert.assertEquals(xml, renderedOutput);
+		Assertions.assertEquals(xml, renderedOutput);
 	}
 }

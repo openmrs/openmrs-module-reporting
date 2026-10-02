@@ -11,10 +11,10 @@ package org.openmrs.module.reporting.dataset.definition.evaluator;
 
 import java.util.Date;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.ReportingConstants;
@@ -33,8 +33,8 @@ import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 /**
@@ -47,12 +47,12 @@ public class CohortCrossTabDataSetEvaluatorTest extends BaseModuleContextSensiti
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -105,15 +105,15 @@ public class CohortCrossTabDataSetEvaluatorTest extends BaseModuleContextSensiti
 		ReportData results = Context.getService(ReportDefinitionService.class).evaluate(report, context);
 		MapDataSet ds = (MapDataSet)results.getDataSets().values().iterator().next();
 		
-		Assert.assertEquals(2, ((Cohort)ds.getData(ds.getMetaData().getColumn("male.adult"))).size());
-		Assert.assertEquals(0, ((Cohort)ds.getData(ds.getMetaData().getColumn("male.child"))).size());
-		Assert.assertEquals(3, ((Cohort)ds.getData(ds.getMetaData().getColumn("male.unknown"))).size());
-		Assert.assertEquals(2, ((Cohort)ds.getData(ds.getMetaData().getColumn("female.adult"))).size());
-		Assert.assertEquals(1, ((Cohort)ds.getData(ds.getMetaData().getColumn("female.child"))).size());
-		Assert.assertEquals(5, ((Cohort)ds.getData(ds.getMetaData().getColumn("female.unknown"))).size());
-		Assert.assertEquals(0, ((Cohort)ds.getData(ds.getMetaData().getColumn("unknown.adult"))).size());
-		Assert.assertEquals(0, ((Cohort)ds.getData(ds.getMetaData().getColumn("unknown.child"))).size());
-		Assert.assertEquals(1, ((Cohort)ds.getData(ds.getMetaData().getColumn("unknown.unknown"))).size());
+		Assertions.assertEquals(2, ((Cohort)ds.getData(ds.getMetaData().getColumn("male.adult"))).size());
+		Assertions.assertEquals(0, ((Cohort)ds.getData(ds.getMetaData().getColumn("male.child"))).size());
+		Assertions.assertEquals(3, ((Cohort)ds.getData(ds.getMetaData().getColumn("male.unknown"))).size());
+		Assertions.assertEquals(2, ((Cohort)ds.getData(ds.getMetaData().getColumn("female.adult"))).size());
+		Assertions.assertEquals(1, ((Cohort)ds.getData(ds.getMetaData().getColumn("female.child"))).size());
+		Assertions.assertEquals(5, ((Cohort)ds.getData(ds.getMetaData().getColumn("female.unknown"))).size());
+		Assertions.assertEquals(0, ((Cohort)ds.getData(ds.getMetaData().getColumn("unknown.adult"))).size());
+		Assertions.assertEquals(0, ((Cohort)ds.getData(ds.getMetaData().getColumn("unknown.child"))).size());
+		Assertions.assertEquals(1, ((Cohort)ds.getData(ds.getMetaData().getColumn("unknown.unknown"))).size());
 	}
 	
 }

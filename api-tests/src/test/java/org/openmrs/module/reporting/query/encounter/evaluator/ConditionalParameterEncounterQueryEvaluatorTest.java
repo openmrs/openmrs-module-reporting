@@ -11,9 +11,9 @@ package org.openmrs.module.reporting.query.encounter.evaluator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.EncounterService;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.OptionalParameterCohortDefinitionEvaluator;
@@ -24,8 +24,8 @@ import org.openmrs.module.reporting.query.encounter.EncounterQueryResult;
 import org.openmrs.module.reporting.query.encounter.definition.BasicEncounterQuery;
 import org.openmrs.module.reporting.query.encounter.definition.ConditionalParameterEncounterQuery;
 import org.openmrs.module.reporting.query.encounter.service.EncounterQueryService;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -44,10 +44,10 @@ public class ConditionalParameterEncounterQueryEvaluatorTest extends BaseModuleC
 	EncounterService encounterService;
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -76,12 +76,12 @@ public class ConditionalParameterEncounterQueryEvaluatorTest extends BaseModuleC
 
 		context.addParameterValue("type", "visit");
 		EncounterQueryResult test1 = encounterQueryService.evaluate(cpq, context);
-		Assert.assertEquals(r1.getSize(), test1.getSize());
-		Assert.assertTrue(r1.getMemberIds().containsAll(test1.getMemberIds()));
+		Assertions.assertEquals(r1.getSize(), test1.getSize());
+		Assertions.assertTrue(r1.getMemberIds().containsAll(test1.getMemberIds()));
 
 		context.addParameterValue("type", "lab");
 		EncounterQueryResult test2 = encounterQueryService.evaluate(cpq, context);
-		Assert.assertEquals(r2.getSize(), test2.getSize());
-		Assert.assertTrue(r2.getMemberIds().containsAll(test2.getMemberIds()));
+		Assertions.assertEquals(r2.getSize(), test2.getSize());
+		Assertions.assertTrue(r2.getMemberIds().containsAll(test2.getMemberIds()));
 	}
 }

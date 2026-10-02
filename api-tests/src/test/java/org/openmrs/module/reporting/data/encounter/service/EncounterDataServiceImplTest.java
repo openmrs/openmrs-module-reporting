@@ -9,17 +9,17 @@
  */
 package org.openmrs.module.reporting.data.encounter.service;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.data.encounter.EncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterIdDataDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 /**
  * Test the EncounterDataServiceImpl
@@ -31,12 +31,12 @@ public class EncounterDataServiceImplTest extends BaseModuleContextSensitiveTest
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -49,7 +49,7 @@ public class EncounterDataServiceImplTest extends BaseModuleContextSensitiveTest
 	public void evaluate_shouldEvaluateAnEncounterData() throws Exception {
 		EncounterDataDefinition definition = new EncounterIdDataDefinition();
 		EncounterData data = Context.getService(EncounterDataService.class).evaluate(definition, new EvaluationContext());
-		Assert.assertNotNull(data);
+		Assertions.assertNotNull(data);
 	}
 	
 	/**
@@ -61,10 +61,10 @@ public class EncounterDataServiceImplTest extends BaseModuleContextSensitiveTest
 		EncounterDataDefinition definition = new EncounterIdDataDefinition();
 		definition.setName("All Encounter Ids");
 		definition = Context.getService(EncounterDataService.class).saveDefinition(definition);
-		Assert.assertNotNull(definition.getId());
-		Assert.assertNotNull(definition.getUuid());
+		Assertions.assertNotNull(definition.getId());
+		Assertions.assertNotNull(definition.getUuid());
 		EncounterDataDefinition loadedDefinition = Context.getService(EncounterDataService.class).getDefinitionByUuid(definition.getUuid());
-		Assert.assertEquals(definition, loadedDefinition);
+		Assertions.assertEquals(definition, loadedDefinition);
 	}
 	
 }

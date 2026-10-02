@@ -9,11 +9,11 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.reporting.common.TestUtil;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 public class PersonDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
@@ -22,12 +22,12 @@ public class PersonDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -43,9 +43,9 @@ public class PersonDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 		
 		EvaluationContext context = new EvaluationContext();
 		RowPerObjectDataSet dataset = (RowPerObjectDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, context);
-		Assert.assertEquals("M", dataset.getColumnValue(2, "Sexe"));
-		Assert.assertEquals("F", dataset.getColumnValue(7, "Sexe"));
-		Assert.assertEquals(13, dataset.getRows().size());
+		Assertions.assertEquals("M", dataset.getColumnValue(2, "Sexe"));
+		Assertions.assertEquals("F", dataset.getColumnValue(7, "Sexe"));
+		Assertions.assertEquals(13, dataset.getRows().size());
 		
 		PersonEvaluationContext pec = new PersonEvaluationContext();
 		PersonQueryResult personQuery = new PersonQueryResult();
@@ -53,9 +53,9 @@ public class PersonDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 		pec.setBasePersons(personQuery);
 		
 		dataset = (RowPerObjectDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, pec);
-		Assert.assertEquals("M", dataset.getColumnValue(2, "Sexe"));
-		Assert.assertNull(dataset.getColumnValue(7, "Sexe"));
-		Assert.assertEquals(4, dataset.getRows().size());
+		Assertions.assertEquals("M", dataset.getColumnValue(2, "Sexe"));
+		Assertions.assertNull(dataset.getColumnValue(7, "Sexe"));
+		Assertions.assertEquals(4, dataset.getRows().size());
 		*/
 	}
 }

@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.reporting.query.encounter.evaluator;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
@@ -23,10 +23,10 @@ import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
 import org.openmrs.module.reporting.query.encounter.EncounterQueryResult;
 import org.openmrs.module.reporting.query.encounter.definition.BasicEncounterQuery;
 import org.openmrs.module.reporting.query.encounter.service.EncounterQueryService;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.openmrs.module.reporting.common.ReportingMatchers.hasExactlyIds;
 
 public class BasicEncounterQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
@@ -41,7 +41,7 @@ public class BasicEncounterQueryEvaluatorTest extends BaseModuleContextSensitive
     @Autowired
     TestDataManager data;
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
     }

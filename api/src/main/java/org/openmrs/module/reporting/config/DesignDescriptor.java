@@ -1,6 +1,6 @@
 package org.openmrs.module.reporting.config;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 import java.util.Map;

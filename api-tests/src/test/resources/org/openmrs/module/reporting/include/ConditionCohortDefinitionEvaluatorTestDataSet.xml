@@ -93,10 +93,10 @@
 
 	<concept_set concept_set_id="5844" concept_id="408"
 		concept_set="408" creator="1" date_created="2004-08-12 00:00:00.0"
-		sort_weight="3" />
+		sort_weight="3" uuid="5c1d8e2f-4a3b-4c6d-9e7f-1a2b3c4d5e01" />
 	<concept_set concept_set_id="5845" concept_id="409"
 		concept_set="409" creator="1" date_created="2004-08-12 00:00:00.0"
-		sort_weight="2" />
+		sort_weight="2" uuid="5c1d8e2f-4a3b-4c6d-9e7f-1a2b3c4d5e02" />
 
 	<conditions condition_id="1" patient_id="1" condition_coded="409"
 		creator="1" date_created="2015-01-12 00:00:00" voided="false"

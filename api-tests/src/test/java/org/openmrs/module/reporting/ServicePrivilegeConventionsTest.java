@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.reporting;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.util.PrivilegeConstants;
@@ -28,8 +28,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Enforces this module's privilege conventions across every service it registers, rather than one service
@@ -67,7 +67,7 @@ public class ServicePrivilegeConventionsTest {
 
 	private List<Class<?>> serviceInterfaces() throws Exception {
 		InputStream in = getClass().getClassLoader().getResourceAsStream("moduleApplicationContext.xml");
-		assertTrue("moduleApplicationContext.xml must be on the test classpath", in != null);
+		assertTrue(in != null, "moduleApplicationContext.xml must be on the test classpath");
 		Document doc;
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -93,7 +93,7 @@ public class ServicePrivilegeConventionsTest {
 				interfaces.add(c);
 			}
 		}
-		assertTrue("expected to discover the module's services, found " + interfaces.size(), interfaces.size() >= 15);
+		assertTrue(interfaces.size() >= 15, "expected to discover the module's services, found " + interfaces.size());
 		return interfaces;
 	}
 
@@ -136,7 +136,7 @@ public class ServicePrivilegeConventionsTest {
 			}
 		}
 		Collections.sort(offenders);
-		assertTrue("service methods reachable through the proxy with no privilege: " + offenders, offenders.isEmpty());
+		assertTrue(offenders.isEmpty(), "service methods reachable through the proxy with no privilege: " + offenders);
 	}
 
 	@Test
@@ -154,7 +154,7 @@ public class ServicePrivilegeConventionsTest {
 			}
 		}
 		Collections.sort(offenders);
-		assertTrue("methods requiring more than one privilege: " + offenders, offenders.isEmpty());
+		assertTrue(offenders.isEmpty(), "methods requiring more than one privilege: " + offenders);
 	}
 
 	@Test
@@ -178,7 +178,7 @@ public class ServicePrivilegeConventionsTest {
 			}
 		}
 		Collections.sort(offenders);
-		assertTrue("write methods guarded by a read-only privilege: " + offenders, offenders.isEmpty());
+		assertTrue(offenders.isEmpty(), "write methods guarded by a read-only privilege: " + offenders);
 	}
 
 	private boolean isWrite(String methodName) {
@@ -209,7 +209,7 @@ public class ServicePrivilegeConventionsTest {
 			}
 		}
 		Collections.sort(offenders);
-		assertTrue("privileges that are neither this module's nor a known core one: " + offenders, offenders.isEmpty());
+		assertTrue(offenders.isEmpty(), "privileges that are neither this module's nor a known core one: " + offenders);
 	}
 
 	/**
@@ -226,7 +226,7 @@ public class ServicePrivilegeConventionsTest {
 				}
 			}
 		}
-        assertNotEquals("discovery found no annotated methods at all", 0, annotated);
-		assertTrue("expected well over a hundred guarded methods, found " + annotated, annotated > 100);
+        assertNotEquals(0, annotated, "discovery found no annotated methods at all");
+		assertTrue(annotated > 100, "expected well over a hundred guarded methods, found " + annotated);
 	}
 }

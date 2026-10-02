@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.reporting.data.encounter.evaluator;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.contrib.testdata.TestDataManager;
@@ -18,11 +18,11 @@ import org.openmrs.module.reporting.data.encounter.definition.SimultaneousEncoun
 import org.openmrs.module.reporting.data.encounter.service.EncounterDataService;
 import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
 import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class SimultaneousEncountersDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 

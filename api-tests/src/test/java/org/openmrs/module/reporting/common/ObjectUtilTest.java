@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.common;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Concept;
 import org.openmrs.ConceptClass;
 import org.openmrs.ConceptName;
@@ -26,7 +26,7 @@ import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.ReportingModuleActivator;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 import java.util.Arrays;
@@ -45,7 +45,7 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
 
     protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 
-	@Before
+	@BeforeEach
 	public void setupObjectUtilTest() {
         new ReportingModuleActivator().contextRefreshed();
         ReportingConstants.clearGlobalPropertyCache();
@@ -55,9 +55,9 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
 	public void sortShouldSortSimpleStrings() throws Exception {
 		List<String> list = Arrays.asList(new String[] { "Daniel", "Abbas", "Kizito" });
 		list = ObjectUtil.sort((list), null);
-		Assert.assertEquals("Abbas", list.get(0));
-		Assert.assertEquals("Daniel", list.get(1));
-		Assert.assertEquals("Kizito", list.get(2));
+		Assertions.assertEquals("Abbas", list.get(0));
+		Assertions.assertEquals("Daniel", list.get(1));
+		Assertions.assertEquals("Kizito", list.get(2));
 	}
 	
 	@Test
@@ -68,9 +68,9 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
 		
 		List<PersonName> list = Arrays.asList(new PersonName[] { personName1, personName2, personName3 });
 		list = ObjectUtil.sort((list), null);
-		Assert.assertEquals(personName3, list.get(0));
-		Assert.assertEquals(personName2, list.get(1));
-		Assert.assertEquals(personName1, list.get(2));
+		Assertions.assertEquals(personName3, list.get(0));
+		Assertions.assertEquals(personName2, list.get(1));
+		Assertions.assertEquals(personName1, list.get(2));
 	}
 	
 	@Test
@@ -81,9 +81,9 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
 		
 		List<PersonName> list = Arrays.asList(new PersonName[] { personName1, personName2, personName3 });
 		list = ObjectUtil.sort((list), "asc");
-		Assert.assertEquals(personName3, list.get(0));
-		Assert.assertEquals(personName2, list.get(1));
-		Assert.assertEquals(personName1, list.get(2));
+		Assertions.assertEquals(personName3, list.get(0));
+		Assertions.assertEquals(personName2, list.get(1));
+		Assertions.assertEquals(personName1, list.get(2));
 	}
 	
 	@Test
@@ -94,9 +94,9 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
 		
 		List<PersonName> list = Arrays.asList(new PersonName[] { personName1, personName2, personName3 });
 		list = ObjectUtil.sort((list), "desc");
-		Assert.assertEquals(personName3, list.get(0));
-		Assert.assertEquals(personName1, list.get(1));
-		Assert.assertEquals(personName2, list.get(2));
+		Assertions.assertEquals(personName3, list.get(0));
+		Assertions.assertEquals(personName1, list.get(1));
+		Assertions.assertEquals(personName2, list.get(2));
 	}
 	
 	@Test
@@ -107,9 +107,9 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
 		
 		List<PersonName> list = Arrays.asList(new PersonName[] { personName1, personName2, personName3 });
 		list = ObjectUtil.sort((list), "givenName");
-		Assert.assertEquals(personName3, list.get(0));
-		Assert.assertEquals(personName2, list.get(1));
-		Assert.assertEquals(personName1, list.get(2));
+		Assertions.assertEquals(personName3, list.get(0));
+		Assertions.assertEquals(personName2, list.get(1));
+		Assertions.assertEquals(personName1, list.get(2));
 	}
 	
 	@Test
@@ -120,9 +120,9 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
 		
 		List<PersonName> list = Arrays.asList(new PersonName[] { personName1, personName2, personName3 });
 		list = ObjectUtil.sort((list), "givenName asc");
-		Assert.assertEquals(personName3, list.get(0));
-		Assert.assertEquals(personName2, list.get(1));
-		Assert.assertEquals(personName1, list.get(2));
+		Assertions.assertEquals(personName3, list.get(0));
+		Assertions.assertEquals(personName2, list.get(1));
+		Assertions.assertEquals(personName1, list.get(2));
 	}
 	
 	@Test
@@ -133,9 +133,9 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
 		
 		List<PersonName> list = Arrays.asList(new PersonName[] { personName1, personName2, personName3 });
 		list = ObjectUtil.sort((list), "givenName desc");
-		Assert.assertEquals(personName1, list.get(0));
-		Assert.assertEquals(personName2, list.get(1));
-		Assert.assertEquals(personName3, list.get(2));
+		Assertions.assertEquals(personName1, list.get(0));
+		Assertions.assertEquals(personName2, list.get(1));
+		Assertions.assertEquals(personName3, list.get(2));
 	}
 	
 	@Test
@@ -146,9 +146,9 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
 		
 		List<PersonName> list = Arrays.asList(new PersonName[] { personName1, personName2, personName3 });
 		list = ObjectUtil.sort((list), "middleName, givenName");
-		Assert.assertEquals(personName1, list.get(0));
-		Assert.assertEquals(personName2, list.get(1));
-		Assert.assertEquals(personName3, list.get(2));
+		Assertions.assertEquals(personName1, list.get(0));
+		Assertions.assertEquals(personName2, list.get(1));
+		Assertions.assertEquals(personName3, list.get(2));
 	}
 	
 	@Test
@@ -159,9 +159,9 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
 		
 		List<PersonName> list = Arrays.asList(new PersonName[] { personName1, personName2, personName3 });
 		list = ObjectUtil.sort((list), "familyName, middleName, givenName");
-		Assert.assertEquals(personName1, list.get(0));
-		Assert.assertEquals(personName2, list.get(1));
-		Assert.assertEquals(personName3, list.get(2));
+		Assertions.assertEquals(personName1, list.get(0));
+		Assertions.assertEquals(personName2, list.get(1));
+		Assertions.assertEquals(personName3, list.get(2));
 	}
 	
 	@Test
@@ -176,9 +176,9 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
 		
 		List<PersonName> list = Arrays.asList(new PersonName[] { personName1, personName2, personName3 });
 		list = ObjectUtil.sort((list), "familyName, creator.userId");
-		Assert.assertEquals(personName2, list.get(0));
-		Assert.assertEquals(personName3, list.get(1));
-		Assert.assertEquals(personName1, list.get(2));
+		Assertions.assertEquals(personName2, list.get(0));
+		Assertions.assertEquals(personName3, list.get(1));
+		Assertions.assertEquals(personName1, list.get(2));
 	}
 	
 	@Test
@@ -193,9 +193,9 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
 		
 		List<PersonName> list = Arrays.asList(new PersonName[] { personName1, personName2, personName3 });
 		list = ObjectUtil.sort((list), "familyName, creator.userId desc");
-		Assert.assertEquals(personName1, list.get(0));
-		Assert.assertEquals(personName3, list.get(1));
-		Assert.assertEquals(personName2, list.get(2));
+		Assertions.assertEquals(personName1, list.get(0));
+		Assertions.assertEquals(personName3, list.get(1));
+		Assertions.assertEquals(personName2, list.get(2));
 	}
 	
 	@Test
@@ -206,9 +206,9 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
 		
 		List<PersonName> list = Arrays.asList(new PersonName[] { personName1, personName2, personName3 });
 		list = ObjectUtil.sort((list), "givenName");
-		Assert.assertEquals(personName3, list.get(0));
-		Assert.assertEquals(personName2, list.get(1));
-		Assert.assertEquals(personName1, list.get(2));
+		Assertions.assertEquals(personName3, list.get(0));
+		Assertions.assertEquals(personName2, list.get(1));
+		Assertions.assertEquals(personName1, list.get(2));
 	}
 	
 	@Test
@@ -219,9 +219,9 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
 		
 		List<PersonName> list = Arrays.asList(new PersonName[] { personName1, personName2, personName3 });
 		list = ObjectUtil.sort((list), "givenName desc");
-		Assert.assertEquals(personName2, list.get(0));
-		Assert.assertEquals(personName3, list.get(1));
-		Assert.assertEquals(personName1, list.get(2));
+		Assertions.assertEquals(personName2, list.get(0));
+		Assertions.assertEquals(personName3, list.get(1));
+		Assertions.assertEquals(personName1, list.get(2));
 	}
 	
 	@Test
@@ -233,10 +233,10 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
 		
 		List<ConceptClass> list = Arrays.asList(new ConceptClass[] { conceptClass1, conceptClass2, conceptClass3, conceptClass4 });
 		list = org.openmrs.module.reporting.common.ObjectUtil.sort((list), "conceptClassId");
-		Assert.assertEquals(conceptClass2, list.get(0));
-		Assert.assertEquals(conceptClass4, list.get(1));
-		Assert.assertEquals(conceptClass1, list.get(2));
-		Assert.assertEquals(conceptClass3, list.get(3));
+		Assertions.assertEquals(conceptClass2, list.get(0));
+		Assertions.assertEquals(conceptClass4, list.get(1));
+		Assertions.assertEquals(conceptClass1, list.get(2));
+		Assertions.assertEquals(conceptClass3, list.get(3));
 	}
 
     @Test
@@ -244,7 +244,7 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
     public void shouldReturnNullIfNoFormatterPresent() {
         Location location = new Location();
         location.setName("Test name");
-        Assert.assertNull(ObjectUtil.getLocalization(location, new Locale("en")));
+        Assertions.assertNull(ObjectUtil.getLocalization(location, new Locale("en")));
     }
 
     @Test
@@ -255,19 +255,19 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
 		LocationService locationService = Context.getLocationService();
 		Location location = locationService.getLocation(metadataName);
         String formattedName = ObjectUtil.format(location);
-        Assert.assertEquals(metadataName, formattedName);
+        Assertions.assertEquals(metadataName, formattedName);
 
         metadataName = "OpenMRS Identification Number";
         PatientIdentifierType patientIdentifierType = Context.getPatientService().getPatientIdentifierTypeByName(metadataName);
         formattedName = ObjectUtil.format(patientIdentifierType);
-        Assert.assertEquals(metadataName, formattedName);
+        Assertions.assertEquals(metadataName, formattedName);
     }
 
     @Test
     public void shouldLocalizedObsBasedOnDefaultLocale() throws Exception {
         executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
         addLocalizedNamesToYesConcept();
-        Assert.assertEquals("YES", ObjectUtil.format(createObsWithValueCodedYes()));
+        Assertions.assertEquals("YES", ObjectUtil.format(createObsWithValueCodedYes()));
     }
 
     @Test
@@ -276,7 +276,7 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
         addLocalizedNamesToYesConcept();
 		String previousLocale = TestUtil.getGlobalProperty(ReportingConstants.DEFAULT_LOCALE_GP_NAME);
 		TestUtil.updateGlobalProperty(ReportingConstants.DEFAULT_LOCALE_GP_NAME, "es");
-        Assert.assertEquals("Si", ObjectUtil.format(createObsWithValueCodedYes()));
+        Assertions.assertEquals("Si", ObjectUtil.format(createObsWithValueCodedYes()));
 		TestUtil.updateGlobalProperty(ReportingConstants.DEFAULT_LOCALE_GP_NAME, previousLocale);
     }
 
@@ -284,15 +284,15 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
 	public void shouldCreateAMapFromAString() throws Exception {
 		String toParse = "Key1=Value1,Key2=Value2";
 		Map<String, String> m = ObjectUtil.toMap(toParse);
-		Assert.assertEquals(2, m.size());
-		Assert.assertEquals("Value1", m.get("Key1"));
-		Assert.assertEquals("Value2", m.get("Key2"));
+		Assertions.assertEquals(2, m.size());
+		Assertions.assertEquals("Value1", m.get("Key1"));
+		Assertions.assertEquals("Value2", m.get("Key2"));
 
 		toParse = "Key1:Value1|Key2:Value2";
 		m = ObjectUtil.toMap(toParse, ":", "|");
-		Assert.assertEquals(2, m.size());
-		Assert.assertEquals("Value1", m.get("Key1"));
-		Assert.assertEquals("Value2", m.get("Key2"));
+		Assertions.assertEquals(2, m.size());
+		Assertions.assertEquals("Value1", m.get("Key1"));
+		Assertions.assertEquals("Value2", m.get("Key2"));
 	}
 
 	@Test
@@ -300,15 +300,15 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
 		// <encounter encounter_id="3" encounter_type="2" patient_id="7" location_id="1" form_id="1" encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="false" void_reason="" uuid="6519d653-393b-4118-9c83-a3715b82d4ac"/>
 		Encounter e = Context.getEncounterService().getEncounter(3);
 		String s = ObjectUtil.format(e, "Encounter {encounterId} has type {encounterType} and date {encounterDatetime|yyyy-MM-dd}");
-		Assert.assertEquals("Encounter 3 has type Emergency and date 2008-08-01", s);
+		Assertions.assertEquals("Encounter 3 has type Emergency and date 2008-08-01", s);
 	}
 
 	@Test
 	public void shouldFormatLocalDateTimeWithAppropriateFormat() {
 		java.time.LocalDateTime ldt = java.time.LocalDateTime.of(2014, 1, 14, 15, 31, 7);
-		Assert.assertEquals("14-Jan-2014", ObjectUtil.format(ldt, "dd-MMM-yyyy"));
+		Assertions.assertEquals("14-Jan-2014", ObjectUtil.format(ldt, "dd-MMM-yyyy"));
 		java.time.LocalDate ld = java.time.LocalDate.of(2014, 1, 14);
-		Assert.assertEquals("14-Jan-2014", ObjectUtil.format(ld, "dd-MMM-yyyy"));
+		Assertions.assertEquals("14-Jan-2014", ObjectUtil.format(ld, "dd-MMM-yyyy"));
 	}
 
 	@Test
@@ -317,12 +317,12 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
 		String previousFormat = TestUtil.getGlobalProperty(ReportingConstants.GLOBAL_PROPERTY_DEFAULT_DATE_FORMAT);
 
 		Date d = DateUtil.getDateTime(2014,1,14);
-		Assert.assertEquals("14-Jan-2014", ObjectUtil.format(d, "dd-MMM-yyyy"));
-		Assert.assertEquals("14/01/2014", ObjectUtil.format(d));
+		Assertions.assertEquals("14-Jan-2014", ObjectUtil.format(d, "dd-MMM-yyyy"));
+		Assertions.assertEquals("14/01/2014", ObjectUtil.format(d));
 		TestUtil.updateGlobalProperty(ReportingConstants.GLOBAL_PROPERTY_DEFAULT_DATE_FORMAT, "MMMM dd, yyyy");
-		Assert.assertEquals("January 14, 2014", ObjectUtil.format(d));
+		Assertions.assertEquals("January 14, 2014", ObjectUtil.format(d));
 		TestUtil.updateGlobalProperty(ReportingConstants.DEFAULT_LOCALE_GP_NAME, "es");
-		Assert.assertEquals("enero 14, 2014", ObjectUtil.format(d));
+		Assertions.assertEquals("enero 14, 2014", ObjectUtil.format(d));
 
 		TestUtil.updateGlobalProperty(ReportingConstants.GLOBAL_PROPERTY_DEFAULT_DATE_FORMAT, previousFormat);
 		TestUtil.updateGlobalProperty(ReportingConstants.DEFAULT_LOCALE_GP_NAME, previousLocale);
@@ -331,18 +331,18 @@ public class ObjectUtilTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void shouldFormatConcept() throws Exception {
 		Concept wt = Context.getConceptService().getConcept(5089);
-		Assert.assertEquals("WEIGHT (KG)", ObjectUtil.format(wt));
+		Assertions.assertEquals("WEIGHT (KG)", ObjectUtil.format(wt));
 		LoadConceptThread t = new LoadConceptThread(5497);
 		t.start();
 		t.join();
-		Assert.assertEquals("Concept#5497", ObjectUtil.format(t.getConcept()));
+		Assertions.assertEquals("Concept#5497", ObjectUtil.format(t.getConcept()));
 	}
 
     @Test
     public void shouldNotFailIfNoMessageSourceBeanPresent() throws Exception {
         MessageUtil.setMessageSource(null);
         Location location = Context.getLocationService().getLocation(2);
-        Assert.assertEquals("Xanadu", ObjectUtil.format(location));
+        Assertions.assertEquals("Xanadu", ObjectUtil.format(location));
     }
 
     // hack to add a few localized names to concept

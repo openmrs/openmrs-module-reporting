@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.data.person.evaluator;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.TestUtil;
@@ -20,8 +20,8 @@ import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.service.PersonDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 public class GenderDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
@@ -30,12 +30,12 @@ public class GenderDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -50,10 +50,10 @@ public class GenderDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 		EvaluationContext context = new EvaluationContext();
 		context.setBaseCohort(new Cohort("2,6,7,8"));
 		EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(d, context);
-		Assert.assertEquals(4, pd.getData().size());
-		Assert.assertEquals("M", pd.getData().get(2).toString());
-		Assert.assertEquals("M", pd.getData().get(6).toString());
-		Assert.assertEquals("F", pd.getData().get(7).toString());
-		Assert.assertEquals("F", pd.getData().get(8).toString());
+		Assertions.assertEquals(4, pd.getData().size());
+		Assertions.assertEquals("M", pd.getData().get(2).toString());
+		Assertions.assertEquals("M", pd.getData().get(6).toString());
+		Assertions.assertEquals("F", pd.getData().get(7).toString());
+		Assertions.assertEquals("F", pd.getData().get(8).toString());
 	}
 }

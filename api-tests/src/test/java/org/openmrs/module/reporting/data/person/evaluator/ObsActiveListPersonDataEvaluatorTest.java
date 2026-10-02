@@ -14,9 +14,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.Location;
@@ -31,8 +31,8 @@ import org.openmrs.module.reporting.data.person.definition.ObsActiveListPersonDa
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.service.PersonDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 /**
  * Tests ObsActiveListPersonDataEvaluator
@@ -44,12 +44,12 @@ public class ObsActiveListPersonDataEvaluatorTest extends BaseModuleContextSensi
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 		
@@ -95,7 +95,7 @@ public class ObsActiveListPersonDataEvaluatorTest extends BaseModuleContextSensi
 		checkList(pd, 7, 792, 88);
 		checkList(pd, 20);
 		checkList(pd, 21, 792);
-		Assert.assertNull(pd.getData().get(22));
+		Assertions.assertNull(pd.getData().get(22));
 	}
 	
 	private void saveObs(Integer personId, String dateStr, Integer question, Integer answer) {
@@ -112,10 +112,10 @@ public class ObsActiveListPersonDataEvaluatorTest extends BaseModuleContextSensi
 	private void checkList(EvaluatedPersonData pd, Integer patientId, Integer...problemIds) {
 		Object o = pd.getData().get(patientId);
 		ObsActiveList l = (ObsActiveList)o;
-		Assert.assertEquals(l.getActiveItems().size(), problemIds.length);
+		Assertions.assertEquals(l.getActiveItems().size(), problemIds.length);
 		List<Integer> problemIdList = Arrays.asList(problemIds);
 		for (Obs obs : l.getActiveItems()) {
-			Assert.assertTrue(problemIdList.contains(obs.getValueCoded().getConceptId()));
+			Assertions.assertTrue(problemIdList.contains(obs.getValueCoded().getConceptId()));
 		}
 	}
 }

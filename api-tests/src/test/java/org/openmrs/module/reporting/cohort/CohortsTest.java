@@ -9,10 +9,10 @@
  */
 package org.openmrs.module.reporting.cohort;
 
-import org.junit.Test;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.junit.jupiter.api.Test;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.openmrs.module.reporting.common.ReportingMatchers.isCohortWithExactlyIds;
 
 public class CohortsTest extends BaseModuleContextSensitiveTest {

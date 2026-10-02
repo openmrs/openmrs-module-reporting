@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.reporting.common;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.ss.usermodel.Cell;
@@ -18,16 +18,16 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.junit.Test;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.junit.jupiter.api.Test;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Testing the ExcelUtil class.
@@ -72,61 +72,61 @@ public class ExcelUtilTest extends BaseModuleContextSensitiveTest {
 
 		// Test Fonts
 		Cell cell = getCellToTheRightOf(sheet, "String");
-		Assert.assertEquals("This is a String", ExcelUtil.getCellContents(cell));
+		Assertions.assertEquals("This is a String", ExcelUtil.getCellContents(cell));
 
-		Assert.assertEquals(Font.BOLDWEIGHT_NORMAL, ExcelUtil.getFont(cell).getBoldweight());
+		Assertions.assertEquals(Font.BOLDWEIGHT_NORMAL, ExcelUtil.getFont(cell).getBoldweight());
 		cell.setCellStyle(ExcelUtil.createCellStyle(wb, "bold"));
-		Assert.assertEquals(Font.BOLDWEIGHT_BOLD, ExcelUtil.getFont(cell).getBoldweight());
+		Assertions.assertEquals(Font.BOLDWEIGHT_BOLD, ExcelUtil.getFont(cell).getBoldweight());
 
-		Assert.assertFalse(ExcelUtil.getFont(cell).getItalic());
-		Assert.assertEquals(Font.U_NONE, ExcelUtil.getFont(cell).getUnderline());
+		Assertions.assertFalse(ExcelUtil.getFont(cell).getItalic());
+		Assertions.assertEquals(Font.U_NONE, ExcelUtil.getFont(cell).getUnderline());
 		cell.setCellStyle(ExcelUtil.createCellStyle(wb, "italic,underline"));
-		Assert.assertTrue(ExcelUtil.getFont(cell).getItalic());
-		Assert.assertEquals(Font.U_SINGLE, ExcelUtil.getFont(cell).getUnderline());
+		Assertions.assertTrue(ExcelUtil.getFont(cell).getItalic());
+		Assertions.assertEquals(Font.U_SINGLE, ExcelUtil.getFont(cell).getUnderline());
 
 		int fontSize = ExcelUtil.getFont(cell).getFontHeightInPoints() + 1;
 		cell.setCellStyle(ExcelUtil.createCellStyle(wb, "size="+fontSize));
-		Assert.assertEquals((short)fontSize, ExcelUtil.getFont(cell).getFontHeightInPoints());
+		Assertions.assertEquals((short)fontSize, ExcelUtil.getFont(cell).getFontHeightInPoints());
 
 		// Test other styles
-		Assert.assertFalse(cell.getCellStyle().getWrapText());
-		Assert.assertEquals(CellStyle.ALIGN_GENERAL, cell.getCellStyle().getAlignment());
-		Assert.assertEquals(CellStyle.BORDER_NONE, cell.getCellStyle().getBorderBottom());
+		Assertions.assertFalse(cell.getCellStyle().getWrapText());
+		Assertions.assertEquals(CellStyle.ALIGN_GENERAL, cell.getCellStyle().getAlignment());
+		Assertions.assertEquals(CellStyle.BORDER_NONE, cell.getCellStyle().getBorderBottom());
 		cell.setCellStyle(ExcelUtil.createCellStyle(wb, "wraptext,align=center,border=bottom"));
-		Assert.assertTrue(cell.getCellStyle().getWrapText());
-		Assert.assertEquals(CellStyle.ALIGN_CENTER, cell.getCellStyle().getAlignment());
-		Assert.assertEquals(CellStyle.BORDER_THIN, cell.getCellStyle().getBorderBottom());
+		Assertions.assertTrue(cell.getCellStyle().getWrapText());
+		Assertions.assertEquals(CellStyle.ALIGN_CENTER, cell.getCellStyle().getAlignment());
+		Assertions.assertEquals(CellStyle.BORDER_THIN, cell.getCellStyle().getBorderBottom());
 
 		// Test Date
 		Date date = DateUtil.getDateTime(2013, 10, 31);
 		cell.setCellValue(date);
 		ExcelUtil.formatAsDate(cell);
-		Assert.assertEquals(Cell.CELL_TYPE_NUMERIC, cell.getCellType());
-		Assert.assertTrue(ExcelUtil.isCellDateFormatted(cell));
-		Assert.assertEquals(date, ExcelUtil.getCellContents(cell));
+		Assertions.assertEquals(Cell.CELL_TYPE_NUMERIC, cell.getCellType());
+		Assertions.assertTrue(ExcelUtil.isCellDateFormatted(cell));
+		Assertions.assertEquals(date, ExcelUtil.getCellContents(cell));
 	}
 
 	@Test
 	public void shouldFormatSheetTitle() throws Exception {
 
-		Assert.assertEquals("TestSheet", ExcelUtil.formatSheetTitle("TestSheet"));
-		Assert.assertEquals("Sheet", ExcelUtil.formatSheetTitle(null));
-		Assert.assertEquals("Illegal Characters", ExcelUtil.formatSheetTitle("Illegal [Characters]"));
-		Assert.assertEquals("This is a title with over 31 ch", ExcelUtil.formatSheetTitle("This is a title with over 31 characters"));
+		Assertions.assertEquals("TestSheet", ExcelUtil.formatSheetTitle("TestSheet"));
+		Assertions.assertEquals("Sheet", ExcelUtil.formatSheetTitle(null));
+		Assertions.assertEquals("Illegal Characters", ExcelUtil.formatSheetTitle("Illegal [Characters]"));
+		Assertions.assertEquals("This is a title with over 31 ch", ExcelUtil.formatSheetTitle("This is a title with over 31 characters"));
 
 		Set<String> usedTitles = new HashSet<String>();
 		String startingTitle = "Starting Title With Too Many Characters";
 
 		String title1 = ExcelUtil.formatSheetTitle(startingTitle, usedTitles);
-		Assert.assertEquals("Starting Title With Too Many Ch", title1);
+		Assertions.assertEquals("Starting Title With Too Many Ch", title1);
 		usedTitles.add(title1);
 
 		String title2 = ExcelUtil.formatSheetTitle(startingTitle, usedTitles);
-		Assert.assertEquals("Starting Title With Too Many-1", title2);
+		Assertions.assertEquals("Starting Title With Too Many-1", title2);
 		usedTitles.add(title2);
 
 		String title3 = ExcelUtil.formatSheetTitle(startingTitle, usedTitles);
-		Assert.assertEquals("Starting Title With Too Many-2", title3);
+		Assertions.assertEquals("Starting Title With Too Many-2", title3);
 		usedTitles.add(title3);
 	}
 
@@ -145,15 +145,15 @@ public class ExcelUtilTest extends BaseModuleContextSensitiveTest {
 	protected void testCellContentsToTheRightOf(Sheet sheet, String contentsBefore, Object contentsToTest) {
 		Cell c = getCellToTheRightOf(sheet, contentsBefore);
 		Object contentsToCheck = ExcelUtil.getCellContents(c);
-		Assert.assertEquals(contentsToTest, contentsToCheck);
+		Assertions.assertEquals(contentsToTest, contentsToCheck);
 	}
 
 	protected void testSettingCellContents(Sheet sheet, String contentsBefore, Object valueToSet, int expectedCellType, Object expectedContents) {
 		Cell cell = getCellToTheRightOf(sheet, contentsBefore);
 		ExcelUtil.setCellContents(cell, valueToSet);
-		Assert.assertEquals(expectedCellType, cell.getCellType());
+		Assertions.assertEquals(expectedCellType, cell.getCellType());
 		Object actualContents = ExcelUtil.getCellContents(cell);
-		Assert.assertEquals(expectedContents, actualContents);
+		Assertions.assertEquals(expectedContents, actualContents);
 	}
 
 	protected Cell getCellToTheRightOf(Sheet sheet, Object contents) {

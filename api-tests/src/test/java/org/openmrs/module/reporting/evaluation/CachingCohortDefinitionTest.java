@@ -9,20 +9,20 @@
  */
 package org.openmrs.module.reporting.evaluation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 public class CachingCohortDefinitionTest extends BaseModuleContextSensitiveTest {
 	
@@ -31,12 +31,12 @@ public class CachingCohortDefinitionTest extends BaseModuleContextSensitiveTest 
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -55,17 +55,17 @@ public class CachingCohortDefinitionTest extends BaseModuleContextSensitiveTest 
 		ConfigurationPropertyCachingStrategy strategy = new ConfigurationPropertyCachingStrategy();
 		String maleKey = strategy.getCacheKey(males, ec);
 		String femaleKey = strategy.getCacheKey(females, ec);
-		assertNull("Cache should not have male filter yet", ec.getFromCache(maleKey));
+		assertNull(ec.getFromCache(maleKey), "Cache should not have male filter yet");
 
 		Cohort maleCohort = Context.getService(CohortDefinitionService.class).evaluate(males, ec);		
-		assertNotNull("Cache should have male filter now", ec.getFromCache(maleKey));
-		assertNull("Cache should not have female filter", ec.getFromCache(femaleKey));
+		assertNotNull(ec.getFromCache(maleKey), "Cache should have male filter now");
+		assertNull(ec.getFromCache(femaleKey), "Cache should not have female filter");
 
 		Cohort malesAgain = Context.getService(CohortDefinitionService.class).evaluate(males, ec);
-		assertEquals("Uncached and cached runs should be equals", maleCohort.size(), malesAgain.size());
+		assertEquals(maleCohort.size(), malesAgain.size(), "Uncached and cached runs should be equals");
 		
 		ec.setBaseCohort(maleCohort);
-		assertEquals("Cache should have been automatically cleared", 0, ec.getCache().size());
+		assertEquals(0, ec.getCache().size(), "Cache should have been automatically cleared");
 	}
 	
 }

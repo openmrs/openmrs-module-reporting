@@ -11,8 +11,8 @@ package org.openmrs.module.reporting.common;
 
 import java.util.Date;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.test.Verifies;
 
 /**
@@ -27,10 +27,10 @@ public class DateRangeTest {
 	@Verifies(value = "should return the passed date range formatted in interval notation", method = "format(DateRange,String,String)")
 	public void format_shouldReturnThePassedDateRangeFormattedInIntervalNotation() throws Exception {
 		DateRange dr1 = new DateRange(DateUtil.getDateTime(2007, 10, 1), true, DateUtil.getDateTime(2008, 11, 20), true);
-		Assert.assertEquals("[2007-10-01,2008-11-20]", DateRange.format(dr1, "yyyy-MM-dd", "*"));
+		Assertions.assertEquals("[2007-10-01,2008-11-20]", DateRange.format(dr1, "yyyy-MM-dd", "*"));
 		
 		DateRange dr2 = new DateRange(DateUtil.getDateTime(2007, 10, 1), false, null, false);
-		Assert.assertEquals("(10/01/2007,*)", DateRange.format(dr2, "MM/dd/yyyy", "*"));
+		Assertions.assertEquals("(10/01/2007,*)", DateRange.format(dr2, "MM/dd/yyyy", "*"));
 	}
 
 	/**
@@ -40,8 +40,8 @@ public class DateRangeTest {
 	@Verifies(value = "should return true if the passed date is after the date range", method = "isAfter(DateRange,Date)")
 	public void isAfter_shouldReturnTrueIfThePassedDateIsAfterTheDateRange() throws Exception {
 		DateRange dr = DateRange.parse("[2007-01-01,2008-01-01)", "yyyy-MM-dd", "*");
-		Assert.assertTrue(DateRange.isAfter(dr, DateUtil.getDateTime(2008, 1, 1)));
-		Assert.assertTrue(DateRange.isAfter(dr, DateUtil.getDateTime(2008, 1, 2)));
+		Assertions.assertTrue(DateRange.isAfter(dr, DateUtil.getDateTime(2008, 1, 1)));
+		Assertions.assertTrue(DateRange.isAfter(dr, DateUtil.getDateTime(2008, 1, 2)));
 	}
 
 	/**
@@ -51,9 +51,9 @@ public class DateRangeTest {
 	@Verifies(value = "should return false if the passed date is not after the passed date range", method = "isAfter(DateRange,Date)")
 	public void isAfter_shouldReturnFalseIfThePassedDateIsNotAfterThePassedDateRange() throws Exception {
 		DateRange dr = DateRange.parse("[2007-01-01,2008-01-01)", "yyyy-MM-dd", "*");
-		Assert.assertFalse(DateRange.isAfter(dr, DateUtil.getDateTime(2007, 12, 31)));
-		Assert.assertFalse(DateRange.isAfter(dr, DateUtil.getDateTime(2007, 1, 1)));
-		Assert.assertFalse(DateRange.isAfter(dr, DateUtil.getDateTime(2006, 1, 1)));
+		Assertions.assertFalse(DateRange.isAfter(dr, DateUtil.getDateTime(2007, 12, 31)));
+		Assertions.assertFalse(DateRange.isAfter(dr, DateUtil.getDateTime(2007, 1, 1)));
+		Assertions.assertFalse(DateRange.isAfter(dr, DateUtil.getDateTime(2006, 1, 1)));
 	}
 
 	/**
@@ -63,8 +63,8 @@ public class DateRangeTest {
 	@Verifies(value = "should return true if the passed date is before the date range", method = "isBefore(DateRange,Date)")
 	public void isBefore_shouldReturnTrueIfThePassedDateIsBeforeTheDateRange() throws Exception {
 		DateRange dr = DateRange.parse("(2007-01-01,2008-01-01)", "yyyy-MM-dd", "*");
-		Assert.assertTrue(DateRange.isBefore(dr, DateUtil.getDateTime(2007, 1, 1)));
-		Assert.assertTrue(DateRange.isBefore(dr, DateUtil.getDateTime(2006, 12, 31)));
+		Assertions.assertTrue(DateRange.isBefore(dr, DateUtil.getDateTime(2007, 1, 1)));
+		Assertions.assertTrue(DateRange.isBefore(dr, DateUtil.getDateTime(2006, 12, 31)));
 	}
 
 	/**
@@ -74,9 +74,9 @@ public class DateRangeTest {
 	@Verifies(value = "should return false if the passed date is not before the passed date range", method = "isBefore(DateRange,Date)")
 	public void isBefore_shouldReturnFalseIfThePassedDateIsNotBeforeThePassedDateRange() throws Exception {
 		DateRange dr = DateRange.parse("[2007-01-01,2008-01-01)", "yyyy-MM-dd", "*");
-		Assert.assertFalse(DateRange.isBefore(dr, DateUtil.getDateTime(2007, 1, 1)));
-		Assert.assertFalse(DateRange.isBefore(dr, DateUtil.getDateTime(2007, 6, 1)));
-		Assert.assertFalse(DateRange.isBefore(dr, DateUtil.getDateTime(2009, 1, 1)));
+		Assertions.assertFalse(DateRange.isBefore(dr, DateUtil.getDateTime(2007, 1, 1)));
+		Assertions.assertFalse(DateRange.isBefore(dr, DateUtil.getDateTime(2007, 6, 1)));
+		Assertions.assertFalse(DateRange.isBefore(dr, DateUtil.getDateTime(2009, 1, 1)));
 	}
 
 	/**
@@ -86,8 +86,8 @@ public class DateRangeTest {
 	@Verifies(value = "should return false if the passed date is before the date range", method = "isWithin(DateRange,Date)")
 	public void isWithin_shouldReturnFalseIfThePassedDateIsBeforeTheDateRange() throws Exception {
 		DateRange dr = DateRange.parse("(2007-01-01,2008-01-01)", "yyyy-MM-dd", "*");
-		Assert.assertFalse(DateRange.isWithin(dr, DateUtil.getDateTime(2007, 1, 1)));
-		Assert.assertFalse(DateRange.isWithin(dr, DateUtil.getDateTime(2006, 1, 1)));
+		Assertions.assertFalse(DateRange.isWithin(dr, DateUtil.getDateTime(2007, 1, 1)));
+		Assertions.assertFalse(DateRange.isWithin(dr, DateUtil.getDateTime(2006, 1, 1)));
 	}
 
 	/**
@@ -97,9 +97,9 @@ public class DateRangeTest {
 	@Verifies(value = "should return true if the passed date is within the passed date range", method = "isWithin(DateRange,Date)")
 	public void isWithin_shouldReturnTrueIfThePassedDateIsWithinThePassedDateRange() throws Exception {
 		DateRange dr = DateRange.parse("[2007-01-01,2008-01-01]", "yyyy-MM-dd", "*");
-		Assert.assertTrue(DateRange.isWithin(dr, DateUtil.getDateTime(2007, 1, 1)));
-		Assert.assertTrue(DateRange.isWithin(dr, DateUtil.getDateTime(2007, 6, 1)));
-		Assert.assertTrue(DateRange.isWithin(dr, DateUtil.getDateTime(2008, 1, 1)));
+		Assertions.assertTrue(DateRange.isWithin(dr, DateUtil.getDateTime(2007, 1, 1)));
+		Assertions.assertTrue(DateRange.isWithin(dr, DateUtil.getDateTime(2007, 6, 1)));
+		Assertions.assertTrue(DateRange.isWithin(dr, DateUtil.getDateTime(2008, 1, 1)));
 	}
 
 	/**
@@ -109,8 +109,8 @@ public class DateRangeTest {
 	@Verifies(value = "should return false if the passed date is after the passed date range", method = "isWithin(DateRange,Date)")
 	public void isWithin_shouldReturnFalseIfThePassedDateIsAfterThePassedDateRange() throws Exception {
 		DateRange dr = DateRange.parse("(2007-01-01,2008-01-01)", "yyyy-MM-dd", "*");
-		Assert.assertFalse(DateRange.isWithin(dr, DateUtil.getDateTime(2008, 1, 1)));
-		Assert.assertFalse(DateRange.isWithin(dr, DateUtil.getDateTime(2009, 1, 1)));
+		Assertions.assertFalse(DateRange.isWithin(dr, DateUtil.getDateTime(2008, 1, 1)));
+		Assertions.assertFalse(DateRange.isWithin(dr, DateUtil.getDateTime(2009, 1, 1)));
 	}
 
 	/**
@@ -120,19 +120,19 @@ public class DateRangeTest {
 	@Verifies(value = "should return a new DateRange parsed from interval notation", method = "parse(String,String,String)")
 	public void parse_shouldReturnANewDateRangeParsedFromIntervalNotation() throws Exception {
 		DateRange dr1 = DateRange.parse("(2007-01-01,2008-01-01)", "yyyy-MM-dd", "*");
-		Assert.assertFalse(dr1.isInclusiveOfStart());
-		Assert.assertFalse(dr1.isInclusiveOfEnd());
-		Assert.assertEquals(DateUtil.getDateTime(2007, 1, 1), dr1.getStartDate());
-		Assert.assertEquals(DateUtil.getDateTime(2008, 1, 1), dr1.getEndDate());
+		Assertions.assertFalse(dr1.isInclusiveOfStart());
+		Assertions.assertFalse(dr1.isInclusiveOfEnd());
+		Assertions.assertEquals(DateUtil.getDateTime(2007, 1, 1), dr1.getStartDate());
+		Assertions.assertEquals(DateUtil.getDateTime(2008, 1, 1), dr1.getEndDate());
 		DateRange dr2 = DateRange.parse("(01/01/2007,*]", "MM/dd/yyyy", "*");
-		Assert.assertFalse(dr2.isInclusiveOfStart());
-		Assert.assertTrue(dr2.isInclusiveOfEnd());
-		Assert.assertEquals(DateUtil.getDateTime(2007, 1, 1), dr2.getStartDate());
-		Assert.assertNull(dr2.getEndDate());
+		Assertions.assertFalse(dr2.isInclusiveOfStart());
+		Assertions.assertTrue(dr2.isInclusiveOfEnd());
+		Assertions.assertEquals(DateUtil.getDateTime(2007, 1, 1), dr2.getStartDate());
+		Assertions.assertNull(dr2.getEndDate());
 		DateRange dr3 = DateRange.parse("[*,12/2007]", "MM/yyyy", "*");
-		Assert.assertTrue(dr3.isInclusiveOfStart());
-		Assert.assertTrue(dr3.isInclusiveOfEnd());
-		Assert.assertNull(dr3.getStartDate());
-		Assert.assertEquals(DateUtil.getDateTime(2007, 12, 1), dr3.getEndDate());
+		Assertions.assertTrue(dr3.isInclusiveOfStart());
+		Assertions.assertTrue(dr3.isInclusiveOfEnd());
+		Assertions.assertNull(dr3.getStartDate());
+		Assertions.assertEquals(DateUtil.getDateTime(2007, 12, 1), dr3.getEndDate());
 	}
 }

@@ -10,7 +10,7 @@
 package org.openmrs.module.reporting.report.service.db;
 
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.usertype.UserType;
 
 import java.io.IOException;
@@ -104,17 +104,17 @@ public class PropertiesType implements UserType {
 	}
 
 	/** 
-	 * @see UserType#nullSafeGet(ResultSet, String[], Object)
+	 * @see UserType#nullSafeGet(ResultSet, int, WrapperOptions)
 	 */
-	public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner) throws HibernateException, SQLException {
-		String s = rs.getString(names[0]);
+	public Object nullSafeGet(ResultSet rs, int position, WrapperOptions options) throws HibernateException, SQLException {
+		String s = rs.getString(position);
         return assemble(s, null);
 	}
 
 	/** 
-	 * @see UserType#nullSafeSet(PreparedStatement, Object, int)
+	 * @see UserType#nullSafeSet(PreparedStatement, Object, int, WrapperOptions)
 	 */
-	public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session) throws HibernateException, SQLException {
+	public void nullSafeSet(PreparedStatement st, Object value, int index, WrapperOptions options) throws HibernateException, SQLException {
 		String val = (String) disassemble(value);
 		st.setString(index, val);
 	}
@@ -135,9 +135,9 @@ public class PropertiesType implements UserType {
 	}
 
 	/** 
-	 * @see UserType#sqlTypes()
+	 * @see UserType#getSqlType()
 	 */
-	public int[] sqlTypes() {
-		return new int[] { VARCHAR };
+	public int getSqlType() {
+		return VARCHAR;
 	}
 }

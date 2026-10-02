@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.dataset.DataSetRow;

@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.data.obs.evaluator;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
@@ -24,7 +24,7 @@ import org.openmrs.module.reporting.data.obs.definition.GroupMemberObsDataDefini
 import org.openmrs.module.reporting.data.obs.service.ObsDataService;
 import org.openmrs.module.reporting.evaluation.context.ObsEvaluationContext;
 import org.openmrs.module.reporting.query.obs.ObsIdSet;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -34,7 +34,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class GroupMemberObsDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 
@@ -52,7 +52,7 @@ public class GroupMemberObsDataEvaluatorTest extends BaseModuleContextSensitiveT
     @Qualifier("conceptService")
     ConceptService conceptService;
     
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
     }
@@ -117,7 +117,7 @@ public class GroupMemberObsDataEvaluatorTest extends BaseModuleContextSensitiveT
     }
 
     @Test
-	@Ignore // Ignoring this test for now, since in 1.9 the ObsValidator doesn't allow empty obs groups to be saved
+	@Disabled // Ignoring this test for now, since in 1.9 the ObsValidator doesn't allow empty obs groups to be saved
     public void testMakeSureEmptySingleEntryEvenIfNoMatchingObsInGroup() throws Exception {
 
         Concept groupConcept = conceptService.getConcept(10001);
@@ -142,7 +142,7 @@ public class GroupMemberObsDataEvaluatorTest extends BaseModuleContextSensitiveT
     }
 
     @Test
-	@Ignore // Ignoring this test for now, since in 1.9 the ObsValidator doesn't allow empty obs groups to be saved
+	@Disabled // Ignoring this test for now, since in 1.9 the ObsValidator doesn't allow empty obs groups to be saved
 	public void testMakeSureEmptyListEntryEvenIfNoMatchingObsInGroup() throws Exception {
 
         Concept groupConcept = conceptService.getConcept(10001);

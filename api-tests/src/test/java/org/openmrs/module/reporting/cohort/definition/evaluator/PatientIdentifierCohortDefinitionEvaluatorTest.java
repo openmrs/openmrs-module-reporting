@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Location;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.context.Context;
@@ -21,8 +21,8 @@ import org.openmrs.module.reporting.cohort.definition.PatientIdentifierCohortDef
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 /**
  * Test for the {@link PatientIdentifierCohortDefinitionEvaluator}
@@ -34,12 +34,12 @@ public class PatientIdentifierCohortDefinitionEvaluatorTest extends BaseModuleCo
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -54,20 +54,20 @@ public class PatientIdentifierCohortDefinitionEvaluatorTest extends BaseModuleCo
 			PatientIdentifierCohortDefinition picd = new PatientIdentifierCohortDefinition();
 			picd.addTypeToMatch(new PatientIdentifierType(2));
 			EvaluatedCohort c = Context.getService(CohortDefinitionService.class).evaluate(picd, new EvaluationContext());
-			Assert.assertEquals(8, c.getMemberIds().size());
+			Assertions.assertEquals(8, c.getMemberIds().size());
 		}
 		{
 			PatientIdentifierCohortDefinition picd = new PatientIdentifierCohortDefinition();
 			picd.addTypeToMatch(new PatientIdentifierType(1));
 			EvaluatedCohort c = Context.getService(CohortDefinitionService.class).evaluate(picd, new EvaluationContext());
-			Assert.assertEquals(3, c.getMemberIds().size());
+			Assertions.assertEquals(3, c.getMemberIds().size());
 		}
 		{
 			PatientIdentifierCohortDefinition picd = new PatientIdentifierCohortDefinition();
 			picd.addTypeToMatch(new PatientIdentifierType(1));
 			picd.addTypeToMatch(new PatientIdentifierType(2));
 			EvaluatedCohort c = Context.getService(CohortDefinitionService.class).evaluate(picd, new EvaluationContext());
-			Assert.assertEquals(10, c.getMemberIds().size());
+			Assertions.assertEquals(10, c.getMemberIds().size());
 		}
 	}
 
@@ -79,9 +79,9 @@ public class PatientIdentifierCohortDefinitionEvaluatorTest extends BaseModuleCo
 	public void evaluate_shouldReturnPatientsWhoHaveIdentifiersMatchingThePassedLocations() throws Exception {
 		PatientIdentifierCohortDefinition picd = new PatientIdentifierCohortDefinition();
 		picd.addTypeToMatch(new PatientIdentifierType(2));
-		Assert.assertEquals(8, Context.getService(CohortDefinitionService.class).evaluate(picd, new EvaluationContext()).getMemberIds().size());
+		Assertions.assertEquals(8, Context.getService(CohortDefinitionService.class).evaluate(picd, new EvaluationContext()).getMemberIds().size());
 		picd.addLocationToMatch(new Location(3));
-		Assert.assertEquals(1, Context.getService(CohortDefinitionService.class).evaluate(picd, new EvaluationContext()).getMemberIds().size());
+		Assertions.assertEquals(1, Context.getService(CohortDefinitionService.class).evaluate(picd, new EvaluationContext()).getMemberIds().size());
 	}
 
 	/**
@@ -94,29 +94,29 @@ public class PatientIdentifierCohortDefinitionEvaluatorTest extends BaseModuleCo
 		{
 			picd.setTextToMatch("TEST");
 			EvaluatedCohort c = Context.getService(CohortDefinitionService.class).evaluate(picd, new EvaluationContext());
-			Assert.assertEquals(0, c.size());
+			Assertions.assertEquals(0, c.size());
 		}
 		{
 			picd.setTextToMatch("TEST901");
 			EvaluatedCohort c = Context.getService(CohortDefinitionService.class).evaluate(picd, new EvaluationContext());
-			Assert.assertEquals(1, c.size());
+			Assertions.assertEquals(1, c.size());
 		}
 		{
 			picd.setTextToMatch("TEST%");
 			EvaluatedCohort c = Context.getService(CohortDefinitionService.class).evaluate(picd, new EvaluationContext());
-			Assert.assertEquals(1, c.size());
-			Assert.assertTrue(c.contains(20));
+			Assertions.assertEquals(1, c.size());
+			Assertions.assertTrue(c.contains(20));
 		}
 		{
 			picd.setTextToMatch("%TEST");
 			EvaluatedCohort c = Context.getService(CohortDefinitionService.class).evaluate(picd, new EvaluationContext());
-			Assert.assertEquals(1, c.size());
-			Assert.assertTrue(c.contains(21));
+			Assertions.assertEquals(1, c.size());
+			Assertions.assertTrue(c.contains(21));
 		}	
 		{
 			picd.setTextToMatch("%TEST%");
 			EvaluatedCohort c = Context.getService(CohortDefinitionService.class).evaluate(picd, new EvaluationContext());
-			Assert.assertEquals(2, c.size());
+			Assertions.assertEquals(2, c.size());
 		}
 	}
 
@@ -129,6 +129,6 @@ public class PatientIdentifierCohortDefinitionEvaluatorTest extends BaseModuleCo
 		PatientIdentifierCohortDefinition picd = new PatientIdentifierCohortDefinition();
 		picd.setRegexToMatch(".*-.*"); // Match any identifier that contains a dash
 		EvaluatedCohort c = Context.getService(CohortDefinitionService.class).evaluate(picd, new EvaluationContext());
-		Assert.assertEquals(4, c.size());
+		Assertions.assertEquals(4, c.size());
 	}
 }

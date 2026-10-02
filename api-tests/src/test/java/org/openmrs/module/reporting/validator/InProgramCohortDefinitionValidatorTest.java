@@ -12,11 +12,11 @@ package org.openmrs.module.reporting.validator;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Program;
 import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
@@ -38,7 +38,7 @@ public class InProgramCohortDefinitionValidatorTest  extends BaseModuleContextSe
 		Errors errors = new BindException(inProgramCohortDefinition, "cohortDefinition");
 		new CohortDefinitionValidator().validate(inProgramCohortDefinition, errors);
 		
-		Assert.assertTrue(errors.hasErrors());
+		Assertions.assertTrue(errors.hasErrors());
 	}
 	
 	/**
@@ -53,7 +53,7 @@ public class InProgramCohortDefinitionValidatorTest  extends BaseModuleContextSe
 		Errors errors = new BindException(inProgramCohortDefinition, "cohortDefinition");
 		new CohortDefinitionValidator().validate(inProgramCohortDefinition, errors);
 		
-		Assert.assertTrue(errors.hasErrors());
+		Assertions.assertTrue(errors.hasErrors());
 	}
 	
 	/**
@@ -72,6 +72,6 @@ public class InProgramCohortDefinitionValidatorTest  extends BaseModuleContextSe
 		Errors errors = new BindException(inProgramCohortDefinition, "cohortDefinition");
 		new CohortDefinitionValidator().validate(inProgramCohortDefinition, errors);
 		
-		Assert.assertFalse(errors.hasErrors());
+		Assertions.assertFalse(errors.hasErrors());
 	}
 }

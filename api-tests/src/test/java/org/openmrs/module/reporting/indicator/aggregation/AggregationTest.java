@@ -14,9 +14,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.test.Verifies;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Tests for classes in the aggregation package
@@ -26,11 +27,13 @@ public class AggregationTest {
 	/**
 	 * @see {@link MeanAggregator#compute(Collection)}
 	 */
-	@Test(expected = RuntimeException.class)
+	@Test
 	@Verifies(value = "should calculate mean with null", method = "compute(Collection)")
 	public void shouldCalulateMeanWithNull() {
-		MeanAggregator ma = new MeanAggregator();
-		ma.compute(null);
+		assertThrows(RuntimeException.class, () -> {
+			MeanAggregator ma = new MeanAggregator();
+			ma.compute(null);
+		});
 	}
 	
 	/**
@@ -41,7 +44,7 @@ public class AggregationTest {
 	public void shouldCalulateMeanWithEmptySet() {
 		MeanAggregator ma = new MeanAggregator();
 		Collection<Number> c = new LinkedHashSet<Number>();
-		Assert.assertTrue(ma.compute(c).equals(Double.valueOf(0) / 0));
+		Assertions.assertTrue(ma.compute(c).equals(Double.valueOf(0) / 0));
 	}
 	
 	/**
@@ -53,7 +56,7 @@ public class AggregationTest {
 		MeanAggregator ma = new MeanAggregator();
 		Collection<Number> c = new LinkedHashSet<Number>();
 		c.add(1);
-		Assert.assertTrue(ma.compute(c).equals(Double.valueOf(1)));
+		Assertions.assertTrue(ma.compute(c).equals(Double.valueOf(1)));
 	}
 	
 	/**
@@ -67,17 +70,19 @@ public class AggregationTest {
 		c.add(1);
 		c.add(2);
 		c.add(5);
-		Assert.assertTrue(ma.compute(c).equals(Double.valueOf(3)));
+		Assertions.assertTrue(ma.compute(c).equals(Double.valueOf(3)));
 	}
 	
 	/**
 	 * @see {@link MedianAggregator#compute(Collection)}
 	 */
-	@Test(expected = RuntimeException.class)
+	@Test
 	@Verifies(value = "should calculate median with null", method = "compute(Collection)")
 	public void shouldCalulateMedianWithNull() {
-		MedianAggregator ma = new MedianAggregator();
-		ma.compute(null);
+		assertThrows(RuntimeException.class, () -> {
+			MedianAggregator ma = new MedianAggregator();
+			ma.compute(null);
+		});
 	}
 	
 	/**
@@ -88,7 +93,7 @@ public class AggregationTest {
 	public void shouldCalulateMedianOfEmptySet() {
 		Collection<Number> c = new LinkedHashSet<Number>();
 		MedianAggregator ma = new MedianAggregator();
-		Assert.assertTrue(ma.compute(c).equals(Double.valueOf(0) / 0));
+		Assertions.assertTrue(ma.compute(c).equals(Double.valueOf(0) / 0));
 	}
 	
 	/**
@@ -100,7 +105,7 @@ public class AggregationTest {
 		Collection<Number> c = new LinkedHashSet<Number>();
 		c.add(1);
 		MedianAggregator ma = new MedianAggregator();
-		Assert.assertTrue(ma.compute(c).equals(1));
+		Assertions.assertTrue(ma.compute(c).equals(1));
 	}
 	
 	/**
@@ -114,7 +119,7 @@ public class AggregationTest {
 		c.add(5);
 		c.add(1);
 		MedianAggregator ma = new MedianAggregator();
-		Assert.assertTrue(ma.compute(c).equals(1));
+		Assertions.assertTrue(ma.compute(c).equals(1));
 	}
 	
 	/**
@@ -129,27 +134,31 @@ public class AggregationTest {
 		c.add(5);
 		c.add(2);
 		MedianAggregator ma = new MedianAggregator();
-		Assert.assertTrue(ma.compute(c).equals(1.5));
+		Assertions.assertTrue(ma.compute(c).equals(1.5));
 	}
 	
 	/**
 	 * @see {@link ModeAggregator#compute(Collection)}
 	 */
-	@Test(expected = RuntimeException.class)
+	@Test
 	@Verifies(value = "ModeAggregator should throw exception with null list", method = "compute(Collection)")
 	public void modeAggregator_shouldThrowExceptionWithNullList() {
-		ModeAggregator ma = new ModeAggregator();
-		ma.compute(null);
+		assertThrows(RuntimeException.class, () -> {
+			ModeAggregator ma = new ModeAggregator();
+			ma.compute(null);
+		});
 	}
 	
 	/**
 	 * @see {@link ModeAggregator#compute(Collection)}
 	 */
-	@Test(expected = RuntimeException.class)
+	@Test
 	@Verifies(value = "ModeAggregator should throw exception with empty list", method = "compute(Collection)")
 	public void modeAggregator_shouldThrowExceptionWithEmptyList() {
-		ModeAggregator ma = new ModeAggregator();
-		ma.compute(Collections.<Number>emptyList());
+		assertThrows(RuntimeException.class, () -> {
+			ModeAggregator ma = new ModeAggregator();
+			ma.compute(Collections.<Number>emptyList());
+		});
 	}
 	
 	/**
@@ -166,6 +175,6 @@ public class AggregationTest {
 		c.add(10);
 		c.add(5);
 		c.add(3);
-		Assert.assertTrue(ma.compute(c).equals(10));
+		Assertions.assertTrue(ma.compute(c).equals(10));
 	}
 }

@@ -17,10 +17,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.api.PatientService;
@@ -40,7 +40,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.dimension.CohortIndicatorAndDimensionResult;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -49,7 +49,7 @@ public class MultiPeriodIndicatorDataSetEvaluatorTest extends BaseModuleContextS
 	@Autowired
 	PatientService patientService;
 
-	@Before
+	@BeforeEach
 	// This is needed due to a change to standardTestDataset in the OpenMRS 2.2 release that changed person 6 birth year from 2007 to 1975
 	public void setup() {
 		Patient p = patientService.getPatient(6);
@@ -65,7 +65,7 @@ public class MultiPeriodIndicatorDataSetEvaluatorTest extends BaseModuleContextS
 	public void evaluate_shouldEvaluateAMultiPeriodIndicatorDataSetDefinition() throws Exception {
 		// patient 6's birthdate is 2007-05-27 in the standard test dataset
 		DateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
-		Assert.assertEquals(ymd.parse("2007-05-27"), Context.getPatientService().getPatient(6).getBirthdate());
+		Assertions.assertEquals(ymd.parse("2007-05-27"), Context.getPatientService().getPatient(6).getBirthdate());
 		
 		AgeCohortDefinition lessThanOne = new AgeCohortDefinition();
 		lessThanOne.addParameter(new Parameter("effectiveDate", "effectiveDate", Date.class));
@@ -89,7 +89,7 @@ public class MultiPeriodIndicatorDataSetEvaluatorTest extends BaseModuleContextS
 		
 		MultiPeriodIndicatorDataSetDefinition multi = new MultiPeriodIndicatorDataSetDefinition(def);
 		// for every month in 2009, which is the year that patient 6 turns 2 years old.
-		Assert.assertEquals(0, Calendar.JANUARY);
+		Assertions.assertEquals(0, Calendar.JANUARY);
 		Location loc = new Location(1);
 		for (int i = 0; i < 12; ++i) {
 			Date startDate = DateUtil.getDateTime(2009, i, 1);
@@ -103,9 +103,9 @@ public class MultiPeriodIndicatorDataSetEvaluatorTest extends BaseModuleContextS
 		for (DataSetRow row : result) {
 			Date rowStartDate = (Date) row.getColumnValue("startDate");
 			if (rowStartDate.compareTo(june1) < 0) {
-				Assert.assertEquals("Should be 1 patient before June", 1d, ((CohortIndicatorAndDimensionResult) row.getColumnValue("1")).getValue().doubleValue(), 0);
+				Assertions.assertEquals(1d, ((CohortIndicatorAndDimensionResult) row.getColumnValue("1")).getValue().doubleValue(), 0, "Should be 1 patient before June");
 			} else {
-				Assert.assertEquals("Should be 0 patients after June", 0d, ((CohortIndicatorAndDimensionResult) row.getColumnValue("1")).getValue().doubleValue(), 0);
+				Assertions.assertEquals(0d, ((CohortIndicatorAndDimensionResult) row.getColumnValue("1")).getValue().doubleValue(), 0, "Should be 0 patients after June");
 			}
 		}
 	}

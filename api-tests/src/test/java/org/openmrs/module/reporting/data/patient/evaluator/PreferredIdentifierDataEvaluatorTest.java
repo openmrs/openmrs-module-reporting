@@ -9,10 +9,10 @@
  */
 package org.openmrs.module.reporting.data.patient.evaluator;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.api.context.Context;
@@ -22,8 +22,8 @@ import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinitio
 import org.openmrs.module.reporting.data.patient.definition.PreferredIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 public class PreferredIdentifierDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
@@ -32,12 +32,12 @@ public class PreferredIdentifierDataEvaluatorTest extends BaseModuleContextSensi
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -56,11 +56,11 @@ public class PreferredIdentifierDataEvaluatorTest extends BaseModuleContextSensi
 		d.setIdentifierType(Context.getPatientService().getPatientIdentifierType(1));
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(d, context);
 		
-		Assert.assertEquals(3, pd.getData().size()); // TODO: Is this what we want, or do we want all 4 patients returned, with potential null results?
-		Assert.assertEquals("101-6", getIdentifier(pd, 2));
-		Assert.assertNull(pd.getData().get(6));
-		Assert.assertEquals("6TS-4", getIdentifier(pd, 7));
-		Assert.assertEquals("7TU-8",  getIdentifier(pd, 8));
+		Assertions.assertEquals(3, pd.getData().size()); // TODO: Is this what we want, or do we want all 4 patients returned, with potential null results?
+		Assertions.assertEquals("101-6", getIdentifier(pd, 2));
+		Assertions.assertNull(pd.getData().get(6));
+		Assertions.assertEquals("6TS-4", getIdentifier(pd, 7));
+		Assertions.assertEquals("7TU-8",  getIdentifier(pd, 8));
 	}
 
 	/**
@@ -78,15 +78,15 @@ public class PreferredIdentifierDataEvaluatorTest extends BaseModuleContextSensi
 		d.setLocation(Context.getLocationService().getLocation(1));
 
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(d, context);
-		Assert.assertNull(getIdentifier(pd, 6));
+		Assertions.assertNull(getIdentifier(pd, 6));
 
 		d.setLocation(null);
 		pd = Context.getService(PatientDataService.class).evaluate(d, context);
-		Assert.assertEquals("12345K", getIdentifier(pd, 6));
+		Assertions.assertEquals("12345K", getIdentifier(pd, 6));
 
 		d.setLocation(Context.getLocationService().getLocation(3));
 		pd = Context.getService(PatientDataService.class).evaluate(d, context);
-		Assert.assertEquals("12345K", getIdentifier(pd, 6));
+		Assertions.assertEquals("12345K", getIdentifier(pd, 6));
 	}
 
 	private String getIdentifier(EvaluatedPatientData pd, Integer pId) {

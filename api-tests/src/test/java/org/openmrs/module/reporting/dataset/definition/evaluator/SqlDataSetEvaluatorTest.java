@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -23,13 +23,14 @@ import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 public class SqlDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
@@ -38,7 +39,7 @@ public class SqlDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -52,12 +53,12 @@ public class SqlDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 		SqlDataSetDefinition d = new SqlDataSetDefinition();
 		d.setSqlQuery("select t.patient_id, p.gender, p.birthdate from patient t, person p where t.patient_id = p.person_id and t.patient_id = 2");
 		SimpleDataSet result = (SimpleDataSet) Context.getService(DataSetDefinitionService.class).evaluate(d, null);
-		Assert.assertEquals(1, result.getRows().size());
-		Assert.assertEquals(3, result.getMetaData().getColumnCount());
+		Assertions.assertEquals(1, result.getRows().size());
+		Assertions.assertEquals(3, result.getMetaData().getColumnCount());
 		DataSetRow firstRow = result.getRows().get(0);
-		Assert.assertEquals(2, firstRow.getColumnValue("patient_id"));
-		Assert.assertEquals("M", firstRow.getColumnValue("gender"));
-		Assert.assertEquals(DateUtil.getDateTime(1975, 4, 8), firstRow.getColumnValue("birthdate"));
+		Assertions.assertEquals(2, firstRow.getColumnValue("patient_id"));
+		Assertions.assertEquals("M", firstRow.getColumnValue("gender"));
+		Assertions.assertEquals(DateUtil.getDateTime(1975, 4, 8), firstRow.getColumnValue("birthdate"));
 	}
 	
 	/**
@@ -71,12 +72,12 @@ public class SqlDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 		c.addParameterValue("patientId", 21);
 		d.setSqlQuery("select t.patient_id, p.gender, p.birthdate from patient t inner join person p on t.patient_id = p.person_id where t.patient_id = :patientId order by patient_id asc");
 		SimpleDataSet result = (SimpleDataSet) Context.getService(DataSetDefinitionService.class).evaluate(d, c);
-		Assert.assertEquals(1, result.getRows().size());
-		Assert.assertEquals(3, result.getMetaData().getColumnCount());
+		Assertions.assertEquals(1, result.getRows().size());
+		Assertions.assertEquals(3, result.getMetaData().getColumnCount());
 		DataSetRow firstRow = result.getRows().get(0);
-		Assert.assertEquals(21, firstRow.getColumnValue("patient_id"));
-		Assert.assertEquals("M", firstRow.getColumnValue("gender"));
-		Assert.assertEquals(DateUtil.getDateTime(1959, 6, 8), firstRow.getColumnValue("birthdate"));
+		Assertions.assertEquals(21, firstRow.getColumnValue("patient_id"));
+		Assertions.assertEquals("M", firstRow.getColumnValue("gender"));
+		Assertions.assertEquals(DateUtil.getDateTime(1959, 6, 8), firstRow.getColumnValue("birthdate"));
 	}
 	
 	/**
@@ -90,32 +91,36 @@ public class SqlDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 		c.addParameterValue("patientId", Arrays.asList(21, 22));
 		d.setSqlQuery("select t.patient_id, p.gender, p.birthdate from patient t inner join person p on t.patient_id = p.person_id where t.patient_id in :patientId order by patient_id desc");
 		SimpleDataSet result = (SimpleDataSet) Context.getService(DataSetDefinitionService.class).evaluate(d, c);
-		Assert.assertEquals(2, result.getRows().size());
-		Assert.assertEquals(3, result.getMetaData().getColumnCount());
+		Assertions.assertEquals(2, result.getRows().size());
+		Assertions.assertEquals(3, result.getMetaData().getColumnCount());
 		DataSetRow firstRow = result.getRows().get(0);
-		Assert.assertEquals(22, firstRow.getColumnValue("patient_id"));
-		Assert.assertEquals("F", firstRow.getColumnValue("gender"));
-		Assert.assertEquals(DateUtil.getDateTime(1997, 7, 8), firstRow.getColumnValue("birthdate"));
+		Assertions.assertEquals(22, firstRow.getColumnValue("patient_id"));
+		Assertions.assertEquals("F", firstRow.getColumnValue("gender"));
+		Assertions.assertEquals(DateUtil.getDateTime(1997, 7, 8), firstRow.getColumnValue("birthdate"));
 	}
 
 	/**
 	 * @see {@link SqlDataSetEvaluator#evaluate(DataSetDefinition,EvaluationContext)}
 	 */
-	@Test(expected=EvaluationException.class)
+	@Test
     @Verifies(value = "should protect SQL Query Against database modifications", method = "evaluate(DataSetDefinition,EvaluationContext)")
     public void evaluate_shouldProtectSQLQueryAgainstDatabaseModifications() throws EvaluationException {
-        SqlDataSetDefinition dataSetDefinition = new SqlDataSetDefinition();
-        EvaluationContext context = new EvaluationContext(new Date());
-        String query = "update person set gender='F'";
-        dataSetDefinition.setSqlQuery(query);
-        Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, context);
+    	assertThrows(EvaluationException.class, () -> {
+	        SqlDataSetDefinition dataSetDefinition = new SqlDataSetDefinition();
+	        EvaluationContext context = new EvaluationContext(new Date());
+	        String query = "update person set gender='F'";
+	        dataSetDefinition.setSqlQuery(query);
+	        Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, context);
+    	});
     }
 
-    @Test(expected = EvaluationException.class)
+    @Test
 	public void buildQuery_shouldThrowAnExceptionIfDuplicateColumnsExist() throws EvaluationException {
-		SqlDataSetDefinition dataSetDefinition = new SqlDataSetDefinition();
-		dataSetDefinition.setSqlQuery("select patient_id, patient_id from patient");
-		Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, new EvaluationContext());
+		assertThrows(EvaluationException.class, () -> {
+			SqlDataSetDefinition dataSetDefinition = new SqlDataSetDefinition();
+			dataSetDefinition.setSqlQuery("select patient_id, patient_id from patient");
+			Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, new EvaluationContext());
+		});
 	}
 
 	/**
@@ -131,12 +136,12 @@ public class SqlDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 		context.addParameterValue("Retired", Boolean.TRUE);
 
 		SimpleDataSet ds = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, context);
-		Assert.assertEquals(1, ds.getRows().size());
+		Assertions.assertEquals(1, ds.getRows().size());
 
 		context.addParameterValue("Retired", Boolean.FALSE);
 
 		ds = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, context);
-		Assert.assertEquals(2, ds.getRows().size());
+		Assertions.assertEquals(2, ds.getRows().size());
 	}
 
 	@Test
@@ -153,6 +158,6 @@ public class SqlDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 		context.addParameterValue("locations", locationList);
 
 		SimpleDataSet ds = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(dataSetDefinition, context);
-		Assert.assertEquals(2, ds.getRows().size());
+		Assertions.assertEquals(2, ds.getRows().size());
 	}
 }

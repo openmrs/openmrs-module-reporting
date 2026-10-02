@@ -9,10 +9,10 @@
  */
 package org.openmrs.module.reporting.indicator;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.ReportingConstants;
@@ -27,8 +27,8 @@ import org.openmrs.module.reporting.indicator.CohortIndicator.IndicatorType;
 import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.definition.PeriodIndicatorReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 
 public class PeriodIndicatorReportTest extends BaseModuleContextSensitiveTest {
@@ -38,12 +38,12 @@ public class PeriodIndicatorReportTest extends BaseModuleContextSensitiveTest {
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -76,7 +76,7 @@ public class PeriodIndicatorReportTest extends BaseModuleContextSensitiveTest {
 		ReportData data = rs.evaluate(report, context);
 		DataSet ds = data.getDataSets().values().iterator().next();
 		IndicatorResult ir = (IndicatorResult) ds.iterator().next().getColumnValue("1.A");
-		Assert.assertEquals(1, ir.getValue().intValue());
+		Assertions.assertEquals(1, ir.getValue().intValue());
 	}
 	
 	@Test
@@ -116,7 +116,7 @@ public class PeriodIndicatorReportTest extends BaseModuleContextSensitiveTest {
 		DataSet ds = data.getDataSets().values().iterator().next();
 		IndicatorResult ir = (IndicatorResult) ds.iterator().next().getColumnValue("1.A");
 		Fraction fraction = (Fraction) ir.getValue();
-		Assert.assertEquals(1, fraction.getNumerator());
-		Assert.assertEquals(6, fraction.getDenominator());
+		Assertions.assertEquals(1, fraction.getNumerator());
+		Assertions.assertEquals(6, fraction.getDenominator());
 	}
 }

@@ -9,15 +9,15 @@
  */
 package org.openmrs.module.reporting.evaluation;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterException;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests for the EvaluationContext expression parsing
@@ -84,7 +84,7 @@ public class EvaluationContextTest extends BaseModuleContextSensitiveTest {
             try {
                 Object actual = evaluate("${" + badExpression + "}");
                 if (!actual.equals(badExpression)) {
-                    Assert.fail("Expression should have failed: " + badExpression + " => " + actual);
+                    Assertions.fail("Expression should have failed: " + badExpression + " => " + actual);
                 }
             } catch (ParameterException ex) {
                 // expected

@@ -10,9 +10,9 @@
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
@@ -27,8 +27,8 @@ import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 import java.text.SimpleDateFormat;
@@ -44,12 +44,12 @@ public class NumericObsCohortDefinitionEvaluatorTest extends BaseModuleContextSe
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -64,11 +64,11 @@ public class NumericObsCohortDefinitionEvaluatorTest extends BaseModuleContextSe
 		cd.setTimeModifier(TimeModifier.ANY);
 		cd.setQuestion(new Concept(5089));
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertEquals(4, cohort.size());
-		Assert.assertTrue(cohort.contains(7));
-		Assert.assertTrue(cohort.contains(20));
-		Assert.assertTrue(cohort.contains(21));
-		Assert.assertTrue(cohort.contains(22));
+		Assertions.assertEquals(4, cohort.size());
+		Assertions.assertTrue(cohort.contains(7));
+		Assertions.assertTrue(cohort.contains(20));
+		Assertions.assertTrue(cohort.contains(21));
+		Assertions.assertTrue(cohort.contains(22));
 	}
 	
 	/**
@@ -88,8 +88,8 @@ public class NumericObsCohortDefinitionEvaluatorTest extends BaseModuleContextSe
 		cd.setOperator2(RangeComparator.LESS_THAN);
 		cd.setValue2(61.5d);
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertEquals(1, cohort.size());
-		Assert.assertTrue(cohort.contains(7));
+		Assertions.assertEquals(1, cohort.size());
+		Assertions.assertTrue(cohort.contains(7));
 	}
 	
 	/**
@@ -109,9 +109,9 @@ public class NumericObsCohortDefinitionEvaluatorTest extends BaseModuleContextSe
 		cd.setOperator2(RangeComparator.LESS_EQUAL);
 		cd.setValue2(200d);
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertEquals(2, cohort.size());
-		Assert.assertTrue(cohort.contains(20));
-		Assert.assertTrue(cohort.contains(22));
+		Assertions.assertEquals(2, cohort.size());
+		Assertions.assertTrue(cohort.contains(20));
+		Assertions.assertTrue(cohort.contains(22));
 	}
 	
 	/**
@@ -131,8 +131,8 @@ public class NumericObsCohortDefinitionEvaluatorTest extends BaseModuleContextSe
 		cd.setOperator2(RangeComparator.LESS_EQUAL);
 		cd.setValue2(200d);
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertEquals(1, cohort.size());
-		Assert.assertTrue(cohort.contains(22));
+		Assertions.assertEquals(1, cohort.size());
+		Assertions.assertTrue(cohort.contains(22));
 	}
 
     @Test
@@ -227,8 +227,8 @@ public class NumericObsCohortDefinitionEvaluatorTest extends BaseModuleContextSe
     }
 
     private void assertCohort(Cohort cohort, Integer... memberIds) {
-        Assert.assertEquals("Cohort was supposed to be: " + Arrays.asList(memberIds) + " but was instead: " + cohort.getCommaSeparatedPatientIds(), memberIds.length, cohort.size());
+        Assertions.assertEquals(memberIds.length, cohort.size(), "Cohort was supposed to be: " + Arrays.asList(memberIds) + " but was instead: " + cohort.getCommaSeparatedPatientIds());
         for (Integer memberId : memberIds)
-            Assert.assertTrue("Cohort does not contain patient " + memberId, cohort.contains(memberId));
+            Assertions.assertTrue(cohort.contains(memberId), "Cohort does not contain patient " + memberId);
     }
 }

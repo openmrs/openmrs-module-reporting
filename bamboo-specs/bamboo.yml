@@ -10,9 +10,6 @@ stages:
     manual: false
     final: false
     jobs:
-    - Build and Test JDK 8
-    - Build and Test JDK 17
-    - Build and Test JDK 11
     - Build and Test JDK 24
     - Build and Test JDK 21
 - Deploy:
@@ -25,57 +22,6 @@ stages:
     final: false
     jobs:
     - Release to Maven
-Build and Test JDK 8:
-  key: BTJ8
-  tasks:
-  - checkout:
-      force-clean-build: 'false'
-      description: Checkout default repository
-  - script:
-      interpreter: SHELL
-      scripts:
-      - |-
-        #!/bin/bash -eu
-
-        set -x
-
-        docker run -v m2-repo:/root/.m2/repository -v ${PWD}:/module --rm -w="/module" maven:3.9.9-amazoncorretto-8 bash -c 'mvn clean package && chmod -R 777 .'
-      description: Build and test
-  artifact-subscriptions: []
-Build and Test JDK 17:
-  key: BTJ17
-  tasks:
-  - checkout:
-      force-clean-build: 'false'
-      description: Checkout default repository
-  - script:
-      interpreter: SHELL
-      scripts:
-      - |-
-        #!/bin/bash -eu
-
-        set -x
-
-        docker run -v m2-repo:/root/.m2/repository -v ${PWD}:/module --rm -w="/module" maven:3.9.9-amazoncorretto-17 bash -c 'mvn clean package && chmod -R 777 .'
-      description: Build and test
-  artifact-subscriptions: []
-Build and Test JDK 11:
-  key: BTJ11
-  tasks:
-  - checkout:
-      force-clean-build: 'false'
-      description: Checkout default repository
-  - script:
-      interpreter: SHELL
-      scripts:
-      - |-
-        #!/bin/bash -eu
-
-        set -x
-
-        docker run -v m2-repo:/root/.m2/repository -v ${PWD}:/module --rm -w="/module" maven:3.9.9-amazoncorretto-11 bash -c 'mvn clean package && chmod -R 777 .'
-      description: Build and test
-  artifact-subscriptions: []
 Build and Test JDK 24:
   key: BTJ24
   tasks:

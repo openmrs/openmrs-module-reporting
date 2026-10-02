@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.data.patient.evaluator;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.CalculationRegistration;
@@ -23,7 +23,8 @@ import org.openmrs.module.reporting.data.patient.definition.PatientCalculationDa
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Test class for {@link PatientCalculationDataEvaluator}
@@ -35,12 +36,12 @@ public class PatientCalculationDataEvaluatorTest extends BaseModuleContextSensit
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in {@link org.openmrs.test.BaseContextSensitiveTest}
+	 * Run this before each unit test in this class. The "@BeforeEach" method in {@link org.openmrs.test.jupiter.BaseContextSensitiveTest}
 	 * is run right before this method.
 	 *
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -70,11 +71,11 @@ public class PatientCalculationDataEvaluatorTest extends BaseModuleContextSensit
 
 		// check a valid entry
 		CalculationResult result = (CalculationResult) pd.getData().get(7);
-		Assert.assertEquals("5946f880-b197-400b-9caa-a3c661d23041", result.getValue());
+		Assertions.assertEquals("5946f880-b197-400b-9caa-a3c661d23041", result.getValue());
 
 		// check an invalid entry
 		result = (CalculationResult) pd.getData().get(-1);
-		Assert.assertEquals(null, result.getValue());
+		Assertions.assertEquals(null, result.getValue());
 	}
 
 	/**
@@ -82,11 +83,13 @@ public class PatientCalculationDataEvaluatorTest extends BaseModuleContextSensit
 	 * @see PatientCalculationDataEvaluator#evaluate(org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition,
 	 *      org.openmrs.module.reporting.evaluation.EvaluationContext)
 	 */
-	@Test(expected = EvaluationException.class)
+	@Test
 	public void evaluate_shouldThrowAnErrorIfNoCalculationRegistrationExistsOnTheDefinition() throws Exception {
-		EvaluationContext context = new EvaluationContext();
-		context.setBaseCohort(new Cohort("7"));
-		PatientCalculationDataDefinition d = new PatientCalculationDataDefinition("Example");
-		Context.getService(PatientDataService.class).evaluate(d, context);
+		assertThrows(EvaluationException.class, () -> {
+			EvaluationContext context = new EvaluationContext();
+			context.setBaseCohort(new Cohort("7"));
+			PatientCalculationDataDefinition d = new PatientCalculationDataDefinition("Example");
+			Context.getService(PatientDataService.class).evaluate(d, context);
+		});
 	}
 }

@@ -12,14 +12,14 @@ package org.openmrs.module.reporting.cohort.definition.evaluator;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.ScriptedCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.ScriptingLanguage;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.util.OpenmrsClassLoader;
 
 /**
@@ -36,10 +36,10 @@ public class ScriptedCohortDefinitionEvaluatorTest extends BaseModuleContextSens
 		
 		ScriptedCohortDefinition cohortDefinition = new ScriptedCohortDefinition(new ScriptingLanguage("Groovy"), script);
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, null);
-		Assert.assertEquals(4, cohort.size());
-		Assert.assertTrue(cohort.contains(2));
-		Assert.assertTrue(cohort.contains(6));
-		Assert.assertTrue(cohort.contains(7));
-		Assert.assertTrue(cohort.contains(8));
+		Assertions.assertEquals(4, cohort.size());
+		Assertions.assertTrue(cohort.contains(2));
+		Assertions.assertTrue(cohort.contains(6));
+		Assertions.assertTrue(cohort.contains(7));
+		Assertions.assertTrue(cohort.contains(8));
 	}
 }

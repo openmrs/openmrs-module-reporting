@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.reporting.data.converter;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.common.AgeRange;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -33,10 +33,10 @@ public class AgeRangeConverterTest {
 	@Test
 	public void convert_shouldConvertAnAgeToAMatchingDefinedAgeRange() throws Exception {
 		Age sixMonthsOld = new Age(DateUtil.getDateTime(2011, 1, 1), DateUtil.getDateTime(2011, 7, 2));
-		Assert.assertEquals("<18m", getConverter().convert(sixMonthsOld).toString());
+		Assertions.assertEquals("<18m", getConverter().convert(sixMonthsOld).toString());
 		
 		Age seventeenYearsOld = new Age(DateUtil.getDateTime(1994, 1, 1), DateUtil.getDateTime(2011, 7, 2));
-		Assert.assertEquals("2y-17y", getConverter().convert(seventeenYearsOld).toString());
+		Assertions.assertEquals("2y-17y", getConverter().convert(seventeenYearsOld).toString());
 	}
 
 	/**
@@ -47,6 +47,6 @@ public class AgeRangeConverterTest {
 	public void convert_shouldReturnNullIfTheAgeDoesNotFallWithinAnAgeRange() throws Exception {
 		Age eighteenMonthsOld = new Age(DateUtil.getDateTime(2010, 1, 1), DateUtil.getDateTime(2011, 7, 1));
 		Object range = getConverter().convert(eighteenMonthsOld);
-		Assert.assertNull(range);
+		Assertions.assertNull(range);
 	}
 }

@@ -9,10 +9,10 @@
  */
 package org.openmrs.module.reporting.validator;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.reporting.cohort.definition.StaticCohortDefinition;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
@@ -34,6 +34,6 @@ public class StaticCohortDefinitionValidatorTest extends BaseModuleContextSensit
 		Errors errors = new BindException(staticCohortDefinition, "cohortDefinition");
 		new CohortDefinitionValidator().validate(staticCohortDefinition, errors);
 		
-		Assert.assertTrue(errors.hasErrors());
+		Assertions.assertTrue(errors.hasErrors());
 	}
 }

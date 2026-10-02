@@ -13,7 +13,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -35,6 +36,7 @@ import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.definition.DefinitionContext;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.SkipBaseSetup;
+import org.openmrs.validator.ValidateUtil;
 import org.openmrs.test.Verifies;
 import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
@@ -48,8 +50,16 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 	@BeforeEach
 	public void setup() throws Exception {
 		initializeInMemoryDatabase();
-		authenticate();
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
+		// commit, as core resolves role privileges on a separate thread that cannot see uncommitted rows
+		getConnection().commit();
+		authenticate();
+	}
+
+	@AfterEach
+	public void tearDown() {
+		// removes the data committed in setup
+		deleteAllData();
 	}
 	
 	/**
@@ -61,13 +71,13 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 		EncounterCohortDefinition cd = new EncounterCohortDefinition();
 		cd.setEncounterTypeList(new ArrayList<EncounterType>()); // this is a regression test for a NPE on empty lists
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertEquals(6, c.size());
-		Assert.assertTrue(c.contains(7));
-		Assert.assertTrue(c.contains(20));
-		Assert.assertTrue(c.contains(21));
-		Assert.assertTrue(c.contains(22));
-		Assert.assertTrue(c.contains(23));
-		Assert.assertTrue(c.contains(24));
+		Assertions.assertEquals(6, c.size());
+		Assertions.assertTrue(c.contains(7));
+		Assertions.assertTrue(c.contains(20));
+		Assertions.assertTrue(c.contains(21));
+		Assertions.assertTrue(c.contains(22));
+		Assertions.assertTrue(c.contains(23));
+		Assertions.assertTrue(c.contains(24));
 	}
 	
 	/**
@@ -83,10 +93,10 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 		cd.setOnOrAfter(DateUtil.getDateTime(2009, 8, 19));
 		cd.setOnOrBefore(DateUtil.getDateTime(2009, 8, 19));
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertEquals(3, c.size());
-		Assert.assertTrue(c.contains(20));
-		Assert.assertTrue(c.contains(21));
-		Assert.assertTrue(c.contains(23));
+		Assertions.assertEquals(3, c.size());
+		Assertions.assertTrue(c.contains(20));
+		Assertions.assertTrue(c.contains(21));
+		Assertions.assertTrue(c.contains(23));
 	}
 	
 	/**
@@ -104,10 +114,10 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 		cd.setAtLeastCount(1);
 		cd.setAtMostCount(1);
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertEquals(3, c.size());
-		Assert.assertTrue(c.contains(20));
-		Assert.assertTrue(c.contains(21));
-		Assert.assertTrue(c.contains(23));
+		Assertions.assertEquals(3, c.size());
+		Assertions.assertTrue(c.contains(20));
+		Assertions.assertTrue(c.contains(21));
+		Assertions.assertTrue(c.contains(23));
 	}
 	
 	/**
@@ -123,7 +133,7 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 			cd.setCreatedOnOrAfter(DateUtil.getDateTime(2008, 8, 19));
 			cd.setCreatedOnOrBefore(DateUtil.getDateTime(2008, 8, 19));
 			Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-			Assert.assertEquals(6, c.size());
+			Assertions.assertEquals(6, c.size());
 		}
 		
 		// If parameter dates do have time components, they should return all encounters between the specific datetimes
@@ -132,7 +142,7 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 			cd.setCreatedOnOrAfter(DateUtil.getDateTime(2008, 8, 19, 11, 30, 0, 0));
 			cd.setCreatedOnOrBefore(DateUtil.getDateTime(2008, 8, 19, 14, 30, 0, 0));
 			Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-			Assert.assertEquals(3, c.size());
+			Assertions.assertEquals(3, c.size());
 		}
 	}
 	
@@ -151,7 +161,7 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 			cd.setEncounterTypeList(Arrays.asList(new EncounterType(6)));
 			cd.setOnOrAfter(DateUtil.getDateTime(2009, 8, 1));
 			cd.setOnOrBefore(DateUtil.getDateTime(2009, 8, 31));
-			Assert.assertEquals(3, DefinitionContext.getCohortDefinitionService().evaluate(cd, context).size());
+			Assertions.assertEquals(3, DefinitionContext.getCohortDefinitionService().evaluate(cd, context).size());
 		}
 		
 		// Any use case
@@ -161,7 +171,7 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 			cd.setEncounterTypeList(Arrays.asList(new EncounterType(6)));
 			cd.setOnOrAfter(DateUtil.getDateTime(2009, 8, 1));
 			cd.setOnOrBefore(DateUtil.getDateTime(2009, 8, 31));
-			Assert.assertEquals(3, DefinitionContext.getCohortDefinitionService().evaluate(cd, context).size());
+			Assertions.assertEquals(3, DefinitionContext.getCohortDefinitionService().evaluate(cd, context).size());
 		}
 		
 		// First use case
@@ -171,7 +181,7 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 			cd.setEncounterTypeList(Arrays.asList(new EncounterType(6)));
 			cd.setOnOrAfter(DateUtil.getDateTime(2009, 8, 1));
 			cd.setOnOrBefore(DateUtil.getDateTime(2009, 8, 31));
-			Assert.assertEquals(3, DefinitionContext.getCohortDefinitionService().evaluate(cd, context).size());
+			Assertions.assertEquals(3, DefinitionContext.getCohortDefinitionService().evaluate(cd, context).size());
 		}
 		{
 			EncounterCohortDefinition cd = new EncounterCohortDefinition();
@@ -179,7 +189,7 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 			cd.setEncounterTypeList(Arrays.asList(new EncounterType(6)));
 			cd.setOnOrAfter(DateUtil.getDateTime(2009, 9, 1));
 			cd.setOnOrBefore(DateUtil.getDateTime(2009, 9, 30));
-			Assert.assertEquals(2, DefinitionContext.getCohortDefinitionService().evaluate(cd, context).size());
+			Assertions.assertEquals(2, DefinitionContext.getCohortDefinitionService().evaluate(cd, context).size());
 		}
 		
 		// Last use case
@@ -189,7 +199,7 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 			cd.setEncounterTypeList(Arrays.asList(new EncounterType(6)));
 			cd.setOnOrAfter(DateUtil.getDateTime(2009, 8, 1));
 			cd.setOnOrBefore(DateUtil.getDateTime(2009, 8, 31));
-			Assert.assertEquals(2, DefinitionContext.getCohortDefinitionService().evaluate(cd, context).size());
+			Assertions.assertEquals(2, DefinitionContext.getCohortDefinitionService().evaluate(cd, context).size());
 		}
 		{
 			EncounterCohortDefinition cd = new EncounterCohortDefinition();
@@ -197,7 +207,7 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 			cd.setEncounterTypeList(Arrays.asList(new EncounterType(6)));
 			cd.setOnOrAfter(DateUtil.getDateTime(2009, 9, 1));
 			cd.setOnOrBefore(DateUtil.getDateTime(2009, 9, 30));
-			Assert.assertEquals(2, DefinitionContext.getCohortDefinitionService().evaluate(cd, context).size());
+			Assertions.assertEquals(2, DefinitionContext.getCohortDefinitionService().evaluate(cd, context).size());
 		}
 	}
 	
@@ -210,7 +220,7 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 	public void evaluate_shouldReturnCorrectPatientsWhenProviderParametersAreSet() throws Exception {
 		EncounterCohortDefinition cd = new EncounterCohortDefinition();
 		cd.addProvider(new Person(2));
-		Assert.assertEquals(2, DefinitionContext.getCohortDefinitionService().evaluate(cd, new EvaluationContext()).size());
+		Assertions.assertEquals(2, DefinitionContext.getCohortDefinitionService().evaluate(cd, new EvaluationContext()).size());
 	}
 	
 	/**
@@ -228,13 +238,13 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 		EncounterCohortDefinition cd = new EncounterCohortDefinition();
 		cd.setEncounterTypeList(new ArrayList<EncounterType>()); // this is a regression test for a NPE on empty lists
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertEquals(5, c.size());
-		Assert.assertFalse(c.contains(7));
-		Assert.assertTrue(c.contains(20));
-		Assert.assertTrue(c.contains(21));
-		Assert.assertTrue(c.contains(22));
-		Assert.assertTrue(c.contains(23));
-		Assert.assertTrue(c.contains(24));
+		Assertions.assertEquals(5, c.size());
+		Assertions.assertFalse(c.contains(7));
+		Assertions.assertTrue(c.contains(20));
+		Assertions.assertTrue(c.contains(21));
+		Assertions.assertTrue(c.contains(22));
+		Assertions.assertTrue(c.contains(23));
+		Assertions.assertTrue(c.contains(24));
 	}
 	
 	/**
@@ -246,15 +256,22 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 		EncounterService es = Context.getEncounterService();
 		Encounter enc = es.getEncounter(3);
 		final Integer patientId = 7;
-		Assert.assertEquals(patientId, enc.getPatient().getPatientId());//sanity check
+		Assertions.assertEquals(patientId, enc.getPatient().getPatientId());//sanity check
 		enc.setEncounterDatetime(DateUtil.getDateTime(2005, 8, 1, 11, 0, 0, 0));
-		es.saveEncounter(enc);
+		// the drug orders of this encounter in the test dataset do not pass Platform 3.0 order validation
+		ValidateUtil.disableValidationForThread();
+		try {
+			es.saveEncounter(enc);
+		}
+		finally {
+			ValidateUtil.resumeValidationForThread();
+		}
 		Context.flushSession();//because the query will compare with the value in the DB
 		
 		EncounterCohortDefinition cd = new EncounterCohortDefinition();
 		cd.setOnOrBefore(DateUtil.getDateTime(2005, 8, 1));
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertTrue(c.contains(patientId));
+		Assertions.assertTrue(c.contains(patientId));
 	}
 	
 	/**
@@ -268,11 +285,11 @@ public class EncounterCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 		EncounterService es = Context.getEncounterService();
 		Encounter enc = es.getEncounter(13);
 		final Integer patientId = 7;
-		Assert.assertEquals(patientId, enc.getPatient().getPatientId());
+		Assertions.assertEquals(patientId, enc.getPatient().getPatientId());
 		
 		EncounterCohortDefinition cd = new EncounterCohortDefinition();
 		cd.setCreatedOnOrBefore(DateUtil.getDateTime(2005, 8, 1));
 		Cohort c = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertTrue(c.contains(patientId));
+		Assertions.assertTrue(c.contains(patientId));
 	}
 }

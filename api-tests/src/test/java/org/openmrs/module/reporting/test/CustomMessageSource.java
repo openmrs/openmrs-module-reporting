@@ -53,7 +53,7 @@ public class CustomMessageSource extends AbstractMessageSource implements Mutabl
 	 */
 	@Override
 	public void setApplicationContext(ApplicationContext context) throws BeansException {
-		MessageSourceService svc = (MessageSourceService)context.getBean("messageSourceServiceTarget");
+		MessageSourceService svc = (MessageSourceService)context.getBean("messageSourceService");
 		MessageSource activeSource = svc.getActiveMessageSource();
 		setParentMessageSource(activeSource);
 		svc.setActiveMessageSource(this);

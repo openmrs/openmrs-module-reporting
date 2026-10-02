@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.data.obs.evaluator;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.PersonService;
@@ -27,7 +27,7 @@ import org.openmrs.module.reporting.data.person.definition.PersonAttributeDataDe
 import org.openmrs.module.reporting.evaluation.context.ObsEvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.query.obs.ObsIdSet;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -44,12 +44,12 @@ public class PersonToObsEvaluatorTest extends BaseModuleContextSensitiveTest {
     ObsDataService obsDataService;
 
     /**
-     * Run this before each unit test in this class. The "@Before" method in
-     * {@link org.openmrs.test.BaseContextSensitiveTest} is run right before this method.
+     * Run this before each unit test in this class. The "@BeforeEach" method in
+     * {@link org.openmrs.test.jupiter.BaseContextSensitiveTest} is run right before this method.
      *
      * @throws Exception
      */
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
     }
@@ -62,10 +62,10 @@ public class PersonToObsEvaluatorTest extends BaseModuleContextSensitiveTest {
         context.setBaseObs(new ObsIdSet(20, 27));
         EvaluatedObsData ed = Context.getService(ObsDataService.class).evaluate(d, context);
 
-        Assert.assertEquals(2, ed.getData().size());
+        Assertions.assertEquals(2, ed.getData().size());
         BirthdateConverter c = new BirthdateConverter("yyyy-MM-dd");
-        Assert.assertEquals("1959-06-08", c.convert(ed.getData().get(20)));
-        Assert.assertEquals("1997-07-08", c.convert(ed.getData().get(27)));
+        Assertions.assertEquals("1959-06-08", c.convert(ed.getData().get(20)));
+        Assertions.assertEquals("1997-07-08", c.convert(ed.getData().get(27)));
 
     }
 
@@ -77,7 +77,7 @@ public class PersonToObsEvaluatorTest extends BaseModuleContextSensitiveTest {
         context.setBaseObs(new ObsIdSet());
         EvaluatedObsData ed = Context.getService(ObsDataService.class).evaluate(d, context);
 
-        Assert.assertEquals(0, ed.getData().size());
+        Assertions.assertEquals(0, ed.getData().size());
     }
 
     @Test
@@ -98,6 +98,6 @@ public class PersonToObsEvaluatorTest extends BaseModuleContextSensitiveTest {
         ObsData data = obsDataService.evaluate(dataDef, context);
 
         PersonAttribute att1 = (PersonAttribute) data.getData().get(6);
-        Assert.assertEquals("Paris, France", att1.getValue());
+        Assertions.assertEquals("Paris, France", att1.getValue());
     }
 }

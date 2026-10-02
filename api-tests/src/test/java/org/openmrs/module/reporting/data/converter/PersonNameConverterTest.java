@@ -9,11 +9,11 @@
  */
 package org.openmrs.module.reporting.data.converter;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openmrs.PersonName;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 public class PersonNameConverterTest extends BaseModuleContextSensitiveTest {
 	
@@ -28,6 +28,6 @@ public class PersonNameConverterTest extends BaseModuleContextSensitiveTest {
 		personName.setMiddleName("T");
 		personName.setFamilyName("Smith");
 		Object result = (new ObjectFormatter("{familyName}, {givenName}")).convert(personName);
-		Assert.assertEquals("Smith, John", result.toString());
+		Assertions.assertEquals("Smith, John", result.toString());
 	}
 }

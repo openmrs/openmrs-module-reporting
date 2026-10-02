@@ -13,9 +13,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.PersonAttributeType;
@@ -25,8 +25,8 @@ import org.openmrs.module.reporting.cohort.definition.PersonAttributeCohortDefin
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 /**
@@ -39,12 +39,12 @@ public class PersonAttributeCohortDefinitionEvaluatorTest extends BaseModuleCont
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -60,9 +60,9 @@ public class PersonAttributeCohortDefinitionEvaluatorTest extends BaseModuleCont
 		pacd.setValues(Arrays.asList("5"));	
 		
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(pacd, null);
-		Assert.assertEquals(2, cohort.size());
-		Assert.assertTrue(cohort.contains(2));
-		Assert.assertTrue(cohort.contains(7));
+		Assertions.assertEquals(2, cohort.size());
+		Assertions.assertTrue(cohort.contains(2));
+		Assertions.assertTrue(cohort.contains(7));
 	}
 	
 	/**
@@ -80,11 +80,11 @@ public class PersonAttributeCohortDefinitionEvaluatorTest extends BaseModuleCont
 		pacd.setValues(null);
 		
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(pacd, null);
-		Assert.assertEquals(4, cohort.size());
-		Assert.assertTrue(cohort.contains(2));
-		Assert.assertTrue(cohort.contains(6));
-		Assert.assertTrue(cohort.contains(7));
-		Assert.assertTrue(cohort.contains(8));
+		Assertions.assertEquals(4, cohort.size());
+		Assertions.assertTrue(cohort.contains(2));
+		Assertions.assertTrue(cohort.contains(6));
+		Assertions.assertTrue(cohort.contains(7));
+		Assertions.assertTrue(cohort.contains(8));
 	}
 
 	/**
@@ -96,8 +96,8 @@ public class PersonAttributeCohortDefinitionEvaluatorTest extends BaseModuleCont
 		PersonAttributeCohortDefinition pacd = new PersonAttributeCohortDefinition();
 		pacd.setValues(Arrays.asList("Boston, MA", "New York, NY"));		
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(pacd, null);		
-		Assert.assertEquals(1, cohort.size());
-		Assert.assertTrue(cohort.contains(8));
+		Assertions.assertEquals(1, cohort.size());
+		Assertions.assertTrue(cohort.contains(8));
 	}
 
 	/**
@@ -112,7 +112,7 @@ public class PersonAttributeCohortDefinitionEvaluatorTest extends BaseModuleCont
 		civilStatuses.add(Context.getConceptService().getConceptByName("MARRIED"));
 		pacd.setValueConcepts(civilStatuses);		
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(pacd, null);		
-		Assert.assertEquals(1, cohort.size());
-		Assert.assertTrue(cohort.contains(8));
+		Assertions.assertEquals(1, cohort.size());
+		Assertions.assertTrue(cohort.contains(8));
 	}
 }

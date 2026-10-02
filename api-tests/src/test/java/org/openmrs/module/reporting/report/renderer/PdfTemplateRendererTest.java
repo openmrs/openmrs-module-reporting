@@ -21,8 +21,8 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.apache.pdfbox.pdmodel.interactive.form.PDNonTerminalField;
 import org.apache.pdfbox.pdmodel.interactive.form.PDTextField;
 import org.apache.pdfbox.text.PDFTextStripper;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -31,7 +31,7 @@ import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -73,7 +73,7 @@ public class PdfTemplateRendererTest extends BaseModuleContextSensitiveTest {
 
         try (PDDocument rendered = PDDocument.load(baos.toByteArray())) {
             String text = new PDFTextStripper().getText(rendered);
-            Assert.assertTrue("Expected 'My Test Report' in flattened PDF", text.contains("My Test Report"));
+            Assertions.assertTrue(text.contains("My Test Report"), "Expected 'My Test Report' in flattened PDF");
         }
     }
 
@@ -107,7 +107,7 @@ public class PdfTemplateRendererTest extends BaseModuleContextSensitiveTest {
 
         try (PDDocument rendered = PDDocument.load(baos.toByteArray())) {
             String text = new PDFTextStripper().getText(rendered);
-            Assert.assertTrue("Expected formatted date '15/01/2023' in PDF", text.contains("15/01/2023"));
+            Assertions.assertTrue(text.contains("15/01/2023"), "Expected formatted date '15/01/2023' in PDF");
         }
     }
 
@@ -135,7 +135,7 @@ public class PdfTemplateRendererTest extends BaseModuleContextSensitiveTest {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         renderer.render(reportData, "test", baos);  // must not throw
-        Assert.assertTrue("Expected non-empty PDF even with unmatched field", baos.size() > 0);
+        Assertions.assertTrue(baos.size() > 0, "Expected non-empty PDF even with unmatched field");
     }
 
     // -----------------------------------------------------------------------
@@ -170,14 +170,13 @@ public class PdfTemplateRendererTest extends BaseModuleContextSensitiveTest {
         renderer.render(reportData, "test", baos);
 
         byte[] pdfBytes = baos.toByteArray();
-        Assert.assertTrue("Output must start with %PDF header",
-            pdfBytes.length > 4
+        Assertions.assertTrue(pdfBytes.length > 4
             && pdfBytes[0] == '%' && pdfBytes[1] == 'P'
-            && pdfBytes[2] == 'D' && pdfBytes[3] == 'F');
+            && pdfBytes[2] == 'D' && pdfBytes[3] == 'F', "Output must start with %PDF header");
 
         try (PDDocument rendered = PDDocument.load(pdfBytes)) {
             String text = new PDFTextStripper().getText(rendered);
-            Assert.assertTrue("Expected report name in PDF text", text.contains("HTML Test Report"));
+            Assertions.assertTrue(text.contains("HTML Test Report"), "Expected report name in PDF text");
         }
     }
 
@@ -212,7 +211,7 @@ public class PdfTemplateRendererTest extends BaseModuleContextSensitiveTest {
 
         try (PDDocument rendered = PDDocument.load(baos.toByteArray())) {
             String text = new PDFTextStripper().getText(rendered);
-            Assert.assertTrue("Expected formatted date '15/01/2023'", text.contains("15/01/2023"));
+            Assertions.assertTrue(text.contains("15/01/2023"), "Expected formatted date '15/01/2023'");
         }
     }
 
@@ -252,7 +251,7 @@ public class PdfTemplateRendererTest extends BaseModuleContextSensitiveTest {
 
         try (PDDocument rendered = PDDocument.load(baos.toByteArray())) {
             String text = new PDFTextStripper().getText(rendered);
-            Assert.assertTrue("Expected report name in PDF with CSS resource", text.contains("Styled Report"));
+            Assertions.assertTrue(text.contains("Styled Report"), "Expected report name in PDF with CSS resource");
         }
     }
 
@@ -284,7 +283,7 @@ public class PdfTemplateRendererTest extends BaseModuleContextSensitiveTest {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         renderer.render(reportData, "test", baos);
-        Assert.assertTrue("Expected non-empty PDF even when CSS resource is missing", baos.size() > 0);
+        Assertions.assertTrue(baos.size() > 0, "Expected non-empty PDF even when CSS resource is missing");
     }
 
     @Test
@@ -319,7 +318,7 @@ public class PdfTemplateRendererTest extends BaseModuleContextSensitiveTest {
 
         try (PDDocument rendered = PDDocument.load(baos.toByteArray())) {
             String text = new PDFTextStripper().getText(rendered);
-            Assert.assertTrue("Expected 'Groovy Report' in PDF", text.contains("Groovy Report"));
+            Assertions.assertTrue(text.contains("Groovy Report"), "Expected 'Groovy Report' in PDF");
         }
     }
 
@@ -353,9 +352,9 @@ public class PdfTemplateRendererTest extends BaseModuleContextSensitiveTest {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         renderer.render(reportData, "test", baos);
 
-        Assert.assertTrue("Expected non-empty PDF with barcode", baos.size() > 0);
+        Assertions.assertTrue(baos.size() > 0, "Expected non-empty PDF with barcode");
         byte[] pdfBytes = baos.toByteArray();
-        Assert.assertTrue("Expected valid PDF header", new String(pdfBytes, 0, 4).equals("%PDF"));
+        Assertions.assertTrue(new String(pdfBytes, 0, 4).equals("%PDF"), "Expected valid PDF header");
     }
 
     // -----------------------------------------------------------------------

@@ -12,9 +12,9 @@ package org.openmrs.module.reporting.cohort.definition.evaluator;
 
 import java.util.Collections;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.Location;
@@ -27,8 +27,8 @@ import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 public class TextObsCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
@@ -38,12 +38,12 @@ public class TextObsCohortDefinitionEvaluatorTest extends BaseModuleContextSensi
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -63,8 +63,8 @@ public class TextObsCohortDefinitionEvaluatorTest extends BaseModuleContextSensi
 		cd.setOnOrBefore(DateUtil.getDateTime(2008, 8, 16));
 		cd.setLocationList(Collections.singletonList(new Location(1)));
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertEquals(1, cohort.size());
-		Assert.assertTrue(cohort.contains(7));
+		Assertions.assertEquals(1, cohort.size());
+		Assertions.assertTrue(cohort.contains(7));
 	}
 	
 	/**
@@ -79,7 +79,7 @@ public class TextObsCohortDefinitionEvaluatorTest extends BaseModuleContextSensi
 		cd.setOperator(SetComparator.IN);
 		cd.setValueList(Collections.singletonList("PB and J"));
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertEquals(1, cohort.size());
-		Assert.assertTrue(cohort.contains(7));
+		Assertions.assertEquals(1, cohort.size());
+		Assertions.assertTrue(cohort.contains(7));
 	}
 }

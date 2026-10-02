@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.indicator;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.common.TestUtil;
@@ -21,7 +21,7 @@ import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.module.reporting.query.Query;
 import org.openmrs.module.reporting.query.encounter.definition.SqlEncounterQuery;
 import org.openmrs.module.reporting.query.person.definition.SqlPersonQuery;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 import java.util.HashMap;
 
@@ -33,7 +33,7 @@ public class QueryCountIndicatorEvaluatorTest extends BaseModuleContextSensitive
 	protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -64,6 +64,6 @@ public class QueryCountIndicatorEvaluatorTest extends BaseModuleContextSensitive
 		ci.setQuery(new Mapped<Query>(q, new HashMap<String, Object>()));
 		IndicatorService is = Context.getService(IndicatorService.class);
 		IndicatorResult result = is.evaluate(ci, new EvaluationContext());
-		Assert.assertEquals(expectedResult, result.getValue().intValue());
+		Assertions.assertEquals(expectedResult, result.getValue().intValue());
 	}
 }

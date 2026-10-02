@@ -9,9 +9,10 @@
  */
 package org.openmrs.module.reporting.report.service.db;
 
+import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.Session;
+import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.usertype.UserType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -77,20 +78,33 @@ public class ReportDefinitionType implements UserType {
 	}
 
 	/** 
-	 * @see UserType#nullSafeGet(ResultSet, String[], Object)
+	 * @see UserType#nullSafeGet(ResultSet, int, WrapperOptions)
 	 */
-	public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner) throws HibernateException, SQLException {
-		String uuid = rs.getString(names[0]);
+	public Object nullSafeGet(ResultSet rs, int position, WrapperOptions options) throws HibernateException, SQLException {
+		String uuid = rs.getString(position);
 		if (uuid == null) {
 			return null;
 		}
-		return Context.getService(ReportDefinitionService.class).getDefinitionByUuid(uuid);
+		// Do not let the lookup auto-flush the session while the owning entity is still being loaded
+		Session session = options.getSession() instanceof Session ? (Session) options.getSession() : null;
+		FlushMode flushMode = session == null ? null : session.getHibernateFlushMode();
+		if (session != null) {
+			session.setHibernateFlushMode(FlushMode.MANUAL);
+		}
+		try {
+			return Context.getService(ReportDefinitionService.class).getDefinitionByUuid(uuid);
+		}
+		finally {
+			if (session != null) {
+				session.setHibernateFlushMode(flushMode);
+			}
+		}
 	}
 
 	/** 
-	 * @see UserType#nullSafeSet(PreparedStatement, Object, int, SessionImplementor)
+	 * @see UserType#nullSafeSet(PreparedStatement, Object, int, WrapperOptions)
 	 */
-	public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session) throws HibernateException, SQLException {
+	public void nullSafeSet(PreparedStatement st, Object value, int index, WrapperOptions options) throws HibernateException, SQLException {
 		ReportDefinition d = (ReportDefinition) value;
 		String val = (d == null ? null : d.getUuid());
 		st.setString(index, val);
@@ -112,9 +126,9 @@ public class ReportDefinitionType implements UserType {
 	}
 
 	/** 
-	 * @see UserType#sqlTypes()
+	 * @see UserType#getSqlType()
 	 */
-	public int[] sqlTypes() {
-		return new int[] { Types.VARCHAR };
+	public int getSqlType() {
+		return Types.VARCHAR;
 	}
 }

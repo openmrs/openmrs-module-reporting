@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
-import org.apache.commons.lang.time.DateUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.apache.commons.lang3.time.DateUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatcher;
 import org.openmrs.Location;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -40,7 +40,7 @@ public class RepeatPerTimePeriodDataSetEvaluatorTest extends AuthenticatedUserTe
     private DataSetDefinitionService service;
     private RepeatPerTimePeriodDataSetEvaluator evaluator;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         service = mock(DataSetDefinitionService.class);
 

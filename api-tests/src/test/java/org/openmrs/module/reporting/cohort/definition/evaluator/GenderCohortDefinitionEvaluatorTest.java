@@ -11,9 +11,9 @@ package org.openmrs.module.reporting.cohort.definition.evaluator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -21,8 +21,8 @@ import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 /**
@@ -37,12 +37,12 @@ public class GenderCohortDefinitionEvaluatorTest extends BaseModuleContextSensit
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -58,8 +58,8 @@ public class GenderCohortDefinitionEvaluatorTest extends BaseModuleContextSensit
 		genderCohortDefinition.setFemaleIncluded(true);
 		genderCohortDefinition.setUnknownGenderIncluded(true);
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(genderCohortDefinition, null);
-		Assert.assertEquals(9, cohort.getSize());
-		Assert.assertTrue("Should not include patient 999 whose record has been voided", !cohort.contains(999));
+		Assertions.assertEquals(9, cohort.getSize());
+		Assertions.assertTrue(!cohort.contains(999), "Should not include patient 999 whose record has been voided");
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class GenderCohortDefinitionEvaluatorTest extends BaseModuleContextSensit
 		genderCohortDefinition.setMaleIncluded(true);		
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(genderCohortDefinition, null);
 		log.warn("Cohort: " + cohort);
-		Assert.assertEquals(3, cohort.getSize());
+		Assertions.assertEquals(3, cohort.getSize());
 	}
 	
 	/**
@@ -85,7 +85,7 @@ public class GenderCohortDefinitionEvaluatorTest extends BaseModuleContextSensit
 		genderCohortDefinition.setFemaleIncluded(true);	
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(genderCohortDefinition, null);
 		log.warn("Cohort: " + cohort);
-		Assert.assertEquals(5, cohort.getSize());
+		Assertions.assertEquals(5, cohort.getSize());
 	}
 
 	@Test
@@ -95,7 +95,7 @@ public class GenderCohortDefinitionEvaluatorTest extends BaseModuleContextSensit
 		genderCohortDefinition.setUnknownGenderIncluded(true);	
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(genderCohortDefinition, null);
 		log.warn("Cohort: " + cohort);
-		Assert.assertEquals(1, cohort.getSize());
+		Assertions.assertEquals(1, cohort.getSize());
 	}	
 	
 	/**
@@ -107,6 +107,6 @@ public class GenderCohortDefinitionEvaluatorTest extends BaseModuleContextSensit
 		GenderCohortDefinition genderCohortDefinition = new GenderCohortDefinition();		
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(genderCohortDefinition, null);		
 		log.warn("Cohort: " + cohort);
-		Assert.assertEquals(0, cohort.getSize());
+		Assertions.assertEquals(0, cohort.getSize());
 	}
 }

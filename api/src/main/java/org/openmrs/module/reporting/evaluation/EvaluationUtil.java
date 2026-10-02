@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.reporting.evaluation;
 
-import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.reporting.common.ObjectUtil;

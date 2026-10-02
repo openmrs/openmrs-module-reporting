@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.reporting.query.obs.evaluator;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.module.reporting.common.ReportingMatchers;
 import org.openmrs.module.reporting.common.TestUtil;
@@ -20,10 +20,10 @@ import org.openmrs.module.reporting.query.obs.ObsIdSet;
 import org.openmrs.module.reporting.query.obs.ObsQueryResult;
 import org.openmrs.module.reporting.query.obs.definition.AllObsQuery;
 import org.openmrs.module.reporting.query.obs.service.ObsQueryService;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 
 public class AllObsQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
@@ -35,7 +35,7 @@ public class AllObsQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
     @Autowired
     ObsQueryService obsQueryService;
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
     }

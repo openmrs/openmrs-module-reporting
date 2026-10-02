@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
@@ -23,14 +23,14 @@ import org.openmrs.contrib.testdata.TestDataManager;
 import org.openmrs.module.reporting.cohort.definition.VisitCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.DateUtil;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class VisitCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {;
 
@@ -56,7 +56,7 @@ public class VisitCohortDefinitionEvaluatorTest extends BaseModuleContextSensiti
 
     VisitType someVisitType;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         cd = new VisitCohortDefinition();
 

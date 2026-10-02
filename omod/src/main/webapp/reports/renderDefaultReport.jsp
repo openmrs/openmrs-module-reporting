@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/view/module/reporting/include.jsp"%>
 <%@ include file="/WEB-INF/view/module/reporting/includeScripts.jsp"%>
 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="jakarta.tags.fmt" prefix="fmt" %>
 <c:set var="__openmrs_hide_report_link" value="true"/>
 <%@ include file="../run/localHeader.jsp"%>
 

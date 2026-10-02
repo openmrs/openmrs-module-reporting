@@ -9,10 +9,10 @@
  */
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
@@ -20,7 +20,7 @@ import org.openmrs.module.reporting.cohort.definition.AllPatientsCohortDefinitio
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 /**
  * This tests the evaluation of an AllPatientsCohortDefinition
@@ -31,7 +31,7 @@ public class AllPatientsCohortDefinitionEvaluatorTest extends BaseModuleContextS
 	
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -44,11 +44,11 @@ public class AllPatientsCohortDefinitionEvaluatorTest extends BaseModuleContextS
 		
 		// Should return all 9 non-voided patients without a base cohort defined
 		EvaluatedCohort allPats = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
-		Assert.assertEquals(9, allPats.size());
+		Assertions.assertEquals(9, allPats.size());
 		
 		// Should return all patients in the base cohort if it is defined
 		context.setBaseCohort(new Cohort("2,7,20"));
 		allPats = Context.getService(CohortDefinitionService.class).evaluate(cd, context);
-		Assert.assertEquals(3, allPats.size());
+		Assertions.assertEquals(3, allPats.size());
 	}
 }

@@ -10,7 +10,7 @@
 package org.openmrs.module.reporting.definition.library.implementerconfigured;
 
 import org.openmrs.module.reporting.report.util.ReportUtil;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.io.File;

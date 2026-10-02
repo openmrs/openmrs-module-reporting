@@ -17,9 +17,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.PatientService;
@@ -28,7 +28,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.ResultUtil;
 import org.openmrs.module.reporting.common.TestUtil;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 public class PatientDataCalculationBehaviorTest extends BaseModuleContextSensitiveTest {
 	
@@ -38,7 +38,7 @@ public class PatientDataCalculationBehaviorTest extends BaseModuleContextSensiti
 	
 	private PatientService ps;
 	
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 		ps = Context.getPatientService();
@@ -57,12 +57,12 @@ public class PatientDataCalculationBehaviorTest extends BaseModuleContextSensiti
 		
 		CalculationResultMap results = calculation.evaluate(Arrays.asList(patientId1, patientId2), parameters, null);
 		
-		Assert.assertEquals(identifiers2.iterator().next(), ResultUtil.getFirst(results.get(patientId2)).getValue());
+		Assertions.assertEquals(identifiers2.iterator().next(), ResultUtil.getFirst(results.get(patientId2)).getValue());
 		
 		ListResult lr = (ListResult) results.get(patientId1);
-		Assert.assertEquals(3, lr.size());
+		Assertions.assertEquals(3, lr.size());
 		
-		Assert.assertTrue(CollectionUtils.isEqualCollection(identifiers1, lr.getValues()));
+		Assertions.assertTrue(CollectionUtils.isEqualCollection(identifiers1, lr.getValues()));
 	}
 	
 	@Test
@@ -80,8 +80,8 @@ public class PatientDataCalculationBehaviorTest extends BaseModuleContextSensiti
 		
 		CalculationResultMap results = calculation.evaluate(Arrays.asList(patientId1, patientId2), parameters, null);
 		
-		Assert.assertEquals(id1, ResultUtil.getFirst(results.get(patientId1)).getValue());
-		Assert.assertEquals(id2, ResultUtil.getFirst(results.get(patientId2)).getValue());
+		Assertions.assertEquals(id1, ResultUtil.getFirst(results.get(patientId1)).getValue());
+		Assertions.assertEquals(id2, ResultUtil.getFirst(results.get(patientId2)).getValue());
 	}
 	
 	@Test
@@ -95,7 +95,7 @@ public class PatientDataCalculationBehaviorTest extends BaseModuleContextSensiti
 		
 		CalculationResultMap results = calculation.evaluate(Arrays.asList(patientId1, patientId2), null, null);
 		
-		Assert.assertEquals(gender1, ResultUtil.getFirst(results.get(patientId1)).getValue());
-		Assert.assertEquals(gender2, ResultUtil.getFirst(results.get(patientId2)).getValue());
+		Assertions.assertEquals(gender1, ResultUtil.getFirst(results.get(patientId1)).getValue());
+		Assertions.assertEquals(gender2, ResultUtil.getFirst(results.get(patientId2)).getValue());
 	}
 }

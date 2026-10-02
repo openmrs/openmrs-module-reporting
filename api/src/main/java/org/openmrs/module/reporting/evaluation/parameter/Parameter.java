@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.reporting.evaluation.parameter;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 import java.io.Serializable;

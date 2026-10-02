@@ -1,7 +1,7 @@
 package org.openmrs.module.reporting.common;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +15,7 @@ public class SqlRunnerTest {
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("generatedBy", "Fredrick 'Fred' Flintstone");
         List<String> results = sqlRunner.parseParametersIntoStatements(parameters);
-        Assert.assertEquals("set @generatedBy='Fredrick ''Fred'' Flintstone'", results.get(0));
+        Assertions.assertEquals("set @generatedBy='Fredrick ''Fred'' Flintstone'", results.get(0));
     }
 
 }

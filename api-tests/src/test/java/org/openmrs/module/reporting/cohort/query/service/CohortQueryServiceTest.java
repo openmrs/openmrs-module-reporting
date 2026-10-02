@@ -10,16 +10,16 @@
 package org.openmrs.module.reporting.cohort.query.service;
 
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Person;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.common.TimeQualifier;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 import java.util.Arrays;
@@ -33,12 +33,12 @@ public class CohortQueryServiceTest extends BaseModuleContextSensitiveTest {
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -54,9 +54,9 @@ public class CohortQueryServiceTest extends BaseModuleContextSensitiveTest {
 
 
 	private void assertCohort(Cohort cohort, Integer... memberIds) {
-	    Assert.assertEquals("Cohort was supposed to be: " + Arrays.asList(memberIds) + " but was instead: " + cohort.getCommaSeparatedPatientIds(), memberIds.length, cohort.size());
+	    Assertions.assertEquals(memberIds.length, cohort.size(), "Cohort was supposed to be: " + Arrays.asList(memberIds) + " but was instead: " + cohort.getCommaSeparatedPatientIds());
 	    for (Integer memberId : memberIds)
-	    	Assert.assertTrue("Cohort does not contain patient " + memberId, cohort.contains(memberId));
+	    	Assertions.assertTrue(cohort.contains(memberId), "Cohort does not contain patient " + memberId);
     }
 
 }

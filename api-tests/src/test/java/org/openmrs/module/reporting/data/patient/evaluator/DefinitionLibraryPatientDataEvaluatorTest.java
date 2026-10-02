@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.reporting.data.patient.evaluator;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -20,7 +20,7 @@ import org.openmrs.module.reporting.data.patient.definition.DefinitionLibraryPat
 import org.openmrs.module.reporting.data.patient.library.BuiltInPatientDataLibrary;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class DefinitionLibraryPatientDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 
@@ -39,7 +39,7 @@ public class DefinitionLibraryPatientDataEvaluatorTest extends BaseModuleContext
 
     protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
     }

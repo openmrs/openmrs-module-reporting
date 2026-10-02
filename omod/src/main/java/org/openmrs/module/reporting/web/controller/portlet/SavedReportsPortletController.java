@@ -15,7 +15,7 @@ import org.openmrs.module.reporting.report.ReportRequest.Status;
 import org.openmrs.module.reporting.report.service.ReportService;
 import org.openmrs.module.reporting.web.renderers.WebReportRenderer;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +25,7 @@ import java.util.Map;
 public class SavedReportsPortletController extends ReportingPortletController {
 
 	/**
-     * @see org.openmrs.module.reporting.web.controller.portlet.ReportingPortletController#populateModel(javax.servlet.http.HttpServletRequest, java.util.Map)
+     * @see org.openmrs.module.reporting.web.controller.portlet.ReportingPortletController#populateModel(jakarta.servlet.http.HttpServletRequest, java.util.Map)
      */
     @Override
     protected void populateModel(HttpServletRequest request, Map<String, Object> model) {

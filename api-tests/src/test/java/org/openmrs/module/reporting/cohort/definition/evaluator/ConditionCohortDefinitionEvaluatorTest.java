@@ -9,17 +9,17 @@
  */
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.ConditionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.DateUtil;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 public class ConditionCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
@@ -27,14 +27,14 @@ public class ConditionCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 	
 	private ConditionCohortDefinition cd;
 	
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		initializeInMemoryDatabase();
 		cd = new ConditionCohortDefinition();
 		executeDataSet(CONDITION_TEST_DATASET);
 	}
 	
-	@After
+	@AfterEach
 	public void tearDown() {
 		cd = null;
 	}
@@ -42,12 +42,12 @@ public class ConditionCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 	@Test
 	public void evaluateShouldReturnAllPatients() throws Exception {
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertTrue(cohort.contains(1));
-		Assert.assertTrue(cohort.contains(2));
-		Assert.assertTrue(cohort.contains(3));
-		Assert.assertTrue(cohort.contains(4));
-		Assert.assertTrue(cohort.contains(5));
-		Assert.assertEquals(5, cohort.size());
+		Assertions.assertTrue(cohort.contains(1));
+		Assertions.assertTrue(cohort.contains(2));
+		Assertions.assertTrue(cohort.contains(3));
+		Assertions.assertTrue(cohort.contains(4));
+		Assertions.assertTrue(cohort.contains(5));
+		Assertions.assertEquals(5, cohort.size());
 	}
 	
 	@Test
@@ -55,20 +55,20 @@ public class ConditionCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 		Concept concept = Context.getConceptService().getConcept(409);
 		cd.setConditionCoded(concept);
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertTrue(cohort.contains(1));
-		Assert.assertTrue(cohort.contains(2));
-		Assert.assertTrue(cohort.contains(3));
-		Assert.assertTrue(cohort.contains(4));
-		Assert.assertEquals(4, cohort.size());
+		Assertions.assertTrue(cohort.contains(1));
+		Assertions.assertTrue(cohort.contains(2));
+		Assertions.assertTrue(cohort.contains(3));
+		Assertions.assertTrue(cohort.contains(4));
+		Assertions.assertEquals(4, cohort.size());
 	}
 	
 	@Test
 	public void evaluateShouldFilterPatientsWithConceptAndNonCodedValue() throws Exception {
 		cd.setConditionNonCoded("NON-CODED-CONDITION");
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertTrue(cohort.contains(4));
-		Assert.assertTrue(cohort.contains(4));
-		Assert.assertEquals(2, cohort.size());
+		Assertions.assertTrue(cohort.contains(4));
+		Assertions.assertTrue(cohort.contains(4));
+		Assertions.assertEquals(2, cohort.size());
 	}
 	
 	@Test
@@ -77,10 +77,10 @@ public class ConditionCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 		cd.setConditionCoded(concept);
 		cd.setCreatedOnOrAfter(DateUtil.getDateTime(2014, 03, 12));
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertTrue(cohort.contains(1));
-		Assert.assertTrue(cohort.contains(2));
-		Assert.assertTrue(cohort.contains(3));
-		Assert.assertEquals(3, cohort.size());
+		Assertions.assertTrue(cohort.contains(1));
+		Assertions.assertTrue(cohort.contains(2));
+		Assertions.assertTrue(cohort.contains(3));
+		Assertions.assertEquals(3, cohort.size());
 	}
 	
 	@Test
@@ -89,10 +89,10 @@ public class ConditionCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 		cd.setConditionCoded(concept);
 		cd.setOnsetDateOnOrAfter(DateUtil.getDateTime(2014, 03, 12));
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertTrue(cohort.contains(1));
-		Assert.assertTrue(cohort.contains(2));
-		Assert.assertTrue(cohort.contains(3));
-		Assert.assertEquals(3, cohort.size());
+		Assertions.assertTrue(cohort.contains(1));
+		Assertions.assertTrue(cohort.contains(2));
+		Assertions.assertTrue(cohort.contains(3));
+		Assertions.assertEquals(3, cohort.size());
 	}
 	
 	@Test
@@ -101,10 +101,10 @@ public class ConditionCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 		cd.setConditionCoded(concept);
 		cd.setEndDateOnOrAfter(DateUtil.getDateTime(2016, 05, 12));
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertTrue(cohort.contains(1));
-		Assert.assertTrue(cohort.contains(2));
-		Assert.assertTrue(cohort.contains(3));
-		Assert.assertEquals(3, cohort.size());
+		Assertions.assertTrue(cohort.contains(1));
+		Assertions.assertTrue(cohort.contains(2));
+		Assertions.assertTrue(cohort.contains(3));
+		Assertions.assertEquals(3, cohort.size());
 	}
 	
 	
@@ -115,9 +115,9 @@ public class ConditionCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 		cd.setConditionCoded(concept);
 		cd.setCreatedOnOrBefore(DateUtil.getDateTime(2014, 03, 12));
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertTrue(cohort.contains(3));
-		Assert.assertTrue(cohort.contains(4));
-		Assert.assertEquals(2, cohort.size());
+		Assertions.assertTrue(cohort.contains(3));
+		Assertions.assertTrue(cohort.contains(4));
+		Assertions.assertEquals(2, cohort.size());
 	}
 	
 	@Test
@@ -126,9 +126,9 @@ public class ConditionCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 		cd.setConditionCoded(concept);
 		cd.setOnsetDateOnOrBefore(DateUtil.getDateTime(2014, 03, 12));
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertTrue(cohort.contains(3));
-		Assert.assertTrue(cohort.contains(4));
-		Assert.assertEquals(2, cohort.size());
+		Assertions.assertTrue(cohort.contains(3));
+		Assertions.assertTrue(cohort.contains(4));
+		Assertions.assertEquals(2, cohort.size());
 	}
 	
 	@Test
@@ -137,8 +137,8 @@ public class ConditionCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 		cd.setConditionCoded(concept);
 		cd.setEndDateOnOrBefore(DateUtil.getDateTime(2016, 05, 12));
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertTrue(cohort.contains(4));
-		Assert.assertEquals(1, cohort.size());
+		Assertions.assertTrue(cohort.contains(4));
+		Assertions.assertEquals(1, cohort.size());
 	}
 	
 	
@@ -150,8 +150,8 @@ public class ConditionCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 		cd.setCreatedOnOrAfter(DateUtil.getDateTime(2014, 02, 12));
 		cd.setCreatedOnOrBefore(DateUtil.getDateTime(2014, 04, 12));
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertTrue(cohort.contains(3));
-		Assert.assertEquals(1, cohort.size());
+		Assertions.assertTrue(cohort.contains(3));
+		Assertions.assertEquals(1, cohort.size());
 	}
 	
 	@Test
@@ -160,9 +160,9 @@ public class ConditionCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 		cd.setConditionCoded(concept);
 		cd.setActiveOnDate(DateUtil.getDateTime(2014, 04, 12));
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertTrue(cohort.contains(3));
-		Assert.assertTrue(cohort.contains(4));
-		Assert.assertEquals(2, cohort.size());
+		Assertions.assertTrue(cohort.contains(3));
+		Assertions.assertTrue(cohort.contains(4));
+		Assertions.assertEquals(2, cohort.size());
 	}
 	
 	@Test
@@ -173,8 +173,8 @@ public class ConditionCohortDefinitionEvaluatorTest extends BaseModuleContextSen
 		cd.setConditionCoded(concept);
 		cd.setConditionNonCoded("NON-CODED-CONDITION2");
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertTrue(cohort.contains(1));
-		Assert.assertTrue(cohort.contains(2));
-		Assert.assertEquals(2, cohort.size());
+		Assertions.assertTrue(cohort.contains(1));
+		Assertions.assertTrue(cohort.contains(2));
+		Assertions.assertEquals(2, cohort.size());
 	}
 }

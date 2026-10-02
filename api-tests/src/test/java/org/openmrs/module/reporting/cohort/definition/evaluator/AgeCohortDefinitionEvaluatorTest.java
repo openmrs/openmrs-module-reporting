@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Patient;
 import org.openmrs.api.PatientService;
@@ -23,7 +23,7 @@ import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
@@ -46,7 +46,7 @@ public class AgeCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 	@Autowired
 	PatientService patientService;
 
-	@Before
+	@BeforeEach
 	// This is needed due to a change to standardTestDataset in the OpenMRS 2.2 release that changed person 6 birth year from 2007 to 1975
 	public void setup() {
 		Patient p = patientService.getPatient(6);
@@ -63,8 +63,8 @@ public class AgeCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 	@Test
 	public void evaluate_shouldReturnOnlyNonVoidedPatients() throws Exception {
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(new AgeCohortDefinition(), null);
-		Assert.assertEquals(3, cohort.getSize());
-		Assert.assertFalse(cohort.contains(999));
+		Assertions.assertEquals(3, cohort.getSize());
+		Assertions.assertFalse(cohort.contains(999));
 	}
 	
 	@Test
@@ -94,9 +94,9 @@ public class AgeCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 	    EvaluationContext context = new EvaluationContext();
 	    context.setBaseCohort(new Cohort(Arrays.asList(p1.getPatientId())));
         Cohort children = evaluate(new AgeCohortDefinition(0, 14, currentDate), context);
-        Assert.assertEquals(0, children.size());
+        Assertions.assertEquals(0, children.size());
         Cohort adults = evaluate(new AgeCohortDefinition(15, null, currentDate), context);
-        Assert.assertEquals(1, adults.size());
+        Assertions.assertEquals(1, adults.size());
     }
 
 	/**
@@ -122,7 +122,7 @@ public class AgeCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 			acd.setMaxAgeUnit(ageUnits);
 		}
 		Cohort c = evaluate(acd, null);
-		Assert.assertEquals(numPats, c.getSize());
+		Assertions.assertEquals(numPats, c.getSize());
 	}
 
     private Cohort evaluate(AgeCohortDefinition acd, EvaluationContext context) throws EvaluationException {

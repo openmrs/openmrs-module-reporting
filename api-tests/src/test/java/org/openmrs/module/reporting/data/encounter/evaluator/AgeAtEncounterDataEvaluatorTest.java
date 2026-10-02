@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.reporting.data.encounter.evaluator;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.TestUtil;
@@ -19,11 +19,11 @@ import org.openmrs.module.reporting.data.encounter.definition.AgeAtEncounterData
 import org.openmrs.module.reporting.data.encounter.service.EncounterDataService;
 import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
 import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class AgeAtEncounterDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 
@@ -34,7 +34,7 @@ public class AgeAtEncounterDataEvaluatorTest extends BaseModuleContextSensitiveT
 
     protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
     }

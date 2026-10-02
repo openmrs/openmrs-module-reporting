@@ -9,15 +9,15 @@
  */
 package org.openmrs.module.reporting.validator;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Concept;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
 import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.TextObsCohortDefinition;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
@@ -40,7 +40,7 @@ public class BaseObsCohortDefinitionValidatorTest extends BaseModuleContextSensi
 		Errors errors = new BindException(codedObsCohortDefinition, "cohortDefinition");
 		new CohortDefinitionValidator().validate(codedObsCohortDefinition, errors);
 		
-		Assert.assertTrue(errors.hasErrors());
+		Assertions.assertTrue(errors.hasErrors());
 	}
 	
 	/**
@@ -56,7 +56,7 @@ public class BaseObsCohortDefinitionValidatorTest extends BaseModuleContextSensi
 		Errors errors = new BindException(codedObsCohortDefinition, "cohortDefinition");
 		new CohortDefinitionValidator().validate(codedObsCohortDefinition, errors);
 		
-		Assert.assertTrue(errors.hasErrors());
+		Assertions.assertTrue(errors.hasErrors());
 	}
 	
 	/**
@@ -73,7 +73,7 @@ public class BaseObsCohortDefinitionValidatorTest extends BaseModuleContextSensi
 		Errors errors = new BindException(codedObsCohortDefinition, "cohortDefinition");
 		new CohortDefinitionValidator().validate(codedObsCohortDefinition, errors);
 		
-		Assert.assertFalse(errors.hasErrors());
+		Assertions.assertFalse(errors.hasErrors());
 	}
 	
 	/**
@@ -89,7 +89,7 @@ public class BaseObsCohortDefinitionValidatorTest extends BaseModuleContextSensi
 		Errors errors = new BindException(dateObsCohortDefinition, "cohortDefinition");
 		new CohortDefinitionValidator().validate(dateObsCohortDefinition, errors);
 		
-		Assert.assertTrue(errors.hasErrors());
+		Assertions.assertTrue(errors.hasErrors());
 	}
 	
 	/**
@@ -105,7 +105,7 @@ public class BaseObsCohortDefinitionValidatorTest extends BaseModuleContextSensi
 		Errors errors = new BindException(dateObsCohortDefinition, "cohortDefinition");
 		new CohortDefinitionValidator().validate(dateObsCohortDefinition, errors);
 		
-		Assert.assertTrue(errors.hasErrors());
+		Assertions.assertTrue(errors.hasErrors());
 	}
 	
 	/**
@@ -122,7 +122,7 @@ public class BaseObsCohortDefinitionValidatorTest extends BaseModuleContextSensi
 		Errors errors = new BindException(dateObsCohortDefinition, "cohortDefinition");
 		new CohortDefinitionValidator().validate(dateObsCohortDefinition, errors);
 		
-		Assert.assertFalse(errors.hasErrors());
+		Assertions.assertFalse(errors.hasErrors());
 	}
 	
 	/**
@@ -138,7 +138,7 @@ public class BaseObsCohortDefinitionValidatorTest extends BaseModuleContextSensi
 		Errors errors = new BindException(numericObsCohortDefinition, "cohortDefinition");
 		new CohortDefinitionValidator().validate(numericObsCohortDefinition, errors);
 		
-		Assert.assertTrue(errors.hasErrors());
+		Assertions.assertTrue(errors.hasErrors());
 	}
 	
 	/**
@@ -154,7 +154,7 @@ public class BaseObsCohortDefinitionValidatorTest extends BaseModuleContextSensi
 		Errors errors = new BindException(numericObsCohortDefinition, "cohortDefinition");
 		new CohortDefinitionValidator().validate(numericObsCohortDefinition, errors);
 		
-		Assert.assertTrue(errors.hasErrors());
+		Assertions.assertTrue(errors.hasErrors());
 	}
 	
 	/**
@@ -171,7 +171,7 @@ public class BaseObsCohortDefinitionValidatorTest extends BaseModuleContextSensi
 		Errors errors = new BindException(numericObsCohortDefinition, "cohortDefinition");
 		new CohortDefinitionValidator().validate(numericObsCohortDefinition, errors);
 		
-		Assert.assertFalse(errors.hasErrors());
+		Assertions.assertFalse(errors.hasErrors());
 	}
 	
 	/**
@@ -187,7 +187,7 @@ public class BaseObsCohortDefinitionValidatorTest extends BaseModuleContextSensi
 		Errors errors = new BindException(textObsCohortDefinition, "cohortDefinition");
 		new CohortDefinitionValidator().validate(textObsCohortDefinition, errors);
 		
-		Assert.assertTrue(errors.hasErrors());
+		Assertions.assertTrue(errors.hasErrors());
 	}
 	
 	/**
@@ -203,7 +203,7 @@ public class BaseObsCohortDefinitionValidatorTest extends BaseModuleContextSensi
 		Errors errors = new BindException(textObsCohortDefinition, "cohortDefinition");
 		new CohortDefinitionValidator().validate(textObsCohortDefinition, errors);
 		
-		Assert.assertTrue(errors.hasErrors());
+		Assertions.assertTrue(errors.hasErrors());
 	}
 	
 	/**
@@ -220,6 +220,6 @@ public class BaseObsCohortDefinitionValidatorTest extends BaseModuleContextSensi
 		Errors errors = new BindException(textObsCohortDefinition, "cohortDefinition");
 		new CohortDefinitionValidator().validate(textObsCohortDefinition, errors);
 		
-		Assert.assertFalse(errors.hasErrors());
+		Assertions.assertFalse(errors.hasErrors());
 	}
 }

@@ -10,19 +10,19 @@
 package org.openmrs.module.reporting.template;
 
 import com.github.jknack.handlebars.Options;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.api.ConceptService;
 import org.openmrs.messagesource.MessageSourceService;
 import org.openmrs.module.reporting.common.DateUtil;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 import java.util.Date;
 import java.util.Locale;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

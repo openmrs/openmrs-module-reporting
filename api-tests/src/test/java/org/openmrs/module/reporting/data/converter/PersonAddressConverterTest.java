@@ -9,11 +9,11 @@
  */
 package org.openmrs.module.reporting.data.converter;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openmrs.PersonAddress;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 public class PersonAddressConverterTest extends BaseModuleContextSensitiveTest {
 	
@@ -29,6 +29,6 @@ public class PersonAddressConverterTest extends BaseModuleContextSensitiveTest {
 		pa.setStateProvince("MA");
 		pa.setCountry("USA");
 		Object result = (new ObjectFormatter("{cityVillage}, {stateProvince}")).convert(pa);
-		Assert.assertEquals("Boston, MA", result.toString());
+		Assertions.assertEquals("Boston, MA", result.toString());
 	}
 }

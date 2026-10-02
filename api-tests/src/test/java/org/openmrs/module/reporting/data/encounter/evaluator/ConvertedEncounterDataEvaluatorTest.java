@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.data.encounter.evaluator;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.TestUtil;
@@ -23,7 +23,7 @@ import org.openmrs.module.reporting.data.encounter.definition.EncounterDatetimeD
 import org.openmrs.module.reporting.data.encounter.service.EncounterDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 public class ConvertedEncounterDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 
@@ -32,12 +32,12 @@ public class ConvertedEncounterDataEvaluatorTest extends BaseModuleContextSensit
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
-	 * {@link org.openmrs.test.BaseContextSensitiveTest} is run right before this method.
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
+	 * {@link org.openmrs.test.jupiter.BaseContextSensitiveTest} is run right before this method.
 	 *
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -64,6 +64,6 @@ public class ConvertedEncounterDataEvaluatorTest extends BaseModuleContextSensit
 		EvaluatedEncounterData data = Context.getService(EncounterDataService.class).evaluate(cd, context);
 		
 		Object o = data.getData().get(3);
-		Assert.assertEquals("2008-08-01", o);
+		Assertions.assertEquals("2008-08-01", o);
 	}
 }
