@@ -22,13 +22,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
 
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
 public class IterableSqlDataSetEditor {
 
-    @RequestMapping("/module/reporting/datasets/iterableSqlDataSetEditor")
+    @RequestMapping({ "/module/reporting/datasets/iterableSqlDataSetEditor", "/module/reporting/datasets/iterableSqlDataSetEditor.form" })
     public void showForm(ModelMap model,
                          @RequestParam(value = "uuid", required = false) String uuid,
                          @RequestParam(value = "copyFromUuid", required = false) String copyFromUuid) {
@@ -45,7 +45,7 @@ public class IterableSqlDataSetEditor {
         }
     }
 
-    @RequestMapping("/module/reporting/datasets/iterableSqlDataSetDefinitionAssignQueryString")
+    @RequestMapping({ "/module/reporting/datasets/iterableSqlDataSetDefinitionAssignQueryString", "/module/reporting/datasets/iterableSqlDataSetDefinitionAssignQueryString.form" })
     public String saveQueryString(
             HttpSession httpSession,
             WebRequest webRequest,
@@ -75,7 +75,7 @@ public class IterableSqlDataSetEditor {
      *
      * @return
      */
-    @RequestMapping("/module/reporting/datasets/iterableSqlDataSetDefinitionClone")
+    @RequestMapping({ "/module/reporting/datasets/iterableSqlDataSetDefinitionClone", "/module/reporting/datasets/iterableSqlDataSetDefinitionClone.form" })
     public String cloneDefinition(WebRequest request,
                                   @RequestParam("name") String name,
                                   @RequestParam(value = "description", required = false) String description,

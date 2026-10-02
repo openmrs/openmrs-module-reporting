@@ -13,7 +13,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.CacheMode;
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
+import org.hibernate.query.Query;
+import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.Cohort;
 import org.openmrs.Drug;
 import org.openmrs.EncounterType;
@@ -89,7 +90,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			query.append(prefixTerm + " patient.gender is null or (patient.gender != 'M' and patient.gender != 'F')");
 		}
 		query.append(")");
-		Query q = sessionFactory.getCurrentSession().createQuery(query.toString());
+		Query q = sessionFactory.getHibernateSessionFactory().getCurrentSession().createQuery(query.toString());
 		q.setCacheMode(CacheMode.IGNORE);
 		return new Cohort(q.list());
 	}
@@ -186,7 +187,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		log.warn("query: " + sql);
 
 		// Execute query
-		Query query = sessionFactory.getCurrentSession().createSQLQuery(
+		Query query = sessionFactory.getHibernateSessionFactory().getCurrentSession().createNativeQuery(
 				sql.toString());
 
 		log
@@ -196,9 +197,9 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		if (drugIds != null && !drugIds.isEmpty())
 			query.setParameterList("drugIds", drugIds);
 		if (changedOnOrAfter != null)
-			query.setDate("changedOnOrAfter", changedOnOrAfter);
+			query.setParameter("changedOnOrAfter", changedOnOrAfter, StandardBasicTypes.DATE);
 		if (changedOnOrBefore != null)
-			query.setDate("changedOnOrBefore", changedOnOrBefore);
+			query.setParameter("changedOnOrBefore", changedOnOrBefore, StandardBasicTypes.DATE);
 		return new Cohort(query.list());
 	}
 
@@ -240,7 +241,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		log.warn("query: " + sql);
 
 		// Execute query
-		Query query = sessionFactory.getCurrentSession().createSQLQuery(
+		Query query = sessionFactory.getHibernateSessionFactory().getCurrentSession().createNativeQuery(
 				sql.toString());
 
 		log.debug("Patients having active drug orders between dates:\n "
@@ -249,7 +250,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		if (drugIds != null && !drugIds.isEmpty())
 			query.setParameterList("drugIds", drugIds);
 		if (asOfDate != null)
-			query.setDate("asOfDate", asOfDate);
+			query.setParameter("asOfDate", asOfDate, StandardBasicTypes.DATE);
 		return new Cohort(query.list());
 	}
 
@@ -319,20 +320,20 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		sql.append(" group by pp.patient_id");
 		log.debug("query: " + sql);
 
-		Query query = sessionFactory.getCurrentSession().createSQLQuery(
+		Query query = sessionFactory.getHibernateSessionFactory().getCurrentSession().createNativeQuery(
 				sql.toString());
 
 		log.debug("Patients having programs and states between dates: "
 				+ query.getQueryString());
 
 		if (programId != null)
-			query.setInteger("programId", programId);
+			query.setParameter("programId", programId);
 		if (stateIds != null)
 			query.setParameterList("stateIds", stateIds);
 		if (fromDate != null)
-			query.setDate("fromDate", fromDate);
+			query.setParameter("fromDate", fromDate, StandardBasicTypes.DATE);
 		if (toDate != null)
-			query.setDate("toDate", toDate);
+			query.setParameter("toDate", toDate, StandardBasicTypes.DATE);
 
 		return new Cohort(query.list());
 	}
@@ -367,7 +368,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 			}
 		}
 
-		Query query = sessionFactory.getCurrentSession().createQuery(
+		Query query = sessionFactory.getHibernateSessionFactory().getCurrentSession().createQuery(
 				queryString.toString());
 
 		log.debug("Patients having birthdate between dates: "
@@ -375,10 +376,10 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 
 		query.setCacheMode(CacheMode.IGNORE);
 		if (bornOnOrAfter != null) {
-			query.setDate("bornOnOrAfter", bornOnOrAfter);
+			query.setParameter("bornOnOrAfter", bornOnOrAfter, StandardBasicTypes.DATE);
 		}
 		if (bornOnOrBefore != null) {
-			query.setDate("bornOnOrBefore", bornOnOrBefore);
+			query.setParameter("bornOnOrBefore", bornOnOrBefore, StandardBasicTypes.DATE);
 		}
 		return new Cohort(query.list());
 
@@ -413,14 +414,14 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 				queryString.append(" and ").append(clause);
 			}
 		}
-		Query query = sessionFactory.getCurrentSession().createQuery(
+		Query query = sessionFactory.getHibernateSessionFactory().getCurrentSession().createQuery(
 				queryString.toString());
 		query.setCacheMode(CacheMode.IGNORE);
 		if (diedOnOrAfter != null) {
-			query.setDate("diedOnOrAfter", diedOnOrAfter);
+			query.setParameter("diedOnOrAfter", diedOnOrAfter, StandardBasicTypes.DATE);
 		}
 		if (diedOnOrBefore != null) {
-			query.setDate("diedOnOrBefore", diedOnOrBefore);
+			query.setParameter("diedOnOrBefore", diedOnOrBefore, StandardBasicTypes.DATE);
 		}
 		log.debug("Patients having died between dates query: "
 				+ query.getQueryString());
@@ -456,13 +457,13 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		log.debug("query: " + sql);
 
 		// Execute query
-		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql.toString());
+		Query query = sessionFactory.getHibernateSessionFactory().getCurrentSession().createNativeQuery(sql.toString());
 		if (programIds != null && !programIds.isEmpty())
 			query.setParameterList("programIds", programIds);
 		if (onOrAfter != null)
-			query.setTimestamp("onOrAfter", onOrAfter);
+			query.setParameter("onOrAfter", onOrAfter, StandardBasicTypes.TIMESTAMP);
 		if (onOrBefore != null)
-			query.setTimestamp("onOrBefore", DateUtil.getEndOfDayIfTimeExcluded(onOrBefore));
+			query.setParameter("onOrBefore", DateUtil.getEndOfDayIfTimeExcluded(onOrBefore), StandardBasicTypes.TIMESTAMP);
 		return new Cohort(query.list()); 
 	}
 
@@ -500,18 +501,18 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		log.debug("query: " + sql);
 
 		// Execute query
-		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql.toString());
+		Query query = sessionFactory.getHibernateSessionFactory().getCurrentSession().createNativeQuery(sql.toString());
 
 		if (stateIds != null && !stateIds.isEmpty())
 			query.setParameterList("stateIds", stateIds);
 		if (startedOnOrAfter != null)
-			query.setTimestamp("startedOnOrAfter", startedOnOrAfter);
+			query.setParameter("startedOnOrAfter", startedOnOrAfter, StandardBasicTypes.TIMESTAMP);
 		if (startedOnOrBefore != null)
-			query.setTimestamp("startedOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(startedOnOrBefore));
+			query.setParameter("startedOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(startedOnOrBefore), StandardBasicTypes.TIMESTAMP);
 		if (endedOnOrAfter != null)
-			query.setTimestamp("endedOnOrAfter", endedOnOrAfter);
+			query.setParameter("endedOnOrAfter", endedOnOrAfter, StandardBasicTypes.TIMESTAMP);
 		if (endedOnOrBefore != null)
-			query.setTimestamp("endedOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(endedOnOrBefore));
+			query.setParameter("endedOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(endedOnOrBefore), StandardBasicTypes.TIMESTAMP);
 
 		return new Cohort(query.list());
     }
@@ -544,13 +545,13 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		log.debug("query: " + sql);
 
 		// Execute query
-		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql.toString());
+		Query query = sessionFactory.getHibernateSessionFactory().getCurrentSession().createNativeQuery(sql.toString());
 		if (stateIds != null && !stateIds.isEmpty())
 			query.setParameterList("stateIds", stateIds);
 		if (onOrAfter != null)
-			query.setTimestamp("onOrAfter", onOrAfter);
+			query.setParameter("onOrAfter", onOrAfter, StandardBasicTypes.TIMESTAMP);
 		if (onOrBefore != null)
-			query.setTimestamp("onOrBefore", DateUtil.getEndOfDayIfTimeExcluded(onOrBefore));
+			query.setParameter("onOrBefore", DateUtil.getEndOfDayIfTimeExcluded(onOrBefore), StandardBasicTypes.TIMESTAMP);
 		return new Cohort(query.list()); 
     }
 
@@ -638,7 +639,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 
 		log.debug("query: " + sb);
 		
-		Query query = sessionFactory.getCurrentSession().createSQLQuery(sb.toString());
+		Query query = sessionFactory.getHibernateSessionFactory().getCurrentSession().createNativeQuery(sb.toString());
 		if (encTypeIds != null)
 			query.setParameterList("encTypeIds", encTypeIds);
 		if (locationIds != null)
@@ -648,19 +649,19 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		if (formIds != null)
 			query.setParameterList("formIds", formIds);
 		if (onOrAfter != null)
-			query.setTimestamp("onOrAfter", onOrAfter);
+			query.setParameter("onOrAfter", onOrAfter, StandardBasicTypes.TIMESTAMP);
 		if (onOrBefore != null)
-			query.setTimestamp("onOrBefore", DateUtil.getEndOfDayIfTimeExcluded(onOrBefore));
+			query.setParameter("onOrBefore", DateUtil.getEndOfDayIfTimeExcluded(onOrBefore), StandardBasicTypes.TIMESTAMP);
 		if (atLeastCount != null)
-			query.setInteger("atLeastCount", atLeastCount);
+			query.setParameter("atLeastCount", atLeastCount);
 		if (atMostCount != null)
-			query.setInteger("atMostCount", atMostCount);
+			query.setParameter("atMostCount", atMostCount);
 		if (createdBy != null)
-			query.setInteger("createdBy", createdBy.getId());
+			query.setParameter("createdBy", createdBy.getId());
 		if (createdOnOrAfter != null)
-			query.setTimestamp("createdOnOrAfter", createdOnOrAfter);
+			query.setParameter("createdOnOrAfter", createdOnOrAfter, StandardBasicTypes.TIMESTAMP);
 		if (createdOnOrBefore != null)
-			query.setTimestamp("createdOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(createdOnOrBefore));
+			query.setParameter("createdOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(createdOnOrBefore), StandardBasicTypes.TIMESTAMP);
 		
 		return new Cohort(query.list());
     }
@@ -699,16 +700,16 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		log.debug("query: " + sqlQuery);
 				
 		// Create hibernate query 
-		Query query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery.toString());
+		Query query = sessionFactory.getHibernateSessionFactory().getCurrentSession().createNativeQuery(sqlQuery.toString());
 
 		// Set attribute type parameter
 		if (attributeType != null) 
-			query.setInteger("attributeType", attributeType.getPersonAttributeTypeId());
+			query.setParameter("attributeType", attributeType.getPersonAttributeTypeId());
 		
 		// Set values parameter
 		if (values != null && !values.isEmpty()) { 	
 			if (values.size() == 1) {	// improve performance by using equality when there's only
-				query.setString("value", values.get(0));
+				query.setParameter("value", values.get(0));
 			} 
 			else if (!values.isEmpty()) {
 				query.setParameterList("values", values);
@@ -777,7 +778,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 	public Query prepareQuery(String sqlQuery, Map<String, Object> paramMap) { 
 		Query query = null;
 		try { 			
-			query = sessionFactory.getCurrentSession().createSQLQuery(sqlQuery.toString());					
+			query = sessionFactory.getHibernateSessionFactory().getCurrentSession().createNativeQuery(sqlQuery.toString());					
 			//query.setCacheMode(CacheMode.IGNORE);	// TODO figure out what this does before using it
 						
 			// Bind the query parameters (query is mutable)
@@ -844,7 +845,7 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 				}
 				// OpenmrsObject (e.g. Location)
 				else if (OpenmrsObject.class.isAssignableFrom(paramValue.getClass())) { 					
-					query.setInteger(paramName, ((OpenmrsObject) paramValue).getId());
+					query.setParameter(paramName, ((OpenmrsObject) paramValue).getId());
 				}
 				// Collection<OpenmrsObject> (e.g. List<Location>)
 				else if (Collection.class.isAssignableFrom(paramValue.getClass())) {
@@ -864,11 +865,11 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 				}
 				// java.util.Date and subclasses
 				else if (paramValue instanceof Date) {
-					query.setDate(paramName, (Date) paramValue);
+					query.setParameter(paramName, (Date) paramValue, StandardBasicTypes.DATE);
 				}
 				// String, Integer, et al (this might break since this is a catch all for all other classes)
 				else { 
-					query.setString(paramName, new String(paramValue.toString()));	// need to create new string for some reason
+					query.setParameter(paramName, new String(paramValue.toString()));	// need to create new string for some reason
 				}
 			}
 		}		
@@ -949,17 +950,17 @@ public class HibernateCohortQueryDAO implements CohortQueryDAO {
 		if (diedOnOrBefore != null)
 			sql.append(" and death_date <= :diedOnOrBefore ");
 
-		Query q = sessionFactory.getCurrentSession().createSQLQuery(sql.toString());
+		Query q = sessionFactory.getHibernateSessionFactory().getCurrentSession().createNativeQuery(sql.toString());
 		q.setCacheMode(CacheMode.IGNORE);
 
 		if (bornOnOrAfter != null)
-			q.setTimestamp("bornOnOrAfter", bornOnOrAfter);
+			q.setParameter("bornOnOrAfter", bornOnOrAfter, StandardBasicTypes.TIMESTAMP);
 		if (bornOnOrBefore != null)
-			q.setTimestamp("bornOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(bornOnOrBefore));
+			q.setParameter("bornOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(bornOnOrBefore), StandardBasicTypes.TIMESTAMP);
 		if (diedOnOrAfter != null)
-			q.setTimestamp("diedOnOrAfter", diedOnOrAfter);
+			q.setParameter("diedOnOrAfter", diedOnOrAfter, StandardBasicTypes.TIMESTAMP);
 		if (diedOnOrBefore != null)
-			q.setTimestamp("diedOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(diedOnOrBefore));
+			q.setParameter("diedOnOrBefore", DateUtil.getEndOfDayIfTimeExcluded(diedOnOrBefore), StandardBasicTypes.TIMESTAMP);
 		
 		return new Cohort(q.list());
     }

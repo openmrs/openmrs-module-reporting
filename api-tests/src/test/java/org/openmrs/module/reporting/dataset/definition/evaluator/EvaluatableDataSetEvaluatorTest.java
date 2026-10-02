@@ -10,20 +10,21 @@
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Iterator;
 
 import org.hamcrest.core.Is;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.EvaluatableDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class EvaluatableDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 

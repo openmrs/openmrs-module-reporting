@@ -11,9 +11,9 @@ package org.openmrs.module.reporting.query.encounter.evaluator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -26,7 +26,7 @@ import org.openmrs.module.reporting.query.encounter.EncounterQueryResult;
 import org.openmrs.module.reporting.query.encounter.definition.CompositionEncounterQuery;
 import org.openmrs.module.reporting.query.encounter.definition.SqlEncounterQuery;
 import org.openmrs.module.reporting.query.encounter.service.EncounterQueryService;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 /**
  * Tests the expected behavior of the CompositionCohortDefinitionEvaluator
@@ -37,7 +37,7 @@ public class CompositionEncounterQueryEvaluatorTest extends BaseModuleContextSen
 	protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -55,12 +55,12 @@ public class CompositionEncounterQueryEvaluatorTest extends BaseModuleContextSen
 		ccd.setCompositionString(compositionString);
 		EncounterQueryResult r = Context.getService(EncounterQueryService.class).evaluate(ccd, new EvaluationContext());
 		if (expectedIds == null) {
-			Assert.assertEquals(0, r.getSize());
+			Assertions.assertEquals(0, r.getSize());
 		}
 		else {
-			Assert.assertEquals(expectedIds.length, r.getSize());
+			Assertions.assertEquals(expectedIds.length, r.getSize());
 			for (Integer expectedId : expectedIds) {
-				Assert.assertTrue(r.contains(expectedId));
+				Assertions.assertTrue(r.contains(expectedId));
 			}
 		}
 	}

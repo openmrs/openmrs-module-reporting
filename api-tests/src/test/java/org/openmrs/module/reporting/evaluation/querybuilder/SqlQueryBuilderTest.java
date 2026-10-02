@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.evaluation.querybuilder;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.EncounterType;
 import org.openmrs.api.context.Context;
@@ -20,7 +20,7 @@ import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class SqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	@Autowired
 	EvaluationService evaluationService;
 
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -50,9 +50,9 @@ public class SqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 		SqlQueryBuilder q = new SqlQueryBuilder();
 		q.append("select p.person_id id, p.gender, p.birthdate as bd from person p where voided = 0");
 		List<DataSetColumn> columns = evaluationService.getColumns(q);
-		Assert.assertEquals("id", columns.get(0).getName().toLowerCase());
-		Assert.assertEquals("gender", columns.get(1).getName().toLowerCase());
-		Assert.assertEquals("bd", columns.get(2).getName().toLowerCase());
+		Assertions.assertEquals("id", columns.get(0).getName().toLowerCase());
+		Assertions.assertEquals("gender", columns.get(1).getName().toLowerCase());
+		Assertions.assertEquals("bd", columns.get(2).getName().toLowerCase());
 	}
 
 	@Test
@@ -60,11 +60,11 @@ public class SqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 		SqlQueryBuilder q = new SqlQueryBuilder();
 		q.append("select p.person_id, p.gender, p.birthdate as bd from person p where person_id = 2");
 		List<Object[]> result = evaluationService.evaluateToList(q, new EvaluationContext());
-		Assert.assertEquals(1, result.size());
+		Assertions.assertEquals(1, result.size());
 		Object[] row = result.get(0);
-		Assert.assertEquals(2, row[0]);
-		Assert.assertEquals("M", row[1]);
-		Assert.assertEquals(DateUtil.getDateTime(1975,4,8), row[2]);
+		Assertions.assertEquals(2, row[0]);
+		Assertions.assertEquals("M", row[1]);
+		Assertions.assertEquals(DateUtil.getDateTime(1975,4,8), row[2]);
 	}
 
 	@Test
@@ -73,10 +73,10 @@ public class SqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 		q.append("select p.person_id from person p where gender = :g and p.person_id <= 9");
 		q.addParameter("g", "M");
 		List<Object[]> result = evaluationService.evaluateToList(q, new EvaluationContext());
-		Assert.assertEquals(3, result.size());
+		Assertions.assertEquals(3, result.size());
 		q.addParameter("g", "F");
 		result = evaluationService.evaluateToList(q, new EvaluationContext());
-		Assert.assertEquals(2, result.size());
+		Assertions.assertEquals(2, result.size());
 	}
 
 	@Test
@@ -85,7 +85,7 @@ public class SqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 		q.append("select e.encounter_id from encounter e where e.encounter_type = :type");
 		q.addParameter("type", Context.getEncounterService().getEncounterType("Scheduled"));
 		List<Object[]> result = evaluationService.evaluateToList(q, new EvaluationContext());
-		Assert.assertEquals(2, result.size());
+		Assertions.assertEquals(2, result.size());
 	}
 
 	@Test
@@ -94,7 +94,7 @@ public class SqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 		q.append("select e.encounter_datetime, e.encounter_type from encounter e where e.encounter_id in (:ids)");
 		q.addParameter("ids", Arrays.asList(3,4,5,6));
 		List<Object[]> result = evaluationService.evaluateToList(q, new EvaluationContext());
-		Assert.assertEquals(4, result.size());
+		Assertions.assertEquals(4, result.size());
 	}
 
 	@Test
@@ -106,7 +106,7 @@ public class SqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 		typeList.add(Context.getEncounterService().getEncounterType("Emergency"));
 		q.addParameter("types", typeList);
 		List<Object[]> result = evaluationService.evaluateToList(q, new EvaluationContext());
-		Assert.assertEquals(3, result.size());
+		Assertions.assertEquals(3, result.size());
 	}
 
 	@Test
@@ -116,7 +116,7 @@ public class SqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 		Cohort baseCohort = new Cohort("2,6,7");
 		q.addParameter("cohort", baseCohort);
 		List<Object[]> result = evaluationService.evaluateToList(q, new EvaluationContext());
-		Assert.assertEquals(3, result.size());
+		Assertions.assertEquals(3, result.size());
 	}
 
 	@Test
@@ -127,7 +127,7 @@ public class SqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 		Cohort baseCohort = new Cohort("2,6,7");
 		q.addParameter("cohort", baseCohort);
 		List<Object[]> result = evaluationService.evaluateToList(q, new EvaluationContext());
-		Assert.assertEquals(3, result.size());
+		Assertions.assertEquals(3, result.size());
 	}
 
 	@Test
@@ -137,7 +137,7 @@ public class SqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 		q.addParameter("patient2", 2);
 		q.addParameter("patient24", 24);
 		List<Object[]> result = evaluationService.evaluateToList(q, new EvaluationContext());
-		Assert.assertEquals(1, result.size());
+		Assertions.assertEquals(1, result.size());
 	}
 
 	@Test

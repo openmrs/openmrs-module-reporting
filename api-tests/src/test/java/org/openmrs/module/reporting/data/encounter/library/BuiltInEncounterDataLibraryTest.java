@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.reporting.data.encounter.library;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Encounter;
 import org.openmrs.contrib.testdata.TestDataManager;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -20,13 +20,13 @@ import org.openmrs.module.reporting.data.encounter.service.EncounterDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
 import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Timestamp;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class BuiltInEncounterDataLibraryTest extends BaseModuleContextSensitiveTest {
 
@@ -45,7 +45,7 @@ public class BuiltInEncounterDataLibraryTest extends BaseModuleContextSensitiveT
 
     private EncounterIdSet encounterIdSet;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         e1 = data.encounter().patient(7)
                 .encounterType("Scheduled")

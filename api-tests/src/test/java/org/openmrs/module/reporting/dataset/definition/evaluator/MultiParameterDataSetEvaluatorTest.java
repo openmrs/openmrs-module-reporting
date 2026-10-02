@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Patient;
 import org.openmrs.api.PatientService;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -21,7 +21,7 @@ import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -41,7 +41,7 @@ public class MultiParameterDataSetEvaluatorTest extends BaseModuleContextSensiti
 	@Autowired
 	PatientService patientService;
 
-	@Before
+	@BeforeEach
 	// This is needed due to a change to standardTestDataset in the OpenMRS 2.2 release that changed person 6 birth year from 2007 to 1975
 	public void setup() {
 		Patient p = patientService.getPatient(6);
@@ -87,36 +87,36 @@ public class MultiParameterDataSetEvaluatorTest extends BaseModuleContextSensiti
 
 		SimpleDataSet result = (SimpleDataSet) dataSetDefinitionService.evaluate(multiParameterDataSetDefinition, evaluationContext);
 
-		Assert.assertNotNull(result.getMetaData().getColumn("parameter.maxBirthDate"));
-		Assert.assertNotNull(result.getMetaData().getColumn("PATIENT_ID"));
-		Assert.assertNotNull(result.getMetaData().getColumn("GENDER"));
-		Assert.assertNotNull(result.getMetaData().getColumn("BIRTHDATE"));
+		Assertions.assertNotNull(result.getMetaData().getColumn("parameter.maxBirthDate"));
+		Assertions.assertNotNull(result.getMetaData().getColumn("PATIENT_ID"));
+		Assertions.assertNotNull(result.getMetaData().getColumn("GENDER"));
+		Assertions.assertNotNull(result.getMetaData().getColumn("BIRTHDATE"));
 
-		Assert.assertEquals(3, result.getRows().size());
+		Assertions.assertEquals(3, result.getRows().size());
 
 		// Asserting result parameter for first iteration
-		Assert.assertEquals(firstIterationParameter, result.getColumnValue(1, "parameter.maxBirthDate"));
+		Assertions.assertEquals(firstIterationParameter, result.getColumnValue(1, "parameter.maxBirthDate"));
 
 		// Asserting result parameters for second iteration
-		Assert.assertEquals(secondIterationParameter, result.getColumnValue(2, "parameter.maxBirthDate"));
-		Assert.assertEquals(secondIterationParameter, result.getColumnValue(3, "parameter.maxBirthDate"));
+		Assertions.assertEquals(secondIterationParameter, result.getColumnValue(2, "parameter.maxBirthDate"));
+		Assertions.assertEquals(secondIterationParameter, result.getColumnValue(3, "parameter.maxBirthDate"));
 
 		Date firstDateResult = (Date) result.getColumnValue(1, "BIRTHDATE");
 		Date secondDateResult = (Date) result.getColumnValue(2, "BIRTHDATE");
 		Date thirdDateResult = (Date) result.getColumnValue(3, "BIRTHDATE");
 
 		// Asserting evaluation results values; first and second dates are the same - both iteration returns them
-		Assert.assertEquals(Timestamp.valueOf("1975-04-08 00:00:00.0"), firstDateResult);
-		Assert.assertEquals(Timestamp.valueOf("1975-04-08 00:00:00.0"), secondDateResult);
-		Assert.assertEquals(Timestamp.valueOf("1976-08-25 00:00:00.0"), thirdDateResult);
+		Assertions.assertEquals(Timestamp.valueOf("1975-04-08 00:00:00.0"), firstDateResult);
+		Assertions.assertEquals(Timestamp.valueOf("1975-04-08 00:00:00.0"), secondDateResult);
+		Assertions.assertEquals(Timestamp.valueOf("1976-08-25 00:00:00.0"), thirdDateResult);
 
 		// Asserting values for first iteration
-		Assert.assertTrue(firstDateResult.before(firstIterationParameter));
-		Assert.assertFalse(thirdDateResult.before(firstIterationParameter));
+		Assertions.assertTrue(firstDateResult.before(firstIterationParameter));
+		Assertions.assertFalse(thirdDateResult.before(firstIterationParameter));
 
 		// Asserting values for second iteration
-		Assert.assertTrue(secondDateResult.before(secondIterationParameter));
-		Assert.assertTrue(thirdDateResult.before(secondIterationParameter));
+		Assertions.assertTrue(secondDateResult.before(secondIterationParameter));
+		Assertions.assertTrue(thirdDateResult.before(secondIterationParameter));
 
 	}
 }

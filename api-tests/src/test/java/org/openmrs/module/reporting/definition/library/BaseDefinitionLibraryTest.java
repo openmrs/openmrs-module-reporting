@@ -9,14 +9,14 @@
  */
 package org.openmrs.module.reporting.definition.library;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.library.BuiltInCohortDefinitionLibrary;
 import org.openmrs.module.reporting.common.MessageUtil;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,32 +34,32 @@ public class BaseDefinitionLibraryTest extends BaseModuleContextSensitiveTest {
     @Test
     public void shouldReturnMessageCodeForAnnotatedValueIfExists() throws Exception {
 		CohortDefinition cd = builtInCohorts.getDefinition("males");
-		Assert.assertEquals(BuiltInCohortDefinitionLibrary.PREFIX + "males.name", cd.getName());
-		Assert.assertEquals(BuiltInCohortDefinitionLibrary.PREFIX + "males.description", cd.getDescription());
+		Assertions.assertEquals(BuiltInCohortDefinitionLibrary.PREFIX + "males.name", cd.getName());
+		Assertions.assertEquals(BuiltInCohortDefinitionLibrary.PREFIX + "males.description", cd.getDescription());
 	}
 
 	@Test
 	public void shouldReturnAnnotatedNameIfSpecified() throws Exception {
 		CohortDefinition cd = testLibrary.getDefinition(TestDefinitionLibrary.PREFIX + "females");
-		Assert.assertEquals("Female patients", cd.getName());
-		Assert.assertEquals("Patients whose gender is F", cd.getDescription());
+		Assertions.assertEquals("Female patients", cd.getName());
+		Assertions.assertEquals("Patients whose gender is F", cd.getDescription());
 	}
 
 	@Test
 	public void shouldReturnMethodNameAsDisplayStringByDefault() throws Exception {
 		CohortDefinition cd = testLibrary.getDefinition(TestDefinitionLibrary.PREFIX + "UnknownGender");
-		Assert.assertEquals("Unknown Gender", cd.getName());
-		Assert.assertEquals("", cd.getDescription());
+		Assertions.assertEquals("Unknown Gender", cd.getName());
+		Assertions.assertEquals("", cd.getDescription());
 
 		cd = testLibrary.getDefinition(TestDefinitionLibrary.PREFIX + "PatientsAged0To15");
-		Assert.assertEquals("Patients Aged 0 To 15", cd.getName());
-		Assert.assertEquals("", cd.getDescription());
+		Assertions.assertEquals("Patients Aged 0 To 15", cd.getName());
+		Assertions.assertEquals("", cd.getDescription());
 	}
 
 	@Test
 	public void shouldUseMethodNameAsCodeIfNoValueSpecified() throws Exception {
 		CohortDefinition cd = testLibrary.getDefinition(TestDefinitionLibrary.PREFIX + "UnknownGender");
-		Assert.assertNotNull(cd);
+		Assertions.assertNotNull(cd);
 	}
 
 	/**

@@ -13,10 +13,10 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.jstl.core.LoopTagStatus;
-import javax.servlet.jsp.tagext.BodyTagSupport;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspTagException;
+import jakarta.servlet.jsp.jstl.core.LoopTagStatus;
+import jakarta.servlet.jsp.tagext.BodyTagSupport;
 
 /**
  * This tag allows iterating across an range of elements
@@ -60,7 +60,7 @@ public class ForEachTag extends BodyTagSupport {
 	}
 	
 	/**
-	 * @see javax.servlet.jsp.tagext.BodyTag#doInitBody()
+	 * @see jakarta.servlet.jsp.tagext.BodyTag#doInitBody()
 	 */
 	public void doInitBody() throws JspException {
 		if (records.hasNext()) {
@@ -69,7 +69,7 @@ public class ForEachTag extends BodyTagSupport {
 	}
 	
 	/**
-	 * @see javax.servlet.jsp.tagext.IterationTag#doAfterBody()
+	 * @see jakarta.servlet.jsp.tagext.IterationTag#doAfterBody()
 	 */
 	public int doAfterBody() throws JspException {
 		if (records.hasNext()) {
@@ -116,7 +116,7 @@ public class ForEachTag extends BodyTagSupport {
 	}
 	
 	/**
-	 * @see javax.servlet.jsp.tagext.Tag#doEndTag()
+	 * @see jakarta.servlet.jsp.tagext.Tag#doEndTag()
 	 */
 	public int doEndTag() throws JspException {
 		try {

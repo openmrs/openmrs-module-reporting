@@ -11,9 +11,9 @@ package org.openmrs.module.reporting.data.patient.evaluator;
 
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
@@ -24,8 +24,8 @@ import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinitio
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 public class PatientIdentifierDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
@@ -34,12 +34,12 @@ public class PatientIdentifierDataEvaluatorTest extends BaseModuleContextSensiti
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -63,15 +63,15 @@ public class PatientIdentifierDataEvaluatorTest extends BaseModuleContextSensiti
 		
 		Object o = pd.getData().get(2);
 		List<PatientIdentifier> identifiers = (List<PatientIdentifier>) o;
-		Assert.assertEquals(3, identifiers.size());
-		Assert.assertEquals("101-6", identifiers.get(0).getIdentifier());
-		Assert.assertEquals("102", identifiers.get(1).getIdentifier());
-		Assert.assertEquals("101", identifiers.get(2).getIdentifier());
+		Assertions.assertEquals(3, identifiers.size());
+		Assertions.assertEquals("101-6", identifiers.get(0).getIdentifier());
+		Assertions.assertEquals("102", identifiers.get(1).getIdentifier());
+		Assertions.assertEquals("101", identifiers.get(2).getIdentifier());
 
         d.setIncludeFirstNonNullOnly(true);
         pd = Context.getService(PatientDataService.class).evaluate(d, context);
         o = pd.getData().get(2);
-        Assert.assertEquals("101-6", ((PatientIdentifier)o).getIdentifier());
+        Assertions.assertEquals("101-6", ((PatientIdentifier)o).getIdentifier());
 	}
 
 	/**
@@ -94,10 +94,10 @@ public class PatientIdentifierDataEvaluatorTest extends BaseModuleContextSensiti
 
 		Object o = pd.getData().get(2);
 		List<PatientIdentifier> identifiers = (List<PatientIdentifier>) o;
-		Assert.assertEquals(3, identifiers.size());
-		Assert.assertEquals(pi2, identifiers.get(0).getIdentifierType());
-		Assert.assertEquals(pi2, identifiers.get(1).getIdentifierType());
-		Assert.assertEquals(pi1, identifiers.get(2).getIdentifierType());
+		Assertions.assertEquals(3, identifiers.size());
+		Assertions.assertEquals(pi2, identifiers.get(0).getIdentifierType());
+		Assertions.assertEquals(pi2, identifiers.get(1).getIdentifierType());
+		Assertions.assertEquals(pi1, identifiers.get(2).getIdentifierType());
 	}
 
     /**
@@ -115,7 +115,7 @@ public class PatientIdentifierDataEvaluatorTest extends BaseModuleContextSensiti
 
         Object o = pd.getData().get(2);
         List<PatientIdentifier> identifiers = (List<PatientIdentifier>) o;
-        Assert.assertEquals(3, identifiers.size());
+        Assertions.assertEquals(3, identifiers.size());
     }
 
 	/**
@@ -138,9 +138,9 @@ public class PatientIdentifierDataEvaluatorTest extends BaseModuleContextSensiti
 
 		Object o = pd.getData().get(2);
 		List<PatientIdentifier> identifiers = (List<PatientIdentifier>) o;
-		Assert.assertEquals(3, identifiers.size());
-		Assert.assertEquals(Boolean.TRUE, identifiers.get(0).getPreferred());
-		Assert.assertEquals(Boolean.FALSE, identifiers.get(1).getPreferred());
-		Assert.assertEquals(Boolean.TRUE, identifiers.get(2).getPreferred());
+		Assertions.assertEquals(3, identifiers.size());
+		Assertions.assertEquals(Boolean.TRUE, identifiers.get(0).getPreferred());
+		Assertions.assertEquals(Boolean.FALSE, identifiers.get(1).getPreferred());
+		Assertions.assertEquals(Boolean.TRUE, identifiers.get(2).getPreferred());
 	}
 }

@@ -1,6 +1,6 @@
 package org.openmrs.module.reporting.config;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;

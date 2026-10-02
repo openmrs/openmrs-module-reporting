@@ -13,9 +13,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Encounter;
 import org.openmrs.OrderType;
 import org.openmrs.Visit;
@@ -33,8 +33,8 @@ import org.openmrs.module.reporting.data.visit.service.VisitDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.context.VisitEvaluationContext;
 import org.openmrs.module.reporting.query.visit.VisitIdSet;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.SkipBaseSetup;
 import org.openmrs.util.OpenmrsConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,12 +61,12 @@ public class OrderForVisitDataEvaluatorTest extends BaseModuleContextSensitiveTe
 	private Integer expectedOrdersWithType;
 
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		if (ModuleUtil.compareVersion(OpenmrsConstants.OPENMRS_VERSION, "1.10") < 0) {
 			setup1_9();
@@ -126,7 +126,7 @@ public class OrderForVisitDataEvaluatorTest extends BaseModuleContextSensitiveTe
 		OrderForVisitDataDefinition d = new OrderForVisitDataDefinition();
 
 		EvaluatedVisitData vd = Context.getService(VisitDataService.class).evaluate(d, context);
-		Assert.assertEquals(expectedOrders.intValue(), ((List) vd.getData().get(1)).size());
+		Assertions.assertEquals(expectedOrders.intValue(), ((List) vd.getData().get(1)).size());
 
 	}
 
@@ -145,7 +145,7 @@ public class OrderForVisitDataEvaluatorTest extends BaseModuleContextSensitiveTe
 		d.setTypes(Collections.singletonList(orderService.getOrderType(1)));
 
 		EvaluatedVisitData vd = Context.getService(VisitDataService.class).evaluate(d, context);
-		Assert.assertEquals(expectedOrdersWithType.intValue(), ((List) vd.getData().get(1)).size());
+		Assertions.assertEquals(expectedOrdersWithType.intValue(), ((List) vd.getData().get(1)).size());
 
 	}
 

@@ -12,10 +12,10 @@ package org.openmrs.module.reporting.report;
 
 import java.util.Date;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.reporting.report.ReportRequest.PriorityComparator;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 public class ReportRequestTest extends BaseModuleContextSensitiveTest {
@@ -31,8 +31,8 @@ public class ReportRequestTest extends BaseModuleContextSensitiveTest {
 		ReportRequest second = new ReportRequest();
 		second.setPriority(ReportRequest.Priority.HIGH);
 		PriorityComparator comparator = new PriorityComparator();
-		Assert.assertTrue(comparator.compare(first, second) > 0);
-		Assert.assertTrue(comparator.compare(second, first) < 0);
+		Assertions.assertTrue(comparator.compare(first, second) > 0);
+		Assertions.assertTrue(comparator.compare(second, first) < 0);
 	}
 	
 	/**
@@ -49,7 +49,7 @@ public class ReportRequestTest extends BaseModuleContextSensitiveTest {
 		ReportRequest second = new ReportRequest();
 		second.setRequestDate(later);
 		PriorityComparator comparator = new PriorityComparator();
-		Assert.assertTrue(comparator.compare(first, second) < 0);
-		Assert.assertTrue(comparator.compare(second, first) > 0);
+		Assertions.assertTrue(comparator.compare(first, second) < 0);
+		Assertions.assertTrue(comparator.compare(second, first) > 0);
 	}
 }

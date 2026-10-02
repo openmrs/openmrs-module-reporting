@@ -11,12 +11,12 @@ package org.openmrs.module.reporting.validator;
 
 import java.util.HashMap;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
@@ -39,7 +39,7 @@ public class CompositionCohortDefinitionValidatorTest  extends BaseModuleContext
 		Errors errors = new BindException(compositionCohortDefinition, "cohortDefinition");
 		new CohortDefinitionValidator().validate(compositionCohortDefinition, errors);
 		
-		Assert.assertTrue(errors.hasErrors());
+		Assertions.assertTrue(errors.hasErrors());
 	}
 	
 	/**
@@ -55,7 +55,7 @@ public class CompositionCohortDefinitionValidatorTest  extends BaseModuleContext
 		Errors errors = new BindException(compositionCohortDefinition, "cohortDefinition");
 		new CohortDefinitionValidator().validate(compositionCohortDefinition, errors);
 		
-		Assert.assertTrue(errors.hasErrors());
+		Assertions.assertTrue(errors.hasErrors());
 	}
 	
 	/**
@@ -74,7 +74,7 @@ public class CompositionCohortDefinitionValidatorTest  extends BaseModuleContext
 		Errors errors = new BindException(compositionCohortDefinition, "cohortDefinition");
 		new CohortDefinitionValidator().validate(compositionCohortDefinition, errors);
 		
-		Assert.assertTrue(errors.hasErrors());
+		Assertions.assertTrue(errors.hasErrors());
 	}
 	
 	/**
@@ -93,7 +93,7 @@ public class CompositionCohortDefinitionValidatorTest  extends BaseModuleContext
 		Errors errors = new BindException(compositionCohortDefinition, "cohortDefinition");
 		new CohortDefinitionValidator().validate(compositionCohortDefinition, errors);
 		
-		Assert.assertTrue(errors.hasErrors());
+		Assertions.assertTrue(errors.hasErrors());
 	}
 	
 	/**
@@ -113,6 +113,6 @@ public class CompositionCohortDefinitionValidatorTest  extends BaseModuleContext
 		Errors errors = new BindException(compositionCohortDefinition, "cohortDefinition");
 		new CohortDefinitionValidator().validate(compositionCohortDefinition, errors);
 		
-		Assert.assertFalse(errors.hasErrors());
+		Assertions.assertFalse(errors.hasErrors());
 	}
 }

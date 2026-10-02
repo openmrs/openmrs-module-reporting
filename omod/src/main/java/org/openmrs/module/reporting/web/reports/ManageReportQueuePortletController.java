@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.report.ReportRequest;
@@ -38,7 +38,7 @@ public class ManageReportQueuePortletController extends ReportingPortletControll
 	}
 	
 	/**
-	 * @see org.openmrs.web.controller.PortletController#populateModel(javax.servlet.http.HttpServletRequest,
+	 * @see org.openmrs.web.controller.PortletController#populateModel(jakarta.servlet.http.HttpServletRequest,
 	 *      java.util.Map)
 	 */
 	@Override

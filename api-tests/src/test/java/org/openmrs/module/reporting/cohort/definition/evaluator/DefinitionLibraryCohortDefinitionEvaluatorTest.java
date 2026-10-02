@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.DefinitionLibraryCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.library.BuiltInCohortDefinitionLibrary;
@@ -23,14 +23,14 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.IndicatorResult;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class DefinitionLibraryCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
 
@@ -47,7 +47,7 @@ public class DefinitionLibraryCohortDefinitionEvaluatorTest extends BaseModuleCo
 
     protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
     }

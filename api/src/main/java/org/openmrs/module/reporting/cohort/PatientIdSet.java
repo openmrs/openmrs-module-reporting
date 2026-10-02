@@ -10,11 +10,10 @@
 package org.openmrs.module.reporting.cohort;
 
 import org.openmrs.Cohort;
+import org.openmrs.CohortMembership;
 import org.openmrs.Patient;
 import org.openmrs.module.reporting.query.IdSet;
 
-import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -78,18 +77,7 @@ public class PatientIdSet extends Cohort implements IdSet<Patient> {
 
     @Override
     public void setMemberIds(Set<Integer> memberIds) {
-	    try {
-            Method m = getClass().getMethod("setMemberships", Collection.class);
-            if (m != null) {
-                m.invoke(this, new HashSet<Integer>());
-            }
-        }
-        catch (NoSuchMethodException nsme) {
-	        // Do nothing
-        }
-        catch (Exception e) {
-	        throw new IllegalStateException("Unable to invoke setMemberships", e);
-        }
+        setMemberships(new HashSet<CohortMembership>());
         super.setMemberIds(memberIds);
     }
 }

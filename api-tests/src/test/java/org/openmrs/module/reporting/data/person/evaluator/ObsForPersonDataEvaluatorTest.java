@@ -11,9 +11,9 @@ package org.openmrs.module.reporting.data.person.evaluator;
 
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Form;
 import org.openmrs.Obs;
@@ -26,8 +26,8 @@ import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefin
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.service.PersonDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 public class ObsForPersonDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
@@ -36,12 +36,12 @@ public class ObsForPersonDataEvaluatorTest extends BaseModuleContextSensitiveTes
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -61,28 +61,28 @@ public class ObsForPersonDataEvaluatorTest extends BaseModuleContextSensitiveTes
 		d.setQuestion(Context.getConceptService().getConcept(5089));
 		
 		EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(d, context);
-		Assert.assertEquals(3, ((List) pd.getData().get(7)).size());
-		Assert.assertEquals(1, ((List) pd.getData().get(20)).size());
+		Assertions.assertEquals(3, ((List) pd.getData().get(7)).size());
+		Assertions.assertEquals(1, ((List) pd.getData().get(20)).size());
 		
 		d.setOnOrAfter(DateUtil.getDateTime(2008, 8, 1));
 		d.setOnOrBefore(DateUtil.getDateTime(2008, 8, 15));
 		pd = Context.getService(PersonDataService.class).evaluate(d, context);
-		Assert.assertEquals(2, ((List) pd.getData().get(7)).size());
-		Assert.assertNull(pd.getData().get(20));
+		Assertions.assertEquals(2, ((List) pd.getData().get(7)).size());
+		Assertions.assertNull(pd.getData().get(20));
 		
 		d.setWhich(TimeQualifier.LAST);
 		d.setOnOrAfter(null);
 		d.setOnOrBefore(null);
 		pd = Context.getService(PersonDataService.class).evaluate(d, context);
-		Assert.assertEquals(61, ((Obs) pd.getData().get(7)).getValueNumeric().intValue());
-		Assert.assertEquals(180, ((Obs) pd.getData().get(20)).getValueNumeric().intValue());
+		Assertions.assertEquals(61, ((Obs) pd.getData().get(7)).getValueNumeric().intValue());
+		Assertions.assertEquals(180, ((Obs) pd.getData().get(20)).getValueNumeric().intValue());
 		
 		d.setWhich(TimeQualifier.FIRST);
 		d.setOnOrAfter(null);
 		d.setOnOrBefore(null);
 		pd = Context.getService(PersonDataService.class).evaluate(d, context);
-		Assert.assertEquals(50, ((Obs) pd.getData().get(7)).getValueNumeric().intValue());
-		Assert.assertEquals(180, ((Obs) pd.getData().get(20)).getValueNumeric().intValue());
+		Assertions.assertEquals(50, ((Obs) pd.getData().get(7)).getValueNumeric().intValue());
+		Assertions.assertEquals(180, ((Obs) pd.getData().get(20)).getValueNumeric().intValue());
 		
 	}
 	
@@ -102,7 +102,7 @@ public class ObsForPersonDataEvaluatorTest extends BaseModuleContextSensitiveTes
 			ObsForPersonDataDefinition d = new ObsForPersonDataDefinition();
 			d.setQuestion(Context.getConceptService().getConcept(5089));
 			EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(d, context);
-			Assert.assertEquals(3, ((List) pd.getData().get(7)).size());
+			Assertions.assertEquals(3, ((List) pd.getData().get(7)).size());
 		}
 		
 		//By limiting by a first encounter type (with encounter_type="2") we get back 1 Obs
@@ -111,7 +111,7 @@ public class ObsForPersonDataEvaluatorTest extends BaseModuleContextSensitiveTes
 			d.setQuestion(Context.getConceptService().getConcept(5089));
 			d.addEncounterType(Context.getEncounterService().getEncounterType(2));
 			EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(d, context);
-			Assert.assertEquals(1, ((List) pd.getData().get(7)).size());
+			Assertions.assertEquals(1, ((List) pd.getData().get(7)).size());
 		}
 		
 		//By limiting by a second encounter type (with encounter_type="1") we get back 2 Obs
@@ -120,7 +120,7 @@ public class ObsForPersonDataEvaluatorTest extends BaseModuleContextSensitiveTes
 			d.setQuestion(Context.getConceptService().getConcept(5089));
 			d.addEncounterType(Context.getEncounterService().getEncounterType(1));
 			EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(d, context);
-			Assert.assertEquals(2, ((List) pd.getData().get(7)).size());
+			Assertions.assertEquals(2, ((List) pd.getData().get(7)).size());
 		}
 		
 		//By adding both encounter types we get back 3 Obs
@@ -130,7 +130,7 @@ public class ObsForPersonDataEvaluatorTest extends BaseModuleContextSensitiveTes
 			d.addEncounterType(Context.getEncounterService().getEncounterType(1));
 			d.addEncounterType(Context.getEncounterService().getEncounterType(2));
 			EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(d, context);
-			Assert.assertEquals(3, ((List) pd.getData().get(7)).size());
+			Assertions.assertEquals(3, ((List) pd.getData().get(7)).size());
 		}
 	}
 	
@@ -149,7 +149,7 @@ public class ObsForPersonDataEvaluatorTest extends BaseModuleContextSensitiveTes
 			ObsForPersonDataDefinition d = new ObsForPersonDataDefinition();
 			d.setQuestion(Context.getConceptService().getConcept(5089));
 			EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(d, context);
-			Assert.assertEquals(3, ((List) pd.getData().get(7)).size());
+			Assertions.assertEquals(3, ((List) pd.getData().get(7)).size());
 		}
 		
 		//By limiting by a first form (with form_id="3") we shouldn't get any Obs because there is no encounter with form_id="3" in our test dataset
@@ -158,7 +158,7 @@ public class ObsForPersonDataEvaluatorTest extends BaseModuleContextSensitiveTes
 			d.setQuestion(Context.getConceptService().getConcept(5089));
 			d.addForm(new Form(3));
 			EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(d, context);
-			Assert.assertNull(pd.getData().get(7));
+			Assertions.assertNull(pd.getData().get(7));
 		}
 		
 		//By limiting by a second form (with form_id="2") we get back 3 Obs because all encounters in our test dataset for the specified Obs question have been entered through this form
@@ -167,7 +167,7 @@ public class ObsForPersonDataEvaluatorTest extends BaseModuleContextSensitiveTes
 			d.setQuestion(Context.getConceptService().getConcept(5089));
 			d.addForm(new Form(2));
 			EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(d, context);
-			Assert.assertEquals(3, ((List) pd.getData().get(7)).size());
+			Assertions.assertEquals(3, ((List) pd.getData().get(7)).size());
 		}
 	}
 }

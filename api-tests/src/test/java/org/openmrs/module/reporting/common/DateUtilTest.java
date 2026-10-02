@@ -11,9 +11,9 @@ package org.openmrs.module.reporting.common;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Assert;
-import org.junit.Test;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 import java.text.DateFormat;
@@ -24,7 +24,7 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Testing the cohort definition persister.  
@@ -38,7 +38,7 @@ public class DateUtilTest extends BaseModuleContextSensitiveTest {
 		for (String s : expected.split(" ")) {
 			expectedMessage.append(expectedMessage.length() == 0 ? "" : " ").append(MessageUtil.translate(s, s));
 		}
-		Assert.assertEquals(expectedMessage.toString(), actual);
+		Assertions.assertEquals(expectedMessage.toString(), actual);
 	}
 
 	@Test

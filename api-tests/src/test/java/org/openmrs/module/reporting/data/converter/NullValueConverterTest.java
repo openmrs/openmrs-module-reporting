@@ -10,8 +10,8 @@
 package org.openmrs.module.reporting.data.converter;
 
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class NullValueConverterTest {
 	/**
@@ -21,7 +21,7 @@ public class NullValueConverterTest {
 	@Test
 	public void convert_shouldConvertANullToAReplacementValue() throws Exception {
 		NullValueConverter c = new NullValueConverter("Replacement value");
-		Assert.assertEquals("Test", c.convert("Test"));
-		Assert.assertEquals("Replacement value", c.convert(null));
+		Assertions.assertEquals("Test", c.convert("Test"));
+		Assertions.assertEquals("Replacement value", c.convert(null));
 	}
 }

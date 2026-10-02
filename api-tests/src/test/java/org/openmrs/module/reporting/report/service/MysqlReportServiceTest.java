@@ -11,9 +11,9 @@ package org.openmrs.module.reporting.report.service;
 
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.LogicDataSetDefinition;
@@ -25,12 +25,12 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.renderer.CsvReportRenderer;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.SkipBaseSetup;
 import org.openmrs.test.Verifies;
 
 @SkipBaseSetup
-@Ignore
+@Disabled
 public class MysqlReportServiceTest extends BaseModuleContextSensitiveTest {
 
 	@Override
@@ -61,6 +61,6 @@ public class MysqlReportServiceTest extends BaseModuleContextSensitiveTest {
 		rs.runReport(request);
 		
 		List<ReportRequest> requests = rs.getReportRequests(rd, null, null);
-		Assert.assertEquals(1, requests.size());
+		Assertions.assertEquals(1, requests.size());
 	}
 }

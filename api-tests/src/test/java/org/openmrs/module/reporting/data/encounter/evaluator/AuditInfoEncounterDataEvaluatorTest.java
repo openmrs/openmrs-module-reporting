@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.reporting.data.encounter.evaluator;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.User;
@@ -22,11 +22,11 @@ import org.openmrs.module.reporting.data.encounter.definition.AuditInfoEncounter
 import org.openmrs.module.reporting.data.encounter.service.EncounterDataService;
 import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
 import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class AuditInfoEncounterDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 
@@ -38,7 +38,7 @@ public class AuditInfoEncounterDataEvaluatorTest extends BaseModuleContextSensit
 
     private Encounter encounter;
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         User user = Context.getUserService().getUser(1);
         Patient patient = td.randomPatient().save();

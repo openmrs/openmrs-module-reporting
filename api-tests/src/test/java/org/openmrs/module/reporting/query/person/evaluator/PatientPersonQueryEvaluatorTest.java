@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.query.person.evaluator;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.common.TestUtil;
@@ -20,8 +20,8 @@ import org.openmrs.module.reporting.query.person.PersonQueryResult;
 import org.openmrs.module.reporting.query.person.definition.PatientPersonQuery;
 import org.openmrs.module.reporting.query.person.definition.PersonQuery;
 import org.openmrs.module.reporting.query.person.service.PersonQueryService;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 public class PatientPersonQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
@@ -30,12 +30,12 @@ public class PatientPersonQueryEvaluatorTest extends BaseModuleContextSensitiveT
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -51,9 +51,9 @@ public class PatientPersonQueryEvaluatorTest extends BaseModuleContextSensitiveT
 		males.setMaleIncluded(true);
 		PatientPersonQuery q = new PatientPersonQuery(males);
 		PersonQueryResult r = Context.getService(PersonQueryService.class).evaluate(q, context);
-		Assert.assertEquals(3, r.getSize());
-		Assert.assertTrue(r.getMemberIds().contains(2));
-		Assert.assertTrue(r.getMemberIds().contains(6));
-		Assert.assertTrue(r.getMemberIds().contains(21));
+		Assertions.assertEquals(3, r.getSize());
+		Assertions.assertTrue(r.getMemberIds().contains(2));
+		Assertions.assertTrue(r.getMemberIds().contains(6));
+		Assertions.assertTrue(r.getMemberIds().contains(21));
 	}
 }

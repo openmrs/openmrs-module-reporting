@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.data.visit.evaluator;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.PersonService;
@@ -26,7 +26,7 @@ import org.openmrs.module.reporting.data.visit.service.VisitDataService;
 import org.openmrs.module.reporting.evaluation.context.VisitEvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.query.visit.VisitIdSet;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -43,12 +43,12 @@ public class PersonToVisitDataEvaluatorTest extends BaseModuleContextSensitiveTe
     VisitDataService visitDataService;
 
     /**
-     * Run this before each unit test in this class. The "@Before" method in
-     * {@link org.openmrs.test.BaseContextSensitiveTest} is run right before this method.
+     * Run this before each unit test in this class. The "@BeforeEach" method in
+     * {@link org.openmrs.test.jupiter.BaseContextSensitiveTest} is run right before this method.
      *
      * @throws Exception
      */
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
     }
@@ -62,10 +62,10 @@ public class PersonToVisitDataEvaluatorTest extends BaseModuleContextSensitiveTe
         context.setBaseVisits(new VisitIdSet(3, 4));
         EvaluatedVisitData ed = visitDataService.evaluate(d, context);
 
-        Assert.assertEquals(2, ed.getData().size());
+        Assertions.assertEquals(2, ed.getData().size());
         BirthdateConverter c = new BirthdateConverter("yyyy-MM-dd");
-        Assert.assertEquals("1975-04-08", c.convert(ed.getData().get(3)));
-        Assert.assertEquals("2007-05-27", c.convert(ed.getData().get(4)));
+        Assertions.assertEquals("1975-04-08", c.convert(ed.getData().get(3)));
+        Assertions.assertEquals("2007-05-27", c.convert(ed.getData().get(4)));
     }
 
     @Test
@@ -77,7 +77,7 @@ public class PersonToVisitDataEvaluatorTest extends BaseModuleContextSensitiveTe
         context.setBaseVisits(new VisitIdSet());
         EvaluatedVisitData ed = visitDataService.evaluate(d, context);
 
-        Assert.assertEquals(0, ed.getData().size());
+        Assertions.assertEquals(0, ed.getData().size());
     }
 
     @Test
@@ -100,8 +100,8 @@ public class PersonToVisitDataEvaluatorTest extends BaseModuleContextSensitiveTe
         PersonAttribute att1 = (PersonAttribute) data.getData().get(1);
         PersonAttribute att2 = (PersonAttribute) data.getData().get(4);
 
-        Assert.assertEquals("Mooresville, NC", att1.getValue());
-        Assert.assertEquals("Jamaica", att2.getValue());
+        Assertions.assertEquals("Mooresville, NC", att1.getValue());
+        Assertions.assertEquals("Jamaica", att2.getValue());
     }
 
 }

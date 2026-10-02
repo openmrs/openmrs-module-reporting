@@ -11,9 +11,9 @@ package org.openmrs.module.reporting.report.util;
 
 import java.io.StringReader;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests the methods in SqlScriptParser
@@ -31,8 +31,8 @@ public class SqlScriptParserTest {
 		sb.append(sql);
 		
 		String[] sqlStatements = SqlScriptParser.parse(new StringReader(sb.toString()));
-		Assert.assertEquals(1, sqlStatements.length);
-		Assert.assertEquals(sql, sqlStatements[0]);
+		Assertions.assertEquals(1, sqlStatements.length);
+		Assertions.assertEquals(sql, sqlStatements[0]);
 	}
 	
 	@Test
@@ -47,8 +47,8 @@ public class SqlScriptParserTest {
 		sb.append(sql);
 		
 		String[] sqlStatements = SqlScriptParser.parse(new StringReader(sb.toString()));
-		Assert.assertEquals(1, sqlStatements.length);
-		Assert.assertEquals(sql, sqlStatements[0]);
+		Assertions.assertEquals(1, sqlStatements.length);
+		Assertions.assertEquals(sql, sqlStatements[0]);
 	}
 	
 	@Test
@@ -65,8 +65,8 @@ public class SqlScriptParserTest {
 		sb.append(sql);
 		
 		String[] sqlStatements = SqlScriptParser.parse(new StringReader(sb.toString()));
-		Assert.assertEquals(1, sqlStatements.length);
-		Assert.assertEquals(sql, sqlStatements[0]);
+		Assertions.assertEquals(1, sqlStatements.length);
+		Assertions.assertEquals(sql, sqlStatements[0]);
 	}
 	
 	@Test
@@ -79,7 +79,7 @@ public class SqlScriptParserTest {
 		sb.append(sql);
 		
 		String[] sqlStatements = SqlScriptParser.parse(new StringReader(sb.toString()));
-		Assert.assertEquals(1, sqlStatements.length);
-		Assert.assertEquals(sql, sqlStatements[0]);
+		Assertions.assertEquals(1, sqlStatements.length);
+		Assertions.assertEquals(sql, sqlStatements[0]);
 	}
 }

@@ -9,10 +9,10 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.logic.LogicService;
@@ -23,12 +23,12 @@ import org.openmrs.module.reporting.dataset.definition.LogicDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.report.util.ReportUtil;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 // MS: Ignoring for now since we need to start up Logic module and I am getting DB errors doing so
-@Ignore
+@Disabled
 public class LogicDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
 	protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
@@ -36,12 +36,12 @@ public class LogicDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -71,7 +71,7 @@ public class LogicDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
     	
     	DataSet result = Context.getService(DataSetDefinitionService.class).evaluate(def, evalContext);
     	String csv = ReportUtil.toCsv(result);
-    	Assert.assertEquals("\"gender\",\"birthdate\",\"cd4\",\n\"F\",\"25/08/1976\",\"175.0\",\n\"F\",\"08/02/1925\",\"45.0\",\n\"M\",\"08/06/1959\",\"50.0\",\n", csv);
+    	Assertions.assertEquals("\"gender\",\"birthdate\",\"cd4\",\n\"F\",\"25/08/1976\",\"175.0\",\n\"F\",\"08/02/1925\",\"45.0\",\n\"M\",\"08/06/1959\",\"50.0\",\n", csv);
     }
 
 }

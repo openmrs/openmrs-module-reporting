@@ -9,7 +9,8 @@
  */
 package org.openmrs.module.reporting.data.visit.evaluator;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
@@ -32,16 +33,24 @@ public class VisitIdDataEvaluatorTest extends BaseModuleContextSensitiveTest {
     protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 
     /**
-     * Run this before each unit test in this class. The "@Before" method in
-     * {@link org.openmrs.test.BaseContextSensitiveTest} is run right before this method.
+     * Run this before each unit test in this class. The "@BeforeEach" method in
+     * {@link org.openmrs.test.jupiter.BaseContextSensitiveTest} is run right before this method.
      *
      * @throws Exception
      */
     @BeforeEach
     public void setup() throws Exception {
         initializeInMemoryDatabase();
-        authenticate();
         executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
+        // commit, as core resolves role privileges on a separate thread that cannot see uncommitted rows
+        getConnection().commit();
+        authenticate();
+    }
+
+    @AfterEach
+    public void tearDown() {
+        // removes the data committed in setup
+        deleteAllData();
     }
 
     /**
@@ -53,18 +62,18 @@ public class VisitIdDataEvaluatorTest extends BaseModuleContextSensitiveTest {
         VisitIdDataDefinition d = new VisitIdDataDefinition();
         EvaluationContext context = new EvaluationContext();
         EvaluatedVisitData ed = Context.getService(VisitDataService.class).evaluate(d, context);
-        Assert.assertEquals(5, ed.getData().size());  // one visit in the sample data has been voided
+        Assertions.assertEquals(5, ed.getData().size());  // one visit in the sample data has been voided
         for (Integer eId : ed.getData().keySet()) {
-            Assert.assertEquals(eId, ed.getData().get(eId));
+            Assertions.assertEquals(eId, ed.getData().get(eId));
         }
 
         // Test for a limited base cohort of patients
         context.setBaseCohort(new Cohort("2"));
         ed = Context.getService(VisitDataService.class).evaluate(d, context);
-        Assert.assertEquals(3, ed.getData().size());
-        Assert.assertEquals(1, ed.getData().get(1));
-        Assert.assertEquals(2, ed.getData().get(2));
-        Assert.assertEquals(3, ed.getData().get(3));
+        Assertions.assertEquals(3, ed.getData().size());
+        Assertions.assertEquals(1, ed.getData().get(1));
+        Assertions.assertEquals(2, ed.getData().get(2));
+        Assertions.assertEquals(3, ed.getData().get(3));
     }
 
     /**
@@ -79,8 +88,8 @@ public class VisitIdDataEvaluatorTest extends BaseModuleContextSensitiveTest {
         context.setBaseVisits(new VisitIdSet(2, 3, 4));
         EvaluatedVisitData ed = Context.getService(VisitDataService.class).evaluate(d, context);
 
-        Assert.assertEquals(2, ed.getData().size());
-        Assert.assertEquals(2, ed.getData().get(2));
-        Assert.assertEquals(3, ed.getData().get(3));
+        Assertions.assertEquals(2, ed.getData().size());
+        Assertions.assertEquals(2, ed.getData().get(2));
+        Assertions.assertEquals(3, ed.getData().get(3));
     }
 }

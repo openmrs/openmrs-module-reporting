@@ -12,14 +12,14 @@ package org.openmrs.module.reporting.web.controller.portlet;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 
 public class RunReportPortletController extends ReportingPortletController {
 
 	/**
-     * @see org.openmrs.module.reporting.web.controller.portlet.ReportingPortletController#populateModel(javax.servlet.http.HttpServletRequest, java.util.Map)
+     * @see org.openmrs.module.reporting.web.controller.portlet.ReportingPortletController#populateModel(jakarta.servlet.http.HttpServletRequest, java.util.Map)
      */
     @Override
     protected void populateModel(HttpServletRequest request, Map<String, Object> model) {

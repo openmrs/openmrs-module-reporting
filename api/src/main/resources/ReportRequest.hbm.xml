@@ -6,47 +6,40 @@
 	<class name="ReportRequest" table="reporting_report_request">
 		
 		<id name="id" type="int" column="id" unsaved-value="0">
-			<generator class="native">
+			<generator class="identity">
 				<param name="sequence">reporting_report_request_id_seq</param>
 			</generator>
 		</id>
 		<property name="uuid" type="string" length="38" not-null="true" />
 		
-		<property name="baseCohort">
-			<column name="base_cohort_uuid"/>
-			<column name="base_cohort_parameters"/>
-			<type name="org.openmrs.module.reporting.report.service.db.MappedDefinitionType">
-				<param name="mappedType">org.openmrs.module.reporting.cohort.definition.CohortDefinition</param>
-			</type>
-		</property>
+		<!-- Components backed by a CompositeUserType: properties must be listed in alphabetical order and read through the type -->
+		<component name="baseCohort" class="org.openmrs.module.reporting.report.service.db.MappedDefinitionType$MappedCohortDefinitionType">
+			<property name="definition" column="base_cohort_uuid" type="string" access="org.openmrs.module.reporting.report.service.db.MappedDefinitionType$Access"/>
+			<property name="parameterMappings" column="base_cohort_parameters" type="text" access="org.openmrs.module.reporting.report.service.db.MappedDefinitionType$Access"/>
+		</component>
 		
-		<property name="reportDefinition">
-			<column name="report_definition_uuid"/>
-			<column name="report_definition_parameters"/>
-			<type name="org.openmrs.module.reporting.report.service.db.MappedDefinitionType">
-				<param name="mappedType">org.openmrs.module.reporting.report.definition.ReportDefinition</param>
-			</type>
-		</property>
+		<component name="reportDefinition" class="org.openmrs.module.reporting.report.service.db.MappedDefinitionType$MappedReportDefinitionType">
+			<property name="definition" column="report_definition_uuid" type="string" access="org.openmrs.module.reporting.report.service.db.MappedDefinitionType$Access"/>
+			<property name="parameterMappings" column="report_definition_parameters" type="text" access="org.openmrs.module.reporting.report.service.db.MappedDefinitionType$Access"/>
+		</component>
 		
-		<property name="renderingMode" type="org.openmrs.module.reporting.report.service.db.RenderingModeType">
-			<column name="renderer_type"/>
-			<column name="renderer_argument"/>
-		</property>
+		<component name="renderingMode" class="org.openmrs.module.reporting.report.service.db.RenderingModeType">
+			<property name="argument" column="renderer_argument" type="string" access="org.openmrs.module.reporting.report.service.db.RenderingModeType$Access"/>
+			<property name="renderer" column="renderer_type" type="string" access="org.openmrs.module.reporting.report.service.db.RenderingModeType$Access"/>
+		</component>
 		
 		<many-to-one name="requestedBy" class="org.openmrs.User" column="requested_by" not-null="true" />
 		<property name="requestDate" type="java.util.Date" column="request_datetime" not-null="true" />
 		
         <property name="priority" column="priority" not-null="true">
-            <type name="org.hibernate.type.EnumType">
+            <type name="org.openmrs.api.db.hibernate.type.StringEnumType">
                 <param name="enumClass">org.openmrs.module.reporting.report.ReportRequest$Priority</param>
-                <param name="type">12</param>
             </type>
         </property>
         
         <property name="status" column="status" not-null="true">
-            <type name="org.hibernate.type.EnumType">
+            <type name="org.openmrs.api.db.hibernate.type.StringEnumType">
                 <param name="enumClass">org.openmrs.module.reporting.report.ReportRequest$Status</param>
-                <param name="type">12</param>
             </type>
         </property>
         

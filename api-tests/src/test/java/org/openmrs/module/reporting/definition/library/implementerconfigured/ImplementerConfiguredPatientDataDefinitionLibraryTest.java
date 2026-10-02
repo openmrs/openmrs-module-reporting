@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.reporting.definition.library.implementerconfigured;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.SqlPatientDataDefinition;
@@ -19,14 +19,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ImplementerConfiguredPatientDataDefinitionLibraryTest extends BaseImplementerConfiguredLibraryTest {
 
 	@Autowired
 	ImplementerConfiguredPatientDataDefinitionLibrary library;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		copyResource("patientData", "patientIdSql.sql");
 		copyResource("patientData", "patientIdXml.reportingserializerxml");

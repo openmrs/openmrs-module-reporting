@@ -10,7 +10,7 @@
 package org.openmrs.module.reporting.test;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Assume;
+import org.junit.jupiter.api.Assumptions;
 import org.openmrs.module.ModuleUtil;
 import org.openmrs.util.OpenmrsConstants;
 import org.springframework.test.context.TestContext;
@@ -31,7 +31,7 @@ public class OpenmrsVersionTestListener extends AbstractTestExecutionListener {
 		if (!ModuleUtil.matchRequiredVersions(OpenmrsConstants.OPENMRS_VERSION,
 				requiresVersionAnnotation.value())) {
 			// silly hack to work with JUnit 4.11 where the AssumptionViolationException is not exposed as a public class
-			Assume.assumeTrue(false);
+			Assumptions.assumeTrue(false);
 		}
 	}
 }

@@ -10,8 +10,8 @@
 package org.openmrs.module.reporting.data.converter;
 
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.reporting.data.converter.BooleanConverter;
 
 public class BooleanConverterTest {
@@ -23,13 +23,13 @@ public class BooleanConverterTest {
 	public void convert_shouldConvertABooleanToAConfiguredTextRepresentation() throws Exception {
 		
 		BooleanConverter standardConverter = new BooleanConverter();
-		Assert.assertEquals(standardConverter.convert(Boolean.TRUE), "true");
-		Assert.assertEquals(standardConverter.convert(Boolean.FALSE), "false");
-		Assert.assertEquals(standardConverter.convert(null), "");
+		Assertions.assertEquals(standardConverter.convert(Boolean.TRUE), "true");
+		Assertions.assertEquals(standardConverter.convert(Boolean.FALSE), "false");
+		Assertions.assertEquals(standardConverter.convert(null), "");
 		
 		BooleanConverter customConverter = new BooleanConverter("oui", "non", "?");
-		Assert.assertEquals(customConverter.convert(Boolean.TRUE), "oui");
-		Assert.assertEquals(customConverter.convert(Boolean.FALSE), "non");
-		Assert.assertEquals(customConverter.convert(null), "?");
+		Assertions.assertEquals(customConverter.convert(Boolean.TRUE), "oui");
+		Assertions.assertEquals(customConverter.convert(Boolean.FALSE), "non");
+		Assertions.assertEquals(customConverter.convert(null), "?");
 	}
 }

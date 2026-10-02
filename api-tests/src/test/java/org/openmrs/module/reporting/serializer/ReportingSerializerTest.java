@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.reporting.serializer;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
@@ -24,7 +24,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.Indicator;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 import java.io.ByteArrayOutputStream;
@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ReportingSerializerTest extends BaseModuleContextSensitiveTest {
 	
@@ -50,7 +50,7 @@ public class ReportingSerializerTest extends BaseModuleContextSensitiveTest {
 		cd.addParameter(new Parameter("onDate", "On Date", Date.class));
 		cd.setMaxAge(15);
 		String xml = new ReportingSerializer().serialize(cd);
-		Assert.assertNotNull(xml);
+		Assertions.assertNotNull(xml);
 	}
 	
 	/**
@@ -67,7 +67,7 @@ public class ReportingSerializerTest extends BaseModuleContextSensitiveTest {
 		states.add(pws);
 		pscd.setStates(states);
 		String xml = new ReportingSerializer().serialize(pscd);
-		Assert.assertTrue(xml.contains("<programWorkflowState id=\"4\" uuid=\"e938129e-248a-482a-acea-f85127251472\"/>"));
+		Assertions.assertTrue(xml.contains("<programWorkflowState id=\"4\" uuid=\"e938129e-248a-482a-acea-f85127251472\"/>"));
 	}
 
 	/**
@@ -88,10 +88,10 @@ public class ReportingSerializerTest extends BaseModuleContextSensitiveTest {
 		
 		String serialization = s.serialize(numMales);
 		CohortIndicator hydrated = s.deserialize(serialization, CohortIndicator.class);
-		Assert.assertNotNull(hydrated.getCohortDefinition());
-		Assert.assertNotNull(hydrated.getCohortDefinition().getParameterizable());
-		Assert.assertTrue(((GenderCohortDefinition)hydrated.getCohortDefinition().getParameterizable()).getMaleIncluded());
-		Assert.assertFalse(((GenderCohortDefinition)hydrated.getCohortDefinition().getParameterizable()).getFemaleIncluded());
+		Assertions.assertNotNull(hydrated.getCohortDefinition());
+		Assertions.assertNotNull(hydrated.getCohortDefinition().getParameterizable());
+		Assertions.assertTrue(((GenderCohortDefinition)hydrated.getCohortDefinition().getParameterizable()).getMaleIncluded());
+		Assertions.assertFalse(((GenderCohortDefinition)hydrated.getCohortDefinition().getParameterizable()).getFemaleIncluded());
     }
     
 	/**
@@ -119,10 +119,10 @@ public class ReportingSerializerTest extends BaseModuleContextSensitiveTest {
 		Context.getService(CohortDefinitionService.class).saveDefinition(reloaded);
 		
 		Indicator out = new ReportingSerializer().deserialize(xml, Indicator.class);
-		Assert.assertTrue(out instanceof CohortIndicator);
-		Assert.assertEquals("Age on some random date", out.getName());
-		Assert.assertEquals("Name has changed", ((CohortIndicator) out).getCohortDefinition().getParameterizable().getName());
-		Assert.assertEquals("07/08/2009", ((CohortIndicator) out).getCohortDefinition().getParameterMappings().get("onDate"));
+		Assertions.assertTrue(out instanceof CohortIndicator);
+		Assertions.assertEquals("Age on some random date", out.getName());
+		Assertions.assertEquals("Name has changed", ((CohortIndicator) out).getCohortDefinition().getParameterizable().getName());
+		Assertions.assertEquals("07/08/2009", ((CohortIndicator) out).getCohortDefinition().getParameterMappings().get("onDate"));
     }
 
 	@Test
@@ -133,8 +133,8 @@ public class ReportingSerializerTest extends BaseModuleContextSensitiveTest {
 		maps.add(ObjectUtil.toMap("cat=meow,dog=woof"));
 		String serialized = rs.serialize(maps);
 		List<Map<String, String>> newMaps = rs.deserialize(serialized, List.class);
-		Assert.assertEquals("cat=gato,dog=perro", ObjectUtil.toString(newMaps.get(0), "=", ","));
-		Assert.assertEquals("cat=meow,dog=woof", ObjectUtil.toString(newMaps.get(1), "=", ","));
+		Assertions.assertEquals("cat=gato,dog=perro", ObjectUtil.toString(newMaps.get(0), "=", ","));
+		Assertions.assertEquals("cat=meow,dog=woof", ObjectUtil.toString(newMaps.get(1), "=", ","));
 	}
 
     @Test

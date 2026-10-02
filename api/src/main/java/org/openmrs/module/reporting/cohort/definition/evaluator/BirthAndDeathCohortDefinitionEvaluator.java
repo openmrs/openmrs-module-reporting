@@ -43,7 +43,7 @@ public class BirthAndDeathCohortDefinitionEvaluator implements CohortDefinitionE
 		BirthAndDeathCohortDefinition cd = (BirthAndDeathCohortDefinition) cohortDefinition;
 
         HqlQueryBuilder q = new HqlQueryBuilder();
-        q.select("p.patient.id");
+        q.select("p.patientId");
         q.from(Patient.class, "p");
         q.whereGreaterOrEqualTo("p.birthdate", cd.getBornOnOrAfter());
         q.whereLessOrEqualTo("p.birthdate", cd.getBornOnOrBefore());

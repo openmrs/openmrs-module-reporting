@@ -11,9 +11,9 @@ package org.openmrs.module.reporting.cohort.definition.evaluator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.PresenceOrAbsenceCohortDefinition;
@@ -22,7 +22,7 @@ import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionSe
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 /**
  * Tests the expected behavior of the CompositionCohortDefinitionEvaluator
@@ -33,7 +33,7 @@ public class PresenceOrAbsenceCohortDefinitionEvaluatorTest extends BaseModuleCo
 	protected static final String XML_DATASET_PATH = "org/openmrs/module/reporting/include/";
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -53,12 +53,12 @@ public class PresenceOrAbsenceCohortDefinitionEvaluatorTest extends BaseModuleCo
 		ccd.setPresentInAtMost(max);
 		EvaluatedCohort cohort = Context.getService(CohortDefinitionService.class).evaluate(ccd, new EvaluationContext());
 		if (expectedIds == null) {
-			Assert.assertEquals(0, cohort.size());
+			Assertions.assertEquals(0, cohort.size());
 		}
 		else {
-			Assert.assertEquals(expectedIds.length, cohort.size());
+			Assertions.assertEquals(expectedIds.length, cohort.size());
 			for (Integer expectedId : expectedIds) {
-				Assert.assertTrue(cohort.contains(expectedId));
+				Assertions.assertTrue(cohort.contains(expectedId));
 			}
 		}
 	}

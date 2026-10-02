@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.reporting.data.encounter.evaluator;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterRole;
@@ -26,7 +26,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
 import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -35,7 +35,8 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class EncounterProviderDataEvaluatorTest extends BaseModuleContextSensitiveTest {
     
@@ -188,16 +189,17 @@ public class EncounterProviderDataEvaluatorTest extends BaseModuleContextSensiti
 
     }
 
-    @Test(expected = EvaluationException.class)
+    @Test
     public void shouldFailIfEncounterRoleParameterSetToAnotherType() throws Exception {
+    	assertThrows(EvaluationException.class, () -> {
 
-        EncounterProviderDataDefinition d = new EncounterProviderDataDefinition();
-        d.setEncounterRole(new EncounterRole());
-        d.setSingleProvider(false);
+	        EncounterProviderDataDefinition d = new EncounterProviderDataDefinition();
+	        d.setEncounterRole(new EncounterRole());
+	        d.setSingleProvider(false);
 
-        EncounterEvaluationContext encounterEvaluationContext = new EncounterEvaluationContext();
-        EvaluatedEncounterData ed = encounterDataService.evaluate(d, encounterEvaluationContext);
-
+	        EncounterEvaluationContext encounterEvaluationContext = new EncounterEvaluationContext();
+	        EvaluatedEncounterData ed = encounterDataService.evaluate(d, encounterEvaluationContext);
+    	});
     }
 
     @Test

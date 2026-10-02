@@ -14,10 +14,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
@@ -32,8 +32,8 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.dimension.CohortIndicatorAndDimensionResult;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 public class CohortIndicatorDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
@@ -43,12 +43,12 @@ public class CohortIndicatorDataSetEvaluatorTest extends BaseModuleContextSensit
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -109,9 +109,9 @@ public class CohortIndicatorDataSetEvaluatorTest extends BaseModuleContextSensit
 		context.addParameterValue(ReportingConstants.END_DATE_PARAMETER.getName(), DateUtil.getDateTime(2000, 1, 1));
 		
 		MapDataSet result = (MapDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, context);
-		Assert.assertEquals(2, ((CohortIndicatorAndDimensionResult)result.getData().getColumnValue("1")).getValue());
-		Assert.assertEquals(1, ((CohortIndicatorAndDimensionResult)result.getData().getColumnValue("2")).getValue());
-		Assert.assertEquals(2, ((CohortIndicatorAndDimensionResult)result.getData().getColumnValue("3")).getValue());
-		Assert.assertEquals(4, ((CohortIndicatorAndDimensionResult)result.getData().getColumnValue("4")).getValue());
+		Assertions.assertEquals(2, ((CohortIndicatorAndDimensionResult)result.getData().getColumnValue("1")).getValue());
+		Assertions.assertEquals(1, ((CohortIndicatorAndDimensionResult)result.getData().getColumnValue("2")).getValue());
+		Assertions.assertEquals(2, ((CohortIndicatorAndDimensionResult)result.getData().getColumnValue("3")).getValue());
+		Assertions.assertEquals(4, ((CohortIndicatorAndDimensionResult)result.getData().getColumnValue("4")).getValue());
 	}
 }

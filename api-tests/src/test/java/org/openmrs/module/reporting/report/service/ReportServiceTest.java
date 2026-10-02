@@ -10,9 +10,9 @@
 package org.openmrs.module.reporting.report.service;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.common.TestUtil;
@@ -36,8 +36,8 @@ import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 import org.openmrs.module.reporting.report.renderer.TsvReportRenderer;
 import org.openmrs.module.reporting.web.renderers.DefaultWebRenderer;
 import org.openmrs.module.reporting.web.renderers.WebReportRenderer;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 import java.io.File;
@@ -49,10 +49,10 @@ import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 
@@ -61,12 +61,12 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 *
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -77,7 +77,7 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		ReportDefinition reportDefinition = new ReportDefinition();
 		reportDefinition.setName("Testing");
 		ReportDefinition savedReportDefinition = service.saveDefinition(reportDefinition);
-		Assert.assertTrue(savedReportDefinition.getId() != null);
+		Assertions.assertTrue(savedReportDefinition.getId() != null);
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		ReportDefinition def = new ReportDefinition();
 		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, null, Priority.NORMAL, null);
 		Context.getService(ReportService.class).runReport(request);
-		Assert.assertNotNull(request.getUuid());
+		Assertions.assertNotNull(request.getUuid());
 	}
 
 	/**
@@ -105,7 +105,7 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		ReportRenderer renderer = new TsvReportRenderer();
 		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, new RenderingMode(renderer, "TSV", null, 100), Priority.NORMAL, null);
 		Report result = Context.getService(ReportService.class).runReport(request);
-		Assert.assertNotNull(result.getRenderedOutput());
+		Assertions.assertNotNull(result.getRenderedOutput());
 	}
 
 	/**
@@ -118,8 +118,8 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		WebReportRenderer renderer = new DefaultWebRenderer();
 		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, new RenderingMode(renderer, "Web", null, 100), Priority.NORMAL, null);
 		Report result = Context.getService(ReportService.class).runReport(request);
-		Assert.assertNotNull(result.getReportData());
-		Assert.assertNull(result.getRenderedOutput());
+		Assertions.assertNotNull(result.getReportData());
+		Assertions.assertNull(result.getRenderedOutput());
 	}
 
 	/**
@@ -156,9 +156,9 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		c.setName("New Processor");
 		c.setProcessorType(LoggingReportProcessor.class.getName());
 		c = rs.saveReportProcessorConfiguration(c);
-		Assert.assertNotNull(c.getId());
-		Assert.assertNotNull(c.getUuid());
-		Assert.assertEquals(3, rs.getAllReportProcessorConfigurations(true).size());
+		Assertions.assertNotNull(c.getId());
+		Assertions.assertNotNull(c.getUuid());
+		Assertions.assertEquals(3, rs.getAllReportProcessorConfigurations(true).size());
 	}
 
 	/**
@@ -168,8 +168,8 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void getAllReportProcessorConfigurations_shouldRetrieveAllSavedReportProcessorConfigurationsIncludingRetiredIfSpecified() throws Exception {
 		ReportService rs = Context.getService(ReportService.class);
-		Assert.assertEquals(2, rs.getAllReportProcessorConfigurations(true).size());
-		Assert.assertEquals(1, rs.getAllReportProcessorConfigurations(false).size());
+		Assertions.assertEquals(2, rs.getAllReportProcessorConfigurations(true).size());
+		Assertions.assertEquals(1, rs.getAllReportProcessorConfigurations(false).size());
 	}
 
 	/**
@@ -180,7 +180,7 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 	public void getReportProcessorConfiguration_shouldRetrieveASavedReportProcessorConfigurationById() throws Exception {
 		ReportService rs = Context.getService(ReportService.class);
 		ReportProcessorConfiguration c = rs.getReportProcessorConfiguration(2);
-		Assert.assertEquals("Logging processor", c.getName());
+		Assertions.assertEquals("Logging processor", c.getName());
 	}
 
 	/**
@@ -191,7 +191,7 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 	public void getReportProcessorConfigurationByUuid_shouldRetrieveASavedReportProcessorConfigurationByUuid() throws Exception {
 		ReportService rs = Context.getService(ReportService.class);
 		ReportProcessorConfiguration c = rs.getReportProcessorConfigurationByUuid("c11117dd-4478-4a0e-84fe-ee62c5f0676a");
-		Assert.assertEquals("Logging processor", c.getName());
+		Assertions.assertEquals("Logging processor", c.getName());
 	}
 
 	/**
@@ -201,7 +201,7 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void getReportProcessorConfigurations_shouldRetrieveAllNonretiredReportProcessorConfigurationsThatAreAssignableToThePassedType() throws Exception {
 		ReportService rs = Context.getService(ReportService.class);
-		Assert.assertEquals(1, rs.getReportProcessorConfigurations(LoggingReportProcessor.class).size());
+		Assertions.assertEquals(1, rs.getReportProcessorConfigurations(LoggingReportProcessor.class).size());
 	}
 
 	/**
@@ -213,7 +213,7 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		ReportService rs = Context.getService(ReportService.class);
 		ReportProcessorConfiguration c = rs.getReportProcessorConfiguration(1);
 		rs.purgeReportProcessorConfiguration(c);
-		Assert.assertEquals(1, rs.getAllReportProcessorConfigurations(true).size());
+		Assertions.assertEquals(1, rs.getAllReportProcessorConfigurations(true).size());
 	}
 
 	@Test
@@ -224,7 +224,7 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		//now we should have three total ReportProcessorConfigs in the db, 2 of which don't have reportDesign set (the two in the dbunit file), meaning that they're global.
 		// but 1 is retired, so there should only be 1
 		List<ReportProcessorConfiguration> ret = Context.getService(ReportService.class).getGlobalReportProcessorConfigurations();
-		Assert.assertTrue(ret.size() == 1);
+		Assertions.assertTrue(ret.size() == 1);
 	}
 
 	@Test
@@ -241,7 +241,7 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 
 		//there was 1 to start with, now there should be 2
 		List<ReportProcessorConfiguration> ret = Context.getService(ReportService.class).getGlobalReportProcessorConfigurations();
-		Assert.assertTrue(ret.size() == 2);
+		Assertions.assertTrue(ret.size() == 2);
 	}
 
 	/**
@@ -282,11 +282,11 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		//run the report
 		Report report = Context.getService(ReportService.class).runReport(request);
 		//TestReportProcessor is a simple processor that set a report error message -- just a simple way to ensure the processor was run...
-		Assert.assertTrue(report.getErrorMessage().equals("TestReportProcessor.process was called corretly."));
+		Assertions.assertTrue(report.getErrorMessage().equals("TestReportProcessor.process was called corretly."));
 
 		//sanity check on global processors -- the one we create here isn't global, so there should only be 1
 		List<ReportProcessorConfiguration> ret = Context.getService(ReportService.class).getGlobalReportProcessorConfigurations();
-		Assert.assertTrue(ret.size() == 1);
+		Assertions.assertTrue(ret.size() == 1);
 	}
 
 	/**
@@ -326,7 +326,7 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		//run the report
 		Report report = Context.getService(ReportService.class).runReport(request);
 		//TestReportProcessor is a simple processor that set a report error message -- just a simple way to ensure the processor was run...
-		Assert.assertTrue(report.getErrorMessage() == null);
+		Assertions.assertTrue(report.getErrorMessage() == null);
 	}
 
 	/**
@@ -366,7 +366,7 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		//run the report
 		Report report = Context.getService(ReportService.class).runReport(request);
 		//TestReportProcessor is a simple processor that set a report error message -- just a simple way to ensure the processor was run...
-		Assert.assertTrue(report.getErrorMessage() == null);
+		Assertions.assertTrue(report.getErrorMessage() == null);
 	}
 
 	@Test
@@ -399,16 +399,16 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 
 		//retreive and verify the processor
 		ReportProcessorConfiguration rpc = rs.getReportProcessorConfigurationByUuid(procUuid);
-		Assert.assertTrue(rpc != null);
-		Assert.assertTrue(rpc.getProcessorMode().equals(ReportProcessorConfiguration.ProcessorMode.ON_DEMAND_AND_AUTOMATIC));
+		Assertions.assertTrue(rpc != null);
+		Assertions.assertTrue(rpc.getProcessorMode().equals(ReportProcessorConfiguration.ProcessorMode.ON_DEMAND_AND_AUTOMATIC));
 		rpc = null;
 
 		//retrieve and verify that the processor is retreived with ReportDesign
 		ReportDesign ret = rs.getReportDesignByUuid(uuid);
-		Assert.assertTrue(ret != null);
-		Assert.assertTrue(ret.getReportProcessors().size() == 1);
+		Assertions.assertTrue(ret != null);
+		Assertions.assertTrue(ret.getReportProcessors().size() == 1);
 		ReportProcessorConfiguration rp = ret.getReportProcessors().iterator().next();
-		Assert.assertTrue(rp.getProcessorMode().equals(ReportProcessorConfiguration.ProcessorMode.ON_DEMAND_AND_AUTOMATIC));
+		Assertions.assertTrue(rp.getProcessorMode().equals(ReportProcessorConfiguration.ProcessorMode.ON_DEMAND_AND_AUTOMATIC));
 
 	}
 
@@ -417,10 +417,10 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 	public void shouldReadProcessorModeEnumCorrectly() throws Exception {
 		ReportService rs = Context.getService(ReportService.class);
 		ReportProcessorConfiguration rpc = rs.getReportProcessorConfiguration(1);
-		Assert.assertTrue(rpc.getProcessorMode().equals(ReportProcessorConfiguration.ProcessorMode.DISABLED));
+		Assertions.assertTrue(rpc.getProcessorMode().equals(ReportProcessorConfiguration.ProcessorMode.DISABLED));
 
 		rpc = rs.getReportProcessorConfiguration(2);
-		Assert.assertTrue(rpc.getProcessorMode().equals(ReportProcessorConfiguration.ProcessorMode.AUTOMATIC));
+		Assertions.assertTrue(rpc.getProcessorMode().equals(ReportProcessorConfiguration.ProcessorMode.AUTOMATIC));
 	}
 
 	/**
@@ -435,7 +435,7 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		c.set(1975, Calendar.OCTOBER, 16);
 		request.setEvaluationDate(c.getTime());
 		Report actual = Context.getService(ReportService.class).runReport(request);
-		Assert.assertEquals(actual.getReportData().getContext().getEvaluationDate(), c.getTime());
+		Assertions.assertEquals(actual.getReportData().getContext().getEvaluationDate(), c.getTime());
 	}
 
 	/**
@@ -448,7 +448,7 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
 		ReportDefinition def = new ReportDefinition();
 		ReportRequest request = new ReportRequest(new Mapped<ReportDefinition>(def, null), null, null, Priority.NORMAL, null);
 		Report actual = Context.getService(ReportService.class).runReport(request);
-		Assert.assertEquals(sdf.format(actual.getReportData().getContext().getEvaluationDate()), sdf.format(new Date()));
+		Assertions.assertEquals(sdf.format(actual.getReportData().getContext().getEvaluationDate()), sdf.format(new Date()));
 	}
 
 	@Test
@@ -482,9 +482,9 @@ public class ReportServiceTest extends BaseModuleContextSensitiveTest {
         Report result = getReportService().runReport(request);
         File reportLog = getReportService().getReportLogFile(request);
         String s = FileUtils.readFileToString(reportLog, "UTF-8");
-        Assert.assertTrue(s.contains("Evaluating A Test Report"));
-        Assert.assertTrue(s.contains("Evaluating Patients By Gender"));
-        Assert.assertTrue(s.contains("Evaluating " + DefinitionUtil.format(females)));
+        Assertions.assertTrue(s.contains("Evaluating A Test Report"));
+        Assertions.assertTrue(s.contains("Evaluating Patients By Gender"));
+        Assertions.assertTrue(s.contains("Evaluating " + DefinitionUtil.format(females)));
     }
 
     public ReportService getReportService() {

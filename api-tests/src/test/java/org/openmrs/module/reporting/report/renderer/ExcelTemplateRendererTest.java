@@ -14,8 +14,8 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
 import org.openmrs.messagesource.MutableMessageSource;
@@ -33,7 +33,7 @@ import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportDesignResource;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.util.OpenmrsClassLoader;
 
 import java.io.ByteArrayInputStream;
@@ -204,9 +204,9 @@ public class ExcelTemplateRendererTest extends BaseModuleContextSensitiveTest {
             }
         }
 
-        Assert.assertEquals(3, cellsFound.size());
-        Assert.assertEquals(emrIdVal, cellsFound.get(0));
-        Assert.assertEquals(genderVal, cellsFound.get(1));
-        Assert.assertEquals(dobVal, cellsFound.get(2));
+        Assertions.assertEquals(3, cellsFound.size());
+        Assertions.assertEquals(emrIdVal, cellsFound.get(0));
+        Assertions.assertEquals(genderVal, cellsFound.get(1));
+        Assertions.assertEquals(dobVal, cellsFound.get(2));
     }
 }

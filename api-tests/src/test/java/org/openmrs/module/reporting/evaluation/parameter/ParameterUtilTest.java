@@ -11,14 +11,14 @@ package org.openmrs.module.reporting.evaluation.parameter;
 
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.definition.DefinitionUtil;
 import org.openmrs.module.reporting.definition.configuration.Property;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 /**
  * Tests the ParameterUtil methods
@@ -32,10 +32,10 @@ public class ParameterUtilTest extends BaseModuleContextSensitiveTest {
 	public void shouldHaveAllAnnotatedFieldsAsParameters() throws Exception {		
 		AgeCohortDefinition def = new AgeCohortDefinition();
 		List<Property> props = DefinitionUtil.getConfigurationProperties(def);
-		Assert.assertEquals(6, props.size());
+		Assertions.assertEquals(6, props.size());
 		for (Property p : props) {
 			if (p.getField().getName().equals("minAgeUnit")) {
-				Assert.assertEquals(DurationUnit.YEARS, p.getValue());
+				Assertions.assertEquals(DurationUnit.YEARS, p.getValue());
 			}
 		}
 	}
@@ -47,6 +47,6 @@ public class ParameterUtilTest extends BaseModuleContextSensitiveTest {
 	public void shouldHaveAllInheritedAnnotatedFieldsAsParameters() throws Exception {		
 		NumericObsCohortDefinition def = new NumericObsCohortDefinition();
 		// NOTE: This should be changed to 11 when groupingConcept field is implemented
-		Assert.assertEquals(10, DefinitionUtil.getConfigurationProperties(def).size());
+		Assertions.assertEquals(10, DefinitionUtil.getConfigurationProperties(def).size());
 	}
 }

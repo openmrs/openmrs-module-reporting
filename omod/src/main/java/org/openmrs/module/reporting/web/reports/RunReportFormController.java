@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -252,7 +252,7 @@ public class RunReportFormController extends SimpleFormController implements Val
 	}
 	
 	/**
-	 * @see org.springframework.web.servlet.mvc.SimpleFormController#referenceData(javax.servlet.http.HttpServletRequest)
+	 * @see org.springframework.web.servlet.mvc.SimpleFormController#referenceData(jakarta.servlet.http.HttpServletRequest)
 	 */
 	@Override
 	protected Map<String, Object> referenceData(HttpServletRequest request, Object commandObject, Errors errors) throws Exception {

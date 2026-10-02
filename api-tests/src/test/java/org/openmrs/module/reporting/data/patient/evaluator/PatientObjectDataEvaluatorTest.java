@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.data.patient.evaluator;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
@@ -22,8 +22,8 @@ import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinit
 import org.openmrs.module.reporting.data.patient.definition.PatientObjectDataDefinition;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 import java.util.Map;
 
@@ -34,12 +34,12 @@ public class PatientObjectDataEvaluatorTest extends BaseModuleContextSensitiveTe
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -54,15 +54,15 @@ public class PatientObjectDataEvaluatorTest extends BaseModuleContextSensitiveTe
 		PatientObjectDataDefinition d = new PatientObjectDataDefinition();
 		EvaluationContext context = new EvaluationContext();
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(d, context);
-		Assert.assertEquals(9, pd.getData().size());
+		Assertions.assertEquals(9, pd.getData().size());
         for (Map.Entry<Integer, Object> e : pd.getData().entrySet()) {
-            Assert.assertTrue(e.getValue() instanceof Patient);
-            Assert.assertEquals(e.getKey(), ((Patient)e.getValue()).getPatientId());
+            Assertions.assertTrue(e.getValue() instanceof Patient);
+            Assertions.assertEquals(e.getKey(), ((Patient)e.getValue()).getPatientId());
         }
 
         // Test for a limited base cohort of patients
 		context.setBaseCohort(new Cohort("2,6,7,8"));
 		pd = Context.getService(PatientDataService.class).evaluate(d, context);
-		Assert.assertEquals(4, pd.getData().size());
+		Assertions.assertEquals(4, pd.getData().size());
 	}
 }

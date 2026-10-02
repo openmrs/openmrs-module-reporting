@@ -9,12 +9,12 @@
  */
 package org.openmrs.module.reporting.data;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.reporting.data.patient.definition.PersonToPatientDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class JoinDataDefinitionTest {
 

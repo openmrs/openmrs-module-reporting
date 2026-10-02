@@ -9,10 +9,10 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.DataSet;
@@ -24,14 +24,14 @@ import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinition
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-@Ignore
+@Disabled
 public class MySqlDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 
 	@Autowired
@@ -42,7 +42,7 @@ public class MySqlDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 		return false;
 	}
 
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		authenticate();
 	}
@@ -79,7 +79,7 @@ public class MySqlDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
 		q.append("select person_id, birthdate as 'Date of Birth' from person");
 		Context.getService(EvaluationService.class).evaluateToList(q, new EvaluationContext());
 		List<DataSetColumn> columns = Context.getService(EvaluationService.class).getColumns(q);
-		Assert.assertEquals("Date of Birth", columns.get(1).getName());
+		Assertions.assertEquals("Date of Birth", columns.get(1).getName());
 	}
 
 	@Test

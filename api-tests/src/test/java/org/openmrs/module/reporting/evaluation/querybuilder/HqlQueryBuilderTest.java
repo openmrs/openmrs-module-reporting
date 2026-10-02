@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.evaluation.querybuilder;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
@@ -29,7 +29,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.context.VisitEvaluationContext;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.openmrs.module.reporting.query.visit.VisitIdSet;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
@@ -50,7 +50,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 	@Autowired
 	EvaluationService evaluationService;
 
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -352,7 +352,7 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 		query.select("a.patientId:pId");
 		query.from(Patient.class, "a");
 		List<DataSetColumn> columns = evaluationService.getColumns(query);
-		Assert.assertEquals("pId", columns.get(0).getName());
+		Assertions.assertEquals("pId", columns.get(0).getName());
 		evaluationService.evaluateToList(query, new EvaluationContext());
 	}
 
@@ -362,9 +362,9 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 		query.select("p.personId", "p.gender", "p.birthdate");
 		query.from(Person.class, "p");
 		List<DataSetColumn> columns = evaluationService.getColumns(query);
-		Assert.assertEquals("personId", columns.get(0).getName());
-		Assert.assertEquals("gender", columns.get(1).getName());
-		Assert.assertEquals("birthdate", columns.get(2).getName());
+		Assertions.assertEquals("personId", columns.get(0).getName());
+		Assertions.assertEquals("gender", columns.get(1).getName());
+		Assertions.assertEquals("birthdate", columns.get(2).getName());
 		evaluationService.evaluateToList(query, new EvaluationContext());
 	}
 
@@ -374,9 +374,9 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 		query.select("p.personId as pId", "p.gender", "p.birthdate as dob");
 		query.from(Person.class, "p");
 		List<DataSetColumn> columns = evaluationService.getColumns(query);
-		Assert.assertEquals("pId", columns.get(0).getName());
-		Assert.assertEquals("gender", columns.get(1).getName());
-		Assert.assertEquals("dob", columns.get(2).getName());
+		Assertions.assertEquals("pId", columns.get(0).getName());
+		Assertions.assertEquals("gender", columns.get(1).getName());
+		Assertions.assertEquals("dob", columns.get(2).getName());
 		evaluationService.evaluateToList(query, new EvaluationContext());
 	}
 
@@ -386,8 +386,8 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
         query.select("a.patientId", "case a.patientId when 1 then true else false end");
         query.from(Patient.class, "a");
 		List<DataSetColumn> columns = evaluationService.getColumns(query);
-		Assert.assertEquals("patientId", columns.get(0).getName());
-		Assert.assertEquals("1", columns.get(1).getName());
+		Assertions.assertEquals("patientId", columns.get(0).getName());
+		Assertions.assertEquals("1", columns.get(1).getName());
 		evaluationService.evaluateToList(query, new EvaluationContext());
     }
 
@@ -398,22 +398,22 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
         query.from(Obs.class, "o");
         query.groupBy("o.person.personId");
         List<DataSetColumn> columns = evaluationService.getColumns(query);
-        Assert.assertEquals("personId", columns.get(0).getName());
-        Assert.assertEquals("valueNumeric", columns.get(1).getName());
+        Assertions.assertEquals("personId", columns.get(0).getName());
+        Assertions.assertEquals("valueNumeric", columns.get(1).getName());
         evaluationService.evaluateToList(query, new EvaluationContext());
     }
 
 	// Utility methods
 
 	protected void testSize(List<Object[]> results, int size) {
-		Assert.assertEquals(size, results.size());
+		Assertions.assertEquals(size, results.size());
 	}
 
 	protected void testRow(List<Object[]> results, int rowNum, Object... expected) {
 		Object[] row = results.get(rowNum-1);
-		Assert.assertEquals(expected.length, row.length);
+		Assertions.assertEquals(expected.length, row.length);
 		for (int i=0; i<expected.length; i++) {
-			Assert.assertEquals(expected[i], row[i]);
+			Assertions.assertEquals(expected[i], row[i]);
 		}
 	}
 

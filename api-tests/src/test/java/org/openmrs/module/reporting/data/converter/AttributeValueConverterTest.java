@@ -9,16 +9,16 @@
  */
 package org.openmrs.module.reporting.data.converter;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Concept;
 import org.openmrs.PersonAttribute;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.data.converter.AttributeValueConverter;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 public class AttributeValueConverterTest extends BaseModuleContextSensitiveTest {
 	
@@ -27,12 +27,12 @@ public class AttributeValueConverterTest extends BaseModuleContextSensitiveTest 
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -45,8 +45,8 @@ public class AttributeValueConverterTest extends BaseModuleContextSensitiveTest 
 	public void convert_shouldConvertASerializedAttributeValueIntoItsHydratedObjectForm() throws Exception {
 		PersonAttribute stringValue = Context.getPersonService().getPersonAttribute(10);
 		Object value = (new AttributeValueConverter(stringValue.getAttributeType())).convert(stringValue.getValue());
-		Assert.assertEquals(String.class, value.getClass());
-		Assert.assertEquals(stringValue.getValue(), value.toString());
+		Assertions.assertEquals(String.class, value.getClass());
+		Assertions.assertEquals(stringValue.getValue(), value.toString());
 	}
 
 	/**
@@ -57,8 +57,8 @@ public class AttributeValueConverterTest extends BaseModuleContextSensitiveTest 
 	public void convert_shouldReturnThePassedInValueIfItIsNotAttributable() throws Exception {
 		PersonAttribute conceptValue = Context.getPersonService().getPersonAttribute(14);
 		Object value = (new AttributeValueConverter(conceptValue.getAttributeType())).convert(conceptValue.getValue());
-		Assert.assertEquals(Concept.class, value.getClass());
-		Assert.assertEquals(conceptValue.getHydratedObject(), value);
+		Assertions.assertEquals(Concept.class, value.getClass());
+		Assertions.assertEquals(conceptValue.getHydratedObject(), value);
 	}
 	
 }

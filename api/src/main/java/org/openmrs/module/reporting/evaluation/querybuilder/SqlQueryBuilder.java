@@ -296,7 +296,7 @@ public class SqlQueryBuilder implements QueryBuilder {
 				}
 			}
 
-			queryString = org.apache.commons.lang.StringUtils.replaceOnce(queryString, parameterName, replacementValue.toString());
+			queryString = org.apache.commons.lang3.StringUtils.replaceOnce(queryString, parameterName, replacementValue.toString());
 			queryString = queryString.replace(" in " + replacementValue, " in (" + replacementValue + ")");
 		}
 

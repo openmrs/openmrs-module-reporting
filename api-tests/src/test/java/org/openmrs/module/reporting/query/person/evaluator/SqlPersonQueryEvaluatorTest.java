@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.query.person.evaluator;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -19,7 +19,7 @@ import org.openmrs.module.reporting.evaluation.context.PersonEvaluationContext;
 import org.openmrs.module.reporting.query.person.PersonQueryResult;
 import org.openmrs.module.reporting.query.person.definition.SqlPersonQuery;
 import org.openmrs.module.reporting.query.person.service.PersonQueryService;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.util.OpenmrsUtil;
 
 /**
@@ -27,7 +27,7 @@ import org.openmrs.util.OpenmrsUtil;
  */
 public class SqlPersonQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
 
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet("org/openmrs/module/reporting/include/" + new TestUtil().getTestDatasetFilename("ReportTestDataset"));
 	}
@@ -37,7 +37,7 @@ public class SqlPersonQueryEvaluatorTest extends BaseModuleContextSensitiveTest 
 		SqlPersonQuery d = new SqlPersonQuery();
 		d.setQuery("select person_id from person where gender = 'F'");
 		PersonQueryResult s = evaluate(d, new EvaluationContext());
-		Assert.assertEquals(6, s.getSize());
+		Assertions.assertEquals(6, s.getSize());
 	}
 	
 	@Test
@@ -50,13 +50,13 @@ public class SqlPersonQueryEvaluatorTest extends BaseModuleContextSensitiveTest 
 		
 		SqlPersonQuery d = new SqlPersonQuery();
 		d.setQuery("select person_id from person where gender = 'F'");
-		Assert.assertEquals(1, evaluate(d, context).getSize());
+		Assertions.assertEquals(1, evaluate(d, context).getSize());
 		
 		d.setQuery("select person_id from person where gender in ('M','F')");
-		Assert.assertEquals(3, evaluate(d, context).getSize());
+		Assertions.assertEquals(3, evaluate(d, context).getSize());
 		
 		d.setQuery("select person_id from person where gender not in ('M', 'F')");
-		Assert.assertEquals(1, evaluate(d, context).getSize());
+		Assertions.assertEquals(1, evaluate(d, context).getSize());
 	}
 	
 	public PersonQueryResult evaluate(SqlPersonQuery definition, EvaluationContext context) throws Exception {

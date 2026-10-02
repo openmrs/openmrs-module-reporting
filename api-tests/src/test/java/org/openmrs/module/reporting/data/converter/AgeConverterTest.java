@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.reporting.data.converter;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.reporting.common.Age;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.data.converter.AgeConverter;
@@ -31,8 +31,8 @@ public class AgeConverterTest {
 	@Test
 	public void convert_shouldConvertAnAgeToIntegerYears() throws Exception {
 		Object conversion = (new AgeConverter(AgeConverter.YEARS)).convert(getAgeToTest());
-		Assert.assertEquals("36", conversion.toString());
-		Assert.assertEquals(Integer.class, conversion.getClass());
+		Assertions.assertEquals("36", conversion.toString());
+		Assertions.assertEquals(Integer.class, conversion.getClass());
 	}
 
 	/**
@@ -42,8 +42,8 @@ public class AgeConverterTest {
 	@Test
 	public void convert_shouldConvertAnAgeToIntegerMonths() throws Exception {
 		Object conversion = (new AgeConverter(AgeConverter.MONTHS)).convert(getAgeToTest());
-		Assert.assertEquals("436", conversion.toString());
-		Assert.assertEquals(Integer.class, conversion.getClass());
+		Assertions.assertEquals("436", conversion.toString());
+		Assertions.assertEquals(Integer.class, conversion.getClass());
 	}
 
 	/**
@@ -53,11 +53,11 @@ public class AgeConverterTest {
 	@Test
 	public void convert_shouldConvertAnAgeToAFormattedString() throws Exception {
 		Object conversion = (new AgeConverter("I am {y} years and {m} months old")).convert(getAgeToTest());
-		Assert.assertEquals("I am 36 years and 4 months old", conversion.toString());
-		Assert.assertEquals(String.class, conversion.getClass());
+		Assertions.assertEquals("I am 36 years and 4 months old", conversion.toString());
+		Assertions.assertEquals(String.class, conversion.getClass());
 		
 		conversion = (new AgeConverter("I am {m} months old")).convert(getAgeToTest());
-		Assert.assertEquals("I am 436 months old", conversion.toString());
-		Assert.assertEquals(String.class, conversion.getClass());
+		Assertions.assertEquals("I am 436 months old", conversion.toString());
+		Assertions.assertEquals(String.class, conversion.getClass());
 	}
 }

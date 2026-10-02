@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.data.person.evaluator;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
@@ -22,7 +22,7 @@ import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.RelationshipsForPersonDataDefinition;
 import org.openmrs.module.reporting.data.person.service.PersonDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,12 +34,12 @@ public class RelationshipsForPersonDataEvaluatorTest extends BaseModuleContextSe
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
-	 * {@link org.openmrs.test.BaseContextSensitiveTest} is run right before this method.
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
+	 * {@link org.openmrs.test.jupiter.BaseContextSensitiveTest} is run right before this method.
 	 *
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -53,9 +53,9 @@ public class RelationshipsForPersonDataEvaluatorTest extends BaseModuleContextSe
 		RelationshipsForPersonDataDefinition d = new RelationshipsForPersonDataDefinition();
 		EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(d, context);
 
-		Assert.assertEquals(2, pd.getData().size());
-		Assert.assertEquals(1, getRelationships(pd, 2).size());
-		Assert.assertEquals(3, getRelationships(pd, 7).size());
+		Assertions.assertEquals(2, pd.getData().size());
+		Assertions.assertEquals(1, getRelationships(pd, 2).size());
+		Assertions.assertEquals(3, getRelationships(pd, 7).size());
 
 		testHasRelationship(pd, 2, getDoctorPatientType(), 502);
 		testHasRelationship(pd, 7, getDoctorPatientType(), 502);
@@ -73,13 +73,13 @@ public class RelationshipsForPersonDataEvaluatorTest extends BaseModuleContextSe
 		d.setRelationshipTypes(Arrays.asList(getDoctorPatientType()));
 		EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(d, context);
 
-		Assert.assertEquals(1, pd.getData().size());
-		Assert.assertEquals(1, getRelationships(pd, 7).size());
+		Assertions.assertEquals(1, pd.getData().size());
+		Assertions.assertEquals(1, getRelationships(pd, 7).size());
 
 		d.setRelationshipTypes(Arrays.asList(getParentChildType()));
 		pd = Context.getService(PersonDataService.class).evaluate(d, context);
-		Assert.assertEquals(1, pd.getData().size());
-		Assert.assertEquals(2, getRelationships(pd, 7).size());
+		Assertions.assertEquals(1, pd.getData().size());
+		Assertions.assertEquals(2, getRelationships(pd, 7).size());
 	}
 
 	@Test
@@ -92,12 +92,12 @@ public class RelationshipsForPersonDataEvaluatorTest extends BaseModuleContextSe
 		d.setValuesArePersonA(Boolean.FALSE);
 		d.setValuesArePersonB(Boolean.TRUE);
 		EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(d, context);
-		Assert.assertNull(getRelationships(pd, 7));
+		Assertions.assertNull(getRelationships(pd, 7));
 
 		d.setValuesArePersonA(Boolean.TRUE);
 		d.setValuesArePersonB(Boolean.FALSE);
 		pd = Context.getService(PersonDataService.class).evaluate(d, context);
-		Assert.assertEquals(3, getRelationships(pd, 7).size());
+		Assertions.assertEquals(3, getRelationships(pd, 7).size());
 	}
 
 	protected RelationshipType getDoctorPatientType() {
@@ -123,6 +123,6 @@ public class RelationshipsForPersonDataEvaluatorTest extends BaseModuleContextSe
 				}
 			}
 		}
-		Assert.assertTrue("Not able to find " + relationId + " as a " + type.getaIsToB() + " or " + type.getbIsToA() + " of " + pId, found);
+		Assertions.assertTrue(found, "Not able to find " + relationId + " as a " + type.getaIsToB() + " or " + type.getbIsToA() + " of " + pId);
 	}
 }

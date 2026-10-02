@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.data.encounter.evaluator;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.PatientService;
@@ -25,7 +25,7 @@ import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDat
 import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -33,7 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class PatientToEncounterDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 
@@ -48,12 +48,12 @@ public class PatientToEncounterDataEvaluatorTest extends BaseModuleContextSensit
     EncounterDataService encounterDataService;
 
     /**
-     * Run this before each unit test in this class. The "@Before" method in
-     * {@link org.openmrs.test.BaseContextSensitiveTest} is run right before this method.
+     * Run this before each unit test in this class. The "@BeforeEach" method in
+     * {@link org.openmrs.test.jupiter.BaseContextSensitiveTest} is run right before this method.
      *
      * @throws Exception
      */
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
     }
@@ -114,7 +114,7 @@ public class PatientToEncounterDataEvaluatorTest extends BaseModuleContextSensit
         EncounterData data = encounterDataService.evaluate(dataDef, context);
 
         PatientIdentifier id1 = (PatientIdentifier) data.getData().get(3);
-        Assert.assertEquals("6TS-4", id1.getIdentifier());
+        Assertions.assertEquals("6TS-4", id1.getIdentifier());
     }
 
 }

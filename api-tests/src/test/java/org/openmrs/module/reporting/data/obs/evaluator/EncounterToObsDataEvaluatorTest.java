@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.data.obs.evaluator;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
@@ -29,15 +29,15 @@ import org.openmrs.module.reporting.data.obs.service.ObsDataService;
 import org.openmrs.module.reporting.evaluation.context.ObsEvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.query.obs.ObsIdSet;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.Date;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class EncounterToObsDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 
@@ -56,12 +56,12 @@ public class EncounterToObsDataEvaluatorTest extends BaseModuleContextSensitiveT
 
 
     /**
-     * Run this before each unit test in this class. The "@Before" method in
-     * {@link org.openmrs.test.BaseContextSensitiveTest} is run right before this method.
+     * Run this before each unit test in this class. The "@BeforeEach" method in
+     * {@link org.openmrs.test.jupiter.BaseContextSensitiveTest} is run right before this method.
      *
      * @throws Exception
      */
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
     }
@@ -118,6 +118,6 @@ public class EncounterToObsDataEvaluatorTest extends BaseModuleContextSensitiveT
         ObsData data = obsDataService.evaluate(dataDef, context);
 
         Number value1 = (Number) data.getData().get(6);
-        Assert.assertEquals(3, value1.intValue());
+        Assertions.assertEquals(3, value1.intValue());
     }
 }

@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
@@ -32,7 +32,7 @@ import org.openmrs.module.reporting.report.definition.PeriodIndicatorReportDefin
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
 import org.openmrs.module.reporting.report.util.PeriodIndicatorReportUtil;
 import org.openmrs.module.reporting.serializer.ReportingSerializer;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 /**
  * Supports rendering a series of Cohorts with particular datasets

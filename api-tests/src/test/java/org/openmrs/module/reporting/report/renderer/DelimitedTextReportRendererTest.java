@@ -10,7 +10,7 @@
 package org.openmrs.module.reporting.report.renderer;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.dataset.DataSet;
@@ -23,7 +23,7 @@ import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportRequest;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.ByteArrayInputStream;
@@ -36,8 +36,8 @@ import java.util.zip.ZipInputStream;
 
 import static org.hamcrest.Matchers.startsWith;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DelimitedTextReportRendererTest extends BaseModuleContextSensitiveTest {
 

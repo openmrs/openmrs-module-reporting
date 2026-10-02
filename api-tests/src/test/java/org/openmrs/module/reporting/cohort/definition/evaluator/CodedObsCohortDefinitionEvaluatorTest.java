@@ -12,10 +12,10 @@ package org.openmrs.module.reporting.cohort.definition.evaluator;
 
 import java.util.Collections;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
@@ -30,7 +30,7 @@ import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 public class CodedObsCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
@@ -39,7 +39,7 @@ public class CodedObsCohortDefinitionEvaluatorTest extends BaseModuleContextSens
 	
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -60,8 +60,8 @@ public class CodedObsCohortDefinitionEvaluatorTest extends BaseModuleContextSens
 		cd.setOnOrBefore(DateUtil.getDateTime(2008, 8, 16));
 		cd.setLocationList(Collections.singletonList(new Location(1)));
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertEquals(1, cohort.size());
-		Assert.assertTrue(cohort.contains(7));
+		Assertions.assertEquals(1, cohort.size());
+		Assertions.assertTrue(cohort.contains(7));
 	}
 	
 	/**
@@ -79,8 +79,8 @@ public class CodedObsCohortDefinitionEvaluatorTest extends BaseModuleContextSens
 		cd.setOnOrBefore(DateUtil.getDateTime(2008, 8, 16));
 		cd.setLocationList(Collections.singletonList(new Location(1)));
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertEquals(1, cohort.size());
-		Assert.assertTrue(cohort.contains(7));
+		Assertions.assertEquals(1, cohort.size());
+		Assertions.assertTrue(cohort.contains(7));
 	}
 	
 	/**
@@ -96,22 +96,22 @@ public class CodedObsCohortDefinitionEvaluatorTest extends BaseModuleContextSens
 		cd.setValueList(Collections.singletonList(new Concept(7))); // YES, in the reporting test dataset
 		
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertEquals(1, cohort.size());
+		Assertions.assertEquals(1, cohort.size());
 
 		cd.setEncounterTypeList(Collections.singletonList(new EncounterType(1)));
 		cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertEquals(1, cohort.size());
+		Assertions.assertEquals(1, cohort.size());
 		
 		cd.setEncounterTypeList(Collections.singletonList(new EncounterType(2)));
 		cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertEquals(0, cohort.size());
+		Assertions.assertEquals(0, cohort.size());
 	}
 	
 	/**
 	 * @see {@link CodedObsCohortDefinitionEvaluator#evaluate(CohortDefinition,EvaluationContext)}
 	 * 
 	 */
-	@Ignore
+	@Disabled
 	@Test
 	@Verifies(value = "should not return voided patients", method = "evaluate(CohortDefinition,EvaluationContext)")
 	public void evaluate_shouldNotReturnVoidedPatients() throws Exception {
@@ -119,13 +119,13 @@ public class CodedObsCohortDefinitionEvaluatorTest extends BaseModuleContextSens
 		CodedObsCohortDefinition cd = new CodedObsCohortDefinition();
 		cd.setTimeModifier(TimeModifier.ANY);
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertTrue(cohort.contains(7));
+		Assertions.assertTrue(cohort.contains(7));
 		
 		Patient patient = Context.getPatientService().getPatient(7);
 		Context.getPatientService().voidPatient(patient, "testing");
 		Context.flushSession();
 		
 		cohort = Context.getService(CohortDefinitionService.class).evaluate(cd, null);
-		Assert.assertFalse(cohort.contains(7));
+		Assertions.assertFalse(cohort.contains(7));
 	}
 }

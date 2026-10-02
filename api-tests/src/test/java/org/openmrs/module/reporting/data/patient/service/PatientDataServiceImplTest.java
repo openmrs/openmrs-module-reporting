@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.reporting.data.patient.service;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
@@ -30,7 +30,7 @@ import org.openmrs.module.reporting.definition.library.AllDefinitionLibraries;
 import org.openmrs.module.reporting.definition.library.BaseDefinitionLibrary;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
 import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -38,7 +38,7 @@ import java.util.Collections;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Test the PatientDataServiceImpl
@@ -54,7 +54,7 @@ public class PatientDataServiceImplTest extends BaseModuleContextSensitiveTest {
     private AllDefinitionLibraries libraries;
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
@@ -72,7 +72,7 @@ public class PatientDataServiceImplTest extends BaseModuleContextSensitiveTest {
 	public void evaluate_shouldEvaluateAnPatientData() throws Exception {
 		PatientDataDefinition definition = new PatientIdDataDefinition();
 		PatientData data = Context.getService(PatientDataService.class).evaluate(definition, new EvaluationContext());
-		Assert.assertNotNull(data);
+		Assertions.assertNotNull(data);
 	}
 	
 	/**
@@ -84,10 +84,10 @@ public class PatientDataServiceImplTest extends BaseModuleContextSensitiveTest {
 		PatientDataDefinition definition = new PatientIdDataDefinition();
 		definition.setName("All Patient Ids");
 		definition = Context.getService(PatientDataService.class).saveDefinition(definition);
-		Assert.assertNotNull(definition.getId());
-		Assert.assertNotNull(definition.getUuid());
+		Assertions.assertNotNull(definition.getId());
+		Assertions.assertNotNull(definition.getUuid());
 		PatientDataDefinition loadedDefinition = Context.getService(PatientDataService.class).getDefinitionByUuid(definition.getUuid());
-		Assert.assertEquals(definition, loadedDefinition);
+		Assertions.assertEquals(definition, loadedDefinition);
 	}
 
 	/**

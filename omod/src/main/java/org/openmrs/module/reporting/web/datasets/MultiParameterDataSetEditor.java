@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.reporting.web.datasets;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlwidgets.web.WidgetUtil;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;

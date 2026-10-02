@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.reporting.data.patient.service;
 
-import org.apache.commons.lang.time.StopWatch;
+import org.apache.commons.lang3.time.StopWatch;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.ReportingConstants;

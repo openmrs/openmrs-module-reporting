@@ -9,11 +9,11 @@ import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.logging.MemoryAppender;
 import org.openmrs.logging.OpenmrsLoggingUtil;
@@ -22,7 +22,7 @@ import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
 import org.openmrs.module.reporting.test.OpenmrsVersionTestListener;
 import org.openmrs.module.reporting.test.RequiresVersion;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.test.context.TestExecutionListeners;
 
@@ -37,7 +37,7 @@ public class EvaluationProfilerTest24On extends BaseModuleContextSensitiveTest {
 	
 	private static MemoryAppender appender;
 	
-	@BeforeClass
+	@BeforeAll
 	public static void beforeClass() {
 		appender = OpenmrsLoggingUtil.getMemoryAppender();
 		
@@ -61,7 +61,7 @@ public class EvaluationProfilerTest24On extends BaseModuleContextSensitiveTest {
 		
 	}
 	
-	@AfterClass
+	@AfterAll
 	public static void afterClass() {
 		((LoggerContext) LogManager.getContext()).updateLoggers();
 	}
@@ -69,7 +69,7 @@ public class EvaluationProfilerTest24On extends BaseModuleContextSensitiveTest {
 	/**
 	 * Setup each test by configuring AOP on the relevant services and logging for the profiler class
 	 */
-	@Before
+	@BeforeEach
 	public void setup() {
 		profiler1 = new EvaluationProfiler(new EvaluationContext());
 		profiler2 = new EvaluationProfiler(new EvaluationContext());
@@ -87,12 +87,12 @@ public class EvaluationProfilerTest24On extends BaseModuleContextSensitiveTest {
 		Context.getService(IndicatorService.class).evaluate(count, null);
 		
 		List<String> split = appender.getLogLines();
-		Assert.assertEquals(6, split.size());
-		Assert.assertTrue(split.get(0).contains("EVALUATION_STARTED"));
-		Assert.assertTrue(split.get(1).contains(">"));
-		Assert.assertTrue(split.get(1).contains("CohortIndicator"));
-		Assert.assertTrue(split.get(2).contains(">>"));
-		Assert.assertTrue(split.get(2).contains("GenderCohortDefinition[males]"));
-		Assert.assertTrue(split.get(5).contains("EVALUATION_COMPLETED"));
+		Assertions.assertEquals(6, split.size());
+		Assertions.assertTrue(split.get(0).contains("EVALUATION_STARTED"));
+		Assertions.assertTrue(split.get(1).contains(">"));
+		Assertions.assertTrue(split.get(1).contains("CohortIndicator"));
+		Assertions.assertTrue(split.get(2).contains(">>"));
+		Assertions.assertTrue(split.get(2).contains("GenderCohortDefinition[males]"));
+		Assertions.assertTrue(split.get(5).contains("EVALUATION_COMPLETED"));
 	}
 }

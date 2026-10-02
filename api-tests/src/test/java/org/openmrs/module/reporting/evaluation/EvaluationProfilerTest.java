@@ -15,7 +15,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.WriterAppender;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -88,12 +88,12 @@ public class EvaluationProfilerTest extends BaseModuleContextSensitiveTest {
 		Context.getService(IndicatorService.class).evaluate(count, null);
 
 		String[] split = logOutput.toString().split(System.getProperty("line.separator"));
-		Assert.assertEquals(6, split.length);
-		Assert.assertTrue(split[0].contains("EVALUATION_STARTED"));
-		Assert.assertTrue(split[1].contains(">"));
-		Assert.assertTrue(split[1].contains("CohortIndicator"));
-		Assert.assertTrue(split[2].contains(">>"));
-		Assert.assertTrue(split[2].contains("GenderCohortDefinition[males]"));
-		Assert.assertTrue(split[5].contains("EVALUATION_COMPLETED"));
+		Assertions.assertEquals(6, split.length);
+		Assertions.assertTrue(split[0].contains("EVALUATION_STARTED"));
+		Assertions.assertTrue(split[1].contains(">"));
+		Assertions.assertTrue(split[1].contains("CohortIndicator"));
+		Assertions.assertTrue(split[2].contains(">>"));
+		Assertions.assertTrue(split[2].contains("GenderCohortDefinition[males]"));
+		Assertions.assertTrue(split[5].contains("EVALUATION_COMPLETED"));
 	}
 }

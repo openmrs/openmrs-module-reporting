@@ -10,17 +10,18 @@
 package org.openmrs.module.reporting.data.converter;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.api.LocationService;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ObsValueTextAsCodedConverterTest extends BaseModuleContextSensitiveTest {
 
@@ -53,10 +54,12 @@ public class ObsValueTextAsCodedConverterTest extends BaseModuleContextSensitive
 
     // TODO we can remove test below once we support other OpenmrsObjects
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldFailIfTypeOtherThanLocation() {
-        ObsValueTextAsCodedConverter converter = new ObsValueTextAsCodedConverter<Patient>(Patient.class);
-        converter.convert(new Obs());
+    	assertThrows(IllegalArgumentException.class, () -> {
+	        ObsValueTextAsCodedConverter converter = new ObsValueTextAsCodedConverter<Patient>(Patient.class);
+	        converter.convert(new Obs());
+    	});
     }
 
 }

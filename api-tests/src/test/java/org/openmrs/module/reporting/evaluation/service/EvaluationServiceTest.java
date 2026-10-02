@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.evaluation.service;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Encounter;
 import org.openmrs.Person;
 import org.openmrs.api.context.Context;
@@ -19,12 +19,13 @@ import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 
@@ -38,7 +39,7 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 	@Autowired
 	EvaluationService evaluationService;
 
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -48,11 +49,11 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 		HqlQueryBuilder queryBuilder = new HqlQueryBuilder();
 		queryBuilder.select("personId", "gender").from(Person.class).whereInAny("personId", 2, 7).orderAsc("personId");
 		List<Object[]> l = evaluationService.evaluateToList(queryBuilder, new EvaluationContext());
-		Assert.assertEquals(2, l.get(0)[0]);
-		Assert.assertEquals(7, l.get(1)[0]);
-		Assert.assertEquals("M", l.get(0)[1]);
-		Assert.assertEquals("F", l.get(1)[1]);
-		Assert.assertEquals(2, l.size());
+		Assertions.assertEquals(2, l.get(0)[0]);
+		Assertions.assertEquals(7, l.get(1)[0]);
+		Assertions.assertEquals("M", l.get(0)[1]);
+		Assertions.assertEquals("F", l.get(1)[1]);
+		Assertions.assertEquals(2, l.size());
 	}
 
 	@Test
@@ -60,16 +61,18 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 		HqlQueryBuilder queryBuilder = new HqlQueryBuilder();
 		queryBuilder.select("gender").from(Person.class).whereInAny("personId", 2, 7).orderAsc("personId");
 		List<String> genders = evaluationService.evaluateToList(queryBuilder, String.class, new EvaluationContext());
-		Assert.assertEquals("M", genders.get(0));
-		Assert.assertEquals("F", genders.get(1));
-		Assert.assertEquals(2, genders.size());
+		Assertions.assertEquals("M", genders.get(0));
+		Assertions.assertEquals("F", genders.get(1));
+		Assertions.assertEquals(2, genders.size());
 	}
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
 	public void evaluateToList_shouldThrowAnExceptionWithIncorrectNumberOfColumns() {
-		HqlQueryBuilder queryBuilder = new HqlQueryBuilder();
-		queryBuilder.select("personId", "gender").from(Person.class).whereInAny("personId", 2, 7).orderAsc("personId");
-		evaluationService.evaluateToList(queryBuilder, String.class, new EvaluationContext());
+		assertThrows(IllegalArgumentException.class, () -> {
+			HqlQueryBuilder queryBuilder = new HqlQueryBuilder();
+			queryBuilder.select("personId", "gender").from(Person.class).whereInAny("personId", 2, 7).orderAsc("personId");
+			evaluationService.evaluateToList(queryBuilder, String.class, new EvaluationContext());
+		});
 	}
 
 	@Test
@@ -77,15 +80,17 @@ public class EvaluationServiceTest extends BaseModuleContextSensitiveTest {
 		HqlQueryBuilder queryBuilder = new HqlQueryBuilder();
 		queryBuilder.select("personId", "gender").from(Person.class).whereInAny("personId", 2, 7).orderAsc("personId");
 		Map<Integer, String> m = evaluationService.evaluateToMap(queryBuilder, Integer.class, String.class, new EvaluationContext());
-		Assert.assertEquals(m.get(2), "M");
-		Assert.assertEquals(m.get(7), "F");
+		Assertions.assertEquals(m.get(2), "M");
+		Assertions.assertEquals(m.get(7), "F");
 	}
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
 	public void evaluateToMap_shouldThrowAnExceptionWithIncorrectNumberOfColumns() {
-		HqlQueryBuilder queryBuilder = new HqlQueryBuilder();
-		queryBuilder.select("personId", "gender", "birthdate").from(Person.class).whereInAny("personId", 2, 7).orderAsc("personId");
-		evaluationService.evaluateToMap(queryBuilder, Integer.class, String.class, new EvaluationContext());
+		assertThrows(IllegalArgumentException.class, () -> {
+			HqlQueryBuilder queryBuilder = new HqlQueryBuilder();
+			queryBuilder.select("personId", "gender", "birthdate").from(Person.class).whereInAny("personId", 2, 7).orderAsc("personId");
+			evaluationService.evaluateToMap(queryBuilder, Integer.class, String.class, new EvaluationContext());
+		});
 	}
 
 	@Test

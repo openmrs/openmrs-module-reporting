@@ -11,9 +11,9 @@ package org.openmrs.module.reporting.cohort.definition.evaluator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
@@ -32,8 +32,8 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 import java.text.SimpleDateFormat;
@@ -44,6 +44,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * 
@@ -60,12 +61,12 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -86,8 +87,8 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 		SqlCohortDefinition cohortDefinition = new SqlCohortDefinition(sqlQuery);
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);		
 
-		Assert.assertEquals(1, cohort.size());
-		Assert.assertTrue(cohort.contains(6));
+		Assertions.assertEquals(1, cohort.size());
+		Assertions.assertTrue(cohort.contains(6));
 	}
 	
 	/**
@@ -105,8 +106,8 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 		SqlCohortDefinition cohortDefinition = new SqlCohortDefinition(sqlQuery);
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);
 		
-		Assert.assertEquals(1, cohort.size());
-		Assert.assertTrue(cohort.contains(6));
+		Assertions.assertEquals(1, cohort.size());
+		Assertions.assertTrue(cohort.contains(6));
 	}
 
 	/**
@@ -124,8 +125,8 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 		SqlCohortDefinition cohortDefinition = new SqlCohortDefinition(sqlQuery);
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);
 
-		Assert.assertEquals(1, cohort.size());
-		Assert.assertTrue(cohort.contains(6));
+		Assertions.assertEquals(1, cohort.size());
+		Assertions.assertTrue(cohort.contains(6));
 	}
 	
 
@@ -147,8 +148,8 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 		SqlCohortDefinition cohortDefinition = new SqlCohortDefinition(sqlQuery);
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);		
 		
-		Assert.assertEquals(1, cohort.size());
-		Assert.assertTrue(cohort.contains(6));
+		Assertions.assertEquals(1, cohort.size());
+		Assertions.assertTrue(cohort.contains(6));
 	}
 
 	/**
@@ -169,8 +170,8 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 		SqlCohortDefinition cohortDefinition = new SqlCohortDefinition(sqlQuery);
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);
 
-		Assert.assertEquals(1, cohort.size());
-		Assert.assertTrue(cohort.contains(6));
+		Assertions.assertEquals(1, cohort.size());
+		Assertions.assertTrue(cohort.contains(6));
 	}
 
 	/**
@@ -190,7 +191,7 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 		SqlCohortDefinition cohortDefinition = new SqlCohortDefinition(sqlQuery);
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);
 
-		Assert.assertEquals(0, cohort.size());
+		Assertions.assertEquals(0, cohort.size());
 	}
 	
 	/**
@@ -210,8 +211,8 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 		SqlCohortDefinition cohortDefinition = new SqlCohortDefinition(sqlQuery);
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);		
 
-		Assert.assertEquals(1, cohort.size());
-		Assert.assertTrue(cohort.contains(6));
+		Assertions.assertEquals(1, cohort.size());
+		Assertions.assertTrue(cohort.contains(6));
 	}
 
 	/**
@@ -231,8 +232,8 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 		SqlCohortDefinition cohortDefinition = new SqlCohortDefinition(sqlQuery);
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);
 
-		Assert.assertEquals(1, cohort.size());
-		Assert.assertTrue(cohort.contains(6));
+		Assertions.assertEquals(1, cohort.size());
+		Assertions.assertTrue(cohort.contains(6));
 	}
 
 	/**
@@ -251,7 +252,7 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 		SqlCohortDefinition cohortDefinition = new SqlCohortDefinition(sqlQuery);
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);
 
-		Assert.assertEquals(0, cohort.size());
+		Assertions.assertEquals(0, cohort.size());
 	}
 	
 	/**
@@ -271,8 +272,8 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 		SqlCohortDefinition cohortDefinition = new SqlCohortDefinition(sqlQuery);
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);		
 
-		Assert.assertEquals(1, cohort.size());
-		Assert.assertTrue(cohort.contains(6));
+		Assertions.assertEquals(1, cohort.size());
+		Assertions.assertTrue(cohort.contains(6));
 	}
 
 
@@ -292,20 +293,22 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 		SqlCohortDefinition cohortDefinition = new SqlCohortDefinition(sqlQuery);
 		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);		
 
-		Assert.assertEquals(1, cohort.size());
-		Assert.assertTrue(cohort.contains(7));
+		Assertions.assertEquals(1, cohort.size());
+		Assertions.assertTrue(cohort.contains(7));
     }
 
    /**
      * @see {@link SqlCohortDefinitionEvaluator#evaluate(CohortDefinition, EvaluationContext)}
      */
-    @Test(expected = EvaluationException.class)
+    @Test
     @Verifies(value = "should protect SQL Query Against database modifications", method = "evaluate(CohortDefinition , EvaluationContext)")
     public void shouldProtectSqlQueryAgainstDatabaseModifications() throws EvaluationException {
-        String query = "update person set gender='F'";
-        SqlCohortDefinition cohortDefinition = new SqlCohortDefinition(query);
-        EvaluationContext evaluationContext = new EvaluationContext();
-        Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);
+    	assertThrows(EvaluationException.class, () -> {
+	        String query = "update person set gender='F'";
+	        SqlCohortDefinition cohortDefinition = new SqlCohortDefinition(query);
+	        EvaluationContext evaluationContext = new EvaluationContext();
+	        Context.getService(CohortDefinitionService.class).evaluate(cohortDefinition, evaluationContext);
+    	});
     }
 
 	/**
@@ -345,7 +348,7 @@ public class SqlCohortDefinitionEvaluatorTest extends BaseModuleContextSensitive
 		DataSet ds = Context.getService(DataSetDefinitionService.class).evaluate(dsd, context);
 		DataSetRow row = ds.iterator().next();
 
-		Assert.assertEquals("5", row.getColumnValue("1").toString());
-		Assert.assertEquals("1", row.getColumnValue("2").toString());
+		Assertions.assertEquals("5", row.getColumnValue("1").toString());
+		Assertions.assertEquals("1", row.getColumnValue("2").toString());
 	}
 }

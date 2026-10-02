@@ -4,7 +4,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>reporting</artifactId>
-	<version>2.3.0-SNAPSHOT</version>
+	<version>3.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Reporting</name>
 	<description>Parent project for Reporting</description>
@@ -38,18 +38,18 @@
     </modules>
 
 	<properties>
-		<openMRSVersion>2.7.0</openMRSVersion>
-		<openMRSMinorVersion>2.7</openMRSMinorVersion>
-		<htmlwidgetsVersion>2.0.1</htmlwidgetsVersion>
-		<serializationVersion>0.3.0</serializationVersion>
-		<calculationVersion>1.2</calculationVersion>
+		<openMRSVersion>3.0.0-SNAPSHOT</openMRSVersion>
+		<openMRSMinorVersion>3.0</openMRSMinorVersion>
+		<htmlwidgetsVersion>3.0.0-SNAPSHOT</htmlwidgetsVersion>
+		<serializationVersion>1.0.0-SNAPSHOT</serializationVersion>
+		<calculationVersion>3.0.0-SNAPSHOT</calculationVersion>
 		<quartzVersion>2.1.1</quartzVersion>
 		<poiVersion>3.12</poiVersion>
-		<jodatimeVersion>2.12.5</jodatimeVersion>
-		<handlebarsVersion>1.1.2</handlebarsVersion>
+		<handlebarsVersion>4.3.1</handlebarsVersion>
 		<openhtmltopdfVersion>1.0.10</openhtmltopdfVersion>
 		<zxingVersion>3.5.3</zxingVersion>
 		<openmrsTestutilsVersion>1.7.0</openmrsTestutilsVersion>
+		<jacksonVersion>2.22.3</jacksonVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<MODULE_ID>${project.parent.artifactId}</MODULE_ID>
 		<MODULE_NAME>Reporting</MODULE_NAME>
@@ -57,6 +57,18 @@
 		<MODULE_PACKAGE>${project.parent.groupId}.${project.parent.artifactId}</MODULE_PACKAGE>
 	</properties>
 
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.openmrs</groupId>
+				<artifactId>openmrs-bom</artifactId>
+				<version>${openMRSVersion}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<dependencies>
 
@@ -72,6 +84,11 @@
 				<exclusion>
 					<groupId>commons-logging</groupId>
 					<artifactId>commons-logging</artifactId>
+				</exclusion>
+				<!-- provided by core -->
+				<exclusion>
+					<groupId>commons-codec</groupId>
+					<artifactId>commons-codec</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -103,7 +120,7 @@
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
-            <version>${jodatimeVersion}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -114,6 +131,11 @@
                 <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <!-- only needed for JavaScript helpers, which are not used -->
+                <exclusion>
+                    <groupId>org.openjdk.nashorn</groupId>
+                    <artifactId>nashorn-core</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -126,6 +148,11 @@
                 <exclusion>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <!-- provided by core -->
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -148,14 +175,13 @@
             <version>${openmrsTestutilsVersion}</version>
             <scope>test</scope>
         </dependency>
-
-		<!-- Needed to be able to build using PowerMock on Java 8. See http://stackoverflow.com/a/33162314 -->
-		<dependency>
-			<groupId>org.javassist</groupId>
-			<artifactId>javassist</artifactId>
-			<version>3.19.0-GA</version>
-			<scope>test</scope>
-		</dependency>
+        <!-- testutils is compiled against commons-lang 2, which core no longer provides -->
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+            <scope>test</scope>
+        </dependency>
 
 		<!-- OpenMRS dependencies -->
 		<dependency>
@@ -169,23 +195,6 @@
 		<dependency>
 			<groupId>org.openmrs.api</groupId>
 			<artifactId>openmrs-api</artifactId>
-			<version>${openMRSVersion}</version>
-			<type>jar</type>
-			<scope>test</scope>
-			<classifier>tests</classifier>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openmrs.web</groupId>
-			<artifactId>openmrs-web</artifactId>
-			<version>${openMRSVersion}</version>
-			<type>jar</type>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openmrs.web</groupId>
-			<artifactId>openmrs-web</artifactId>
 			<version>${openMRSVersion}</version>
 			<type>jar</type>
 			<scope>test</scope>
@@ -213,7 +222,6 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>1.3.173</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -225,23 +233,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.openmrs.module</groupId>
-			<artifactId>htmlwidgets-api</artifactId>
-			<version>${htmlwidgetsVersion}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openmrs.module</groupId>
-			<artifactId>htmlwidgets-omod</artifactId>
-			<version>${htmlwidgetsVersion}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>mail</artifactId>
-			<version>1.3.2</version>
+			<groupId>jakarta.mail</groupId>
+			<artifactId>jakarta.mail-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
 
@@ -256,26 +249,37 @@
 		<dependency>
     		<groupId>org.owasp.encoder</groupId>
     		<artifactId>encoder</artifactId>
-    		<version>1.2.3</version>
+    		<scope>provided</scope>
 		</dependency>
 
         <!-- For reading YAML and JSON files -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>2.9.8</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.9.10.8</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-yaml</artifactId>
-            <version>2.9.8</version>
+            <version>${jacksonVersion}</version>
+            <exclusions>
+                <!-- provided by core -->
+                <exclusion>
+                    <groupId>org.yaml</groupId>
+                    <artifactId>snakeyaml</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>2.4</version>
+            <scope>provided</scope>
         </dependency>
 
 		<dependency>
@@ -366,9 +370,10 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.15.0</version>
 					<configuration>
-						<target>1.8</target>
-						<source>1.8</source>
+						<release>21</release>
+						<parameters>true</parameters>
 					</configuration>
 				</plugin>
 

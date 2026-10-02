@@ -17,11 +17,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.jsp.tagext.TagSupport;
+import jakarta.servlet.jsp.tagext.TagSupport;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.openmrs.Cohort;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
@@ -283,7 +283,7 @@ public class FormatTag extends TagSupport {
 	 * @param reportData
 	 */
 	private void printReportData(StringBuilder sb, ReportData reportData) {
-	    sb.append("<h4>" + StringEscapeUtils.escapeHtml(reportData.getDefinition().getName()) + "</h4>");
+	    sb.append("<h4>" + StringEscapeUtils.escapeHtml4(reportData.getDefinition().getName()) + "</h4>");
 	    for (Map.Entry<String, DataSet> ds : reportData.getDataSets().entrySet()) {
 	    	printDataSet(sb, ds.getKey(), ds.getValue());
 	    }

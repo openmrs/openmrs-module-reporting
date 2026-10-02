@@ -9,53 +9,45 @@
  */
 package org.openmrs.module.reporting.report.service.db;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.type.Type;
+import org.hibernate.metamodel.spi.ValueAccess;
+import org.hibernate.property.access.internal.PropertyAccessStrategyCompositeUserTypeImpl;
 import org.hibernate.usertype.CompositeUserType;
-import org.hibernate.usertype.UserType;
-import org.openmrs.module.reporting.common.HibernateUtil;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.report.renderer.RenderingMode;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 
 import java.io.Serializable;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.lang.reflect.Type;
+import java.util.Arrays;
 
 /**
  * Custom User-Type for storing RenderingModes in a single table within 2 columns
- * This type takes in 2 properties in the form:
+ * Hibernate 7 no longer supports multi-column property types, so this is mapped as a component in the form:
  * <pre>
- *   <property name="renderingMode" type="org.openmrs.module.reporting.report.service.db.RenderingModeType">
- *     <column name="renderer_type"/>
- *     <column name="renderer_argument"/>
- *   </property>
+ *   <component name="renderingMode" class="org.openmrs.module.reporting.report.service.db.RenderingModeType">
+ *     <property name="argument" column="renderer_argument" type="string" access="org.openmrs.module.reporting.report.service.db.RenderingModeType$Access"/>
+ *     <property name="renderer" column="renderer_type" type="string" access="org.openmrs.module.reporting.report.service.db.RenderingModeType$Access"/>
+ *   </component>
  * </pre>
+ * The component properties must be declared in alphabetical order, as Hibernate indexes them that way, and must use
+ * {@link Access} so that their values are read through {@link #getPropertyValue(RenderingMode, int)}.
  */
-@SuppressWarnings({"rawtypes"})
-public class RenderingModeType implements CompositeUserType {
+public class RenderingModeType implements CompositeUserType<RenderingMode> {
+
+	/**
+	 * @see CompositeUserType#embeddable()
+	 */
+	public Class<?> embeddable() {
+		return RenderingModeColumns.class;
+	}
 
 	/**
 	 * @see CompositeUserType#returnedClass()
 	 */
-	public Class returnedClass() {
+	public Class<RenderingMode> returnedClass() {
 		return RenderingMode.class;
-	}
-	
-	/**
-	 * @see CompositeUserType#getPropertyNames()
-	 */
-	public String[] getPropertyNames() {
-		return new String[] {"renderer", "argument"};
-	}
-	
-	/**
-	 * @see CompositeUserType#getPropertyTypes()
-	 */
-	public Type[] getPropertyTypes() {
-		return new Type[] { HibernateUtil.standardType("CLASS"), HibernateUtil.standardType("STRING") };
 	}
 	
 	/**
@@ -66,102 +58,97 @@ public class RenderingModeType implements CompositeUserType {
 	}
 
 	/**
+	 * @return the column value for the given property index: 0 = argument, 1 = renderer class name
 	 * @see CompositeUserType#getPropertyValue(Object, int)
 	 */
-	public Object getPropertyValue(Object component, int property) throws HibernateException {
-		RenderingMode m = (RenderingMode) component;
-		return (property == 0 ? m.getRenderer().getClass() : m.getArgument());
-	}
-
-	/**
-	 * @see CompositeUserType#setPropertyValue(Object, int, Object)
-	 */
-	public void setPropertyValue(Object component, int property, Object value) throws HibernateException {
-		RenderingMode m = (RenderingMode) component;
+	public Object getPropertyValue(RenderingMode mode, int property) throws HibernateException {
+		if (mode == null) {
+			return null;
+		}
 		if (property == 0) {
-			ReportRenderer r = null;
-			if (value != null) {
-				try {
-					r = (ReportRenderer)((Class) value).newInstance();
-				}
-				catch (Exception e) {
-					throw new HibernateException("Error instantiating a new reporting renderer from " + value, e);
-				}
-			}
-			m.setRenderer(r);
+			return mode.getArgument();
 		}
-		else {
-			m.setArgument((String)value);
-		}
-	}
-	
-	/**
-	 * @see CompositeUserType#deepCopy(Object)
-	 */
-	public Object deepCopy(Object value) throws HibernateException {
-		if (value == null) return null;
-		RenderingMode toCopy = (RenderingMode) value;
-		return new RenderingMode(toCopy.getRenderer(), toCopy.getLabel(), toCopy.getArgument(), toCopy.getSortWeight());
+		return mode.getRenderer() == null ? null : mode.getRenderer().getClass().getName();
 	}
 
 	/**
-	 * @see CompositeUserType#nullSafeGet(ResultSet, String[], SessionImplementor, Object)
+	 * @see CompositeUserType#instantiate(ValueAccess)
 	 */
-	public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner) throws HibernateException, SQLException {
-		Class rendererClass = (Class) HibernateUtil.standardType("CLASS").nullSafeGet(rs, names[0], session, owner);
-		if (rendererClass == null) { return null; }
-		String argument = (String) HibernateUtil.standardType("STRING").nullSafeGet(rs, names[1], session, owner);
+	public RenderingMode instantiate(ValueAccess values) {
+		String rendererClass = values.getValue(1, String.class);
+		if (StringUtils.isEmpty(rendererClass)) { return null; }
+		String argument = values.getValue(0, String.class);
 		ReportRenderer r = null;
 		try {
-			r = (ReportRenderer)((Class) rendererClass).newInstance();
+			r = (ReportRenderer) Context.loadClass(rendererClass).newInstance();
 		}
 		catch (Exception e) {
 			throw new HibernateException("Error instantiating a new reporting renderer from " + rendererClass, e);
 		}
 		return new RenderingMode(r, r.getClass().getSimpleName(), argument, null);
 	}
-
+	
 	/**
-	 * @see CompositeUserType#nullSafeSet(PreparedStatement, Object, int, SessionImplementor)
+	 * @see CompositeUserType#deepCopy(Object)
 	 */
-	public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session) throws HibernateException, SQLException {
-		RenderingMode mode = (RenderingMode) value;
-		HibernateUtil.standardType("CLASS").nullSafeSet(st, mode == null ? null : mode.getRenderer().getClass(), index, session);
-		HibernateUtil.standardType("STRING").nullSafeSet(st, mode == null ? null : mode.getArgument(), index+1, session);
+	public RenderingMode deepCopy(RenderingMode value) throws HibernateException {
+		if (value == null) return null;
+		RenderingMode toCopy = value;
+		return new RenderingMode(toCopy.getRenderer(), toCopy.getLabel(), toCopy.getArgument(), toCopy.getSortWeight());
 	}
 
 	/**
-	 * @see CompositeUserType#replace(Object, Object, org.hibernate.engine.SessionImplementor, Object)
+	 * @see CompositeUserType#replace(Object, Object, Object)
 	 */
-	public Object replace(Object original, Object target, SharedSessionContractImplementor session, Object owner) throws HibernateException {
+	public RenderingMode replace(RenderingMode original, RenderingMode target, Object owner) throws HibernateException {
 		return original;
 	}
 	
 	/** 
-	 * @see UserType#equals(Object, Object)
+	 * @see CompositeUserType#equals(Object, Object)
 	 */
-	public boolean equals(Object x, Object y) throws HibernateException {
+	public boolean equals(RenderingMode x, RenderingMode y) throws HibernateException {
 		return x != null && x.equals(y);
 	}
 
 	/** 
-	 * @see UserType#hashCode(Object)
+	 * @see CompositeUserType#hashCode(Object)
 	 */
-	public int hashCode(Object x) throws HibernateException {
+	public int hashCode(RenderingMode x) throws HibernateException {
 		return x.hashCode();
 	}
 	
 	/**
-	 * @see CompositeUserType#disassemble(Object, SessionImplementor)
+	 * @see CompositeUserType#disassemble(Object)
 	 */
-	public Serializable disassemble(Object value, SharedSessionContractImplementor session) throws HibernateException {
+	public Serializable disassemble(RenderingMode value) throws HibernateException {
 		return (Serializable) deepCopy(value);
 	}
 
 	/**
-	 * @see CompositeUserType#assemble(Serializable, SessionImplementor, Object)
+	 * @see CompositeUserType#assemble(Serializable, Object)
 	 */
-	public Object assemble(Serializable cached, SharedSessionContractImplementor session, Object owner) throws HibernateException {
-		return deepCopy(cached);
+	public RenderingMode assemble(Serializable cached, Object owner) throws HibernateException {
+		return deepCopy((RenderingMode) cached);
+	}
+
+	/**
+	 * Describes the 2 columns that a RenderingMode is stored in
+	 */
+	public static class RenderingModeColumns {
+
+		private String argument;
+
+		private String renderer;
+	}
+
+	/**
+	 * Reads the component properties through this type, as hbm.xml mappings cannot configure this themselves
+	 */
+	public static class Access extends PropertyAccessStrategyCompositeUserTypeImpl {
+
+		public Access() {
+			super(new RenderingModeType(), Arrays.asList("argument", "renderer"), Arrays.<Type>asList(String.class, String.class));
+		}
 	}
 }

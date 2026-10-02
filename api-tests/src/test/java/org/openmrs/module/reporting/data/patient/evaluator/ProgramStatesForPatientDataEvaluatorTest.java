@@ -11,9 +11,9 @@ package org.openmrs.module.reporting.data.patient.evaluator;
 
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.PatientState;
 import org.openmrs.api.context.Context;
@@ -25,8 +25,8 @@ import org.openmrs.module.reporting.data.patient.definition.PatientDataDefinitio
 import org.openmrs.module.reporting.data.patient.definition.ProgramStatesForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 /**
  * ProgramStatesForPatientDataEvaluator test cases
@@ -39,12 +39,12 @@ public class ProgramStatesForPatientDataEvaluatorTest extends BaseModuleContextS
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -63,18 +63,18 @@ public class ProgramStatesForPatientDataEvaluatorTest extends BaseModuleContextS
 		
 		def.setActiveOnDate(DateUtil.getDateTime(2008, 8, 11));
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(def, context);
-		Assert.assertEquals(2, pd.getData().size());
+		Assertions.assertEquals(2, pd.getData().size());
 		
 		def.setActiveOnDate(DateUtil.getDateTime(2008, 8, 9));
 		pd = Context.getService(PatientDataService.class).evaluate(def, context);
-		Assert.assertEquals(1, pd.getData().size());
+		Assertions.assertEquals(1, pd.getData().size());
 		
 		PatientState ps = (PatientState) pd.getData().get(8);
-		Assert.assertEquals(4, ps.getPatientStateId().intValue());
+		Assertions.assertEquals(4, ps.getPatientStateId().intValue());
 		
 		def.setActiveOnDate(DateUtil.getDateTime(2010, 1, 1));
 		pd = Context.getService(PatientDataService.class).evaluate(def, context);
-		Assert.assertEquals(0, pd.getData().size());
+		Assertions.assertEquals(0, pd.getData().size());
 	}
 	
 	/**
@@ -91,15 +91,15 @@ public class ProgramStatesForPatientDataEvaluatorTest extends BaseModuleContextS
 		
 		def.setStartedOnOrAfter(DateUtil.getDateTime(2008, 8, 11));
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(def, context);
-		Assert.assertEquals(1, pd.getData().size());
+		Assertions.assertEquals(1, pd.getData().size());
 		
 		def.setStartedOnOrAfter(DateUtil.getDateTime(2008, 8, 1));
 		pd = Context.getService(PatientDataService.class).evaluate(def, context);
-		Assert.assertEquals(2, pd.getData().size());
+		Assertions.assertEquals(2, pd.getData().size());
 		
 		def.setStartedOnOrAfter(DateUtil.getDateTime(2010, 1, 1));
 		pd = Context.getService(PatientDataService.class).evaluate(def, context);
-		Assert.assertEquals(0, pd.getData().size());
+		Assertions.assertEquals(0, pd.getData().size());
 	}
 	
 	/**
@@ -116,15 +116,15 @@ public class ProgramStatesForPatientDataEvaluatorTest extends BaseModuleContextS
 		
 		def.setStartedOnOrBefore(DateUtil.getDateTime(2008, 1, 1));
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(def, context);
-		Assert.assertEquals(0, pd.getData().size());
+		Assertions.assertEquals(0, pd.getData().size());
 		
 		def.setStartedOnOrBefore(DateUtil.getDateTime(2008, 8, 1));
 		pd = Context.getService(PatientDataService.class).evaluate(def, context);
-		Assert.assertEquals(1, pd.getData().size());
+		Assertions.assertEquals(1, pd.getData().size());
 		
 		def.setStartedOnOrBefore(DateUtil.getDateTime(2010, 1, 1));
 		pd = Context.getService(PatientDataService.class).evaluate(def, context);
-		Assert.assertEquals(2, pd.getData().size());
+		Assertions.assertEquals(2, pd.getData().size());
 	}
 	
 	/**
@@ -141,15 +141,15 @@ public class ProgramStatesForPatientDataEvaluatorTest extends BaseModuleContextS
 		
 		def.setEndedOnOrAfter(DateUtil.getDateTime(2008, 1, 1));
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(def, context);
-		Assert.assertEquals(2, pd.getData().size());
+		Assertions.assertEquals(2, pd.getData().size());
 		
 		def.setEndedOnOrAfter(DateUtil.getDateTime(2009, 1, 1));
 		pd = Context.getService(PatientDataService.class).evaluate(def, context);
-		Assert.assertEquals(1, pd.getData().size());
+		Assertions.assertEquals(1, pd.getData().size());
 		
 		def.setEndedOnOrAfter(DateUtil.getDateTime(2010, 1, 1));
 		pd = Context.getService(PatientDataService.class).evaluate(def, context);
-		Assert.assertEquals(0, pd.getData().size());
+		Assertions.assertEquals(0, pd.getData().size());
 	}
 
 	/**
@@ -166,15 +166,15 @@ public class ProgramStatesForPatientDataEvaluatorTest extends BaseModuleContextS
 		
 		def.setEndedOnOrBefore(DateUtil.getDateTime(2008, 1, 1));
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(def, context);
-		Assert.assertEquals(0, pd.getData().size());
+		Assertions.assertEquals(0, pd.getData().size());
 		
 		def.setEndedOnOrBefore(DateUtil.getDateTime(2009, 1, 1));
 		pd = Context.getService(PatientDataService.class).evaluate(def, context);
-		Assert.assertEquals(1, pd.getData().size());
+		Assertions.assertEquals(1, pd.getData().size());
 		
 		def.setEndedOnOrBefore(DateUtil.getDateTime(2010, 1, 1));
 		pd = Context.getService(PatientDataService.class).evaluate(def, context);
-		Assert.assertEquals(2, pd.getData().size());
+		Assertions.assertEquals(2, pd.getData().size());
 	}
 	
 	/**
@@ -191,7 +191,7 @@ public class ProgramStatesForPatientDataEvaluatorTest extends BaseModuleContextS
         def.setState(Context.getProgramWorkflowService().getStateByUuid("0d521bb4-2edb-4dd1-8d9f-34489bb4d9ea"));
 
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(def, context);
-		Assert.assertEquals(4, ((PatientState)pd.getData().get(8)).getPatientStateId().intValue());
+		Assertions.assertEquals(4, ((PatientState)pd.getData().get(8)).getPatientStateId().intValue());
 	}
 
 	/**
@@ -208,7 +208,7 @@ public class ProgramStatesForPatientDataEvaluatorTest extends BaseModuleContextS
         def.setState(Context.getProgramWorkflowService().getStateByUuid("0d521bb4-2edb-4dd1-8d9f-34489bb4d9ea"));
 
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(def, context);
-		Assert.assertEquals(4, ((PatientState)pd.getData().get(8)).getPatientStateId().intValue());
+		Assertions.assertEquals(4, ((PatientState)pd.getData().get(8)).getPatientStateId().intValue());
 	}
 
 	/**
@@ -225,7 +225,7 @@ public class ProgramStatesForPatientDataEvaluatorTest extends BaseModuleContextS
         def.setState(Context.getProgramWorkflowService().getStateByUuid("92584cdc-6a20-4c84-a659-e035e45d36b0"));
 
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(def, context);
-		Assert.assertEquals(8, ((PatientState)pd.getData().get(23)).getPatientStateId().intValue());
+		Assertions.assertEquals(8, ((PatientState)pd.getData().get(23)).getPatientStateId().intValue());
 	}
 
 
@@ -243,6 +243,6 @@ public class ProgramStatesForPatientDataEvaluatorTest extends BaseModuleContextS
         def.setState(Context.getProgramWorkflowService().getStateByUuid("0d521bb4-2edb-4dd1-8d9f-34489bb4d9ea"));
 
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(def, context);
-		Assert.assertEquals(1, ((List)pd.getData().get(8)).size());
+		Assertions.assertEquals(1, ((List)pd.getData().get(8)).size());
 	}
 }

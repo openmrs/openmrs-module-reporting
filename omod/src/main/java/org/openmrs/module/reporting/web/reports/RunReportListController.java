@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.reporting.web.reports;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
@@ -21,7 +21,7 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 public class RunReportListController extends SimpleFormController {
 	
 	/**
-	 * @see org.springframework.web.servlet.mvc.AbstractFormController#formBackingObject(javax.servlet.http.HttpServletRequest)
+	 * @see org.springframework.web.servlet.mvc.AbstractFormController#formBackingObject(jakarta.servlet.http.HttpServletRequest)
 	 */
 	@Override
 	protected Object formBackingObject(HttpServletRequest request) throws Exception {

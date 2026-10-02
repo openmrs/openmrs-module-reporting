@@ -11,14 +11,12 @@ package org.openmrs.module.reporting.report.service.db;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.criterion.Expression;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.Session;
+import org.hibernate.query.MutationQuery;
+import org.hibernate.query.Query;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
+import org.openmrs.api.db.hibernate.HibernateUtil;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.ReportProcessorConfiguration;
 import org.openmrs.module.reporting.report.ReportRequest;
@@ -26,8 +24,12 @@ import org.openmrs.module.reporting.report.ReportRequest.Status;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.renderer.ReportRenderer;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ReportService Database Access Interface
@@ -48,8 +50,8 @@ public class HibernateReportDAO implements ReportDAO {
 	 * @return the ReportDesign with the given uuid
 	 */
 	public ReportDesign getReportDesignByUuid(String uuid) throws DAOException {
-		Query q = sessionFactory.getCurrentSession().createQuery("from ReportDesign r where r.uuid = :uuid");
-		return (ReportDesign) q.setString("uuid", uuid).uniqueResult();
+		Query<ReportDesign> q = getSession().createQuery("from ReportDesign r where r.uuid = :uuid", ReportDesign.class);
+		return q.setParameter("uuid", uuid).uniqueResult();
 	}
 	
 	/**
@@ -59,7 +61,7 @@ public class HibernateReportDAO implements ReportDAO {
 	 * @throws DAOException
 	 */
 	public ReportDesign getReportDesign(Integer id) throws DAOException {
-		return (ReportDesign) sessionFactory.getCurrentSession().get(ReportDesign.class, id);
+		return getSession().get(ReportDesign.class, id);
 	}
 		
 	/**
@@ -72,17 +74,24 @@ public class HibernateReportDAO implements ReportDAO {
 	@SuppressWarnings("unchecked")
 	public List<ReportDesign> getReportDesigns(ReportDefinition reportDefinition, Class<? extends ReportRenderer> rendererType, 
 											   boolean includeRetired) throws DAOException {
-		Criteria crit = sessionFactory.getCurrentSession().createCriteria(ReportDesign.class);
+		StringBuilder hql = new StringBuilder("from ReportDesign r where 1 = 1");
+		Map<String, Object> params = new HashMap<String, Object>();
 		if (reportDefinition != null) {
-			crit.add(Expression.eq("reportDefinition", reportDefinition));
+			hql.append(" and r.reportDefinition = :reportDefinition");
+			params.put("reportDefinition", reportDefinition);
 		}
 		if (rendererType != null) {
-			crit.add(Expression.eq("rendererType", rendererType));
+			hql.append(" and r.rendererType = :rendererType");
+			params.put("rendererType", rendererType);
 		}
 		if (includeRetired == false) {
-			crit.add(Expression.eq("retired", false));
+			hql.append(" and r.retired = false");
 		}
-		return crit.list();
+		Query<ReportDesign> q = getSession().createQuery(hql.toString(), ReportDesign.class);
+		for (Map.Entry<String, Object> e : params.entrySet()) {
+			q.setParameter(e.getKey(), e.getValue());
+		}
+		return q.list();
 	}
 	
 	/**
@@ -94,8 +103,7 @@ public class HibernateReportDAO implements ReportDAO {
 	 * @throws DAOException
 	 */
 	public ReportDesign saveReportDesign(ReportDesign reportDesign) throws DAOException {
-		sessionFactory.getCurrentSession().saveOrUpdate(reportDesign);
-		return reportDesign;
+		return HibernateUtil.saveOrUpdate(getSession(), reportDesign);
 	}
 	
 	/**
@@ -104,7 +112,7 @@ public class HibernateReportDAO implements ReportDAO {
 	 * @throws DAOException
 	 */
 	public void purgeReportDesign(ReportDesign reportDesign) {
-		sessionFactory.getCurrentSession().delete(reportDesign);
+		getSession().remove(reportDesign);
 	}
 	
 	//****** REPORT PROCESSOR CONFIGURATIONS *****
@@ -113,23 +121,22 @@ public class HibernateReportDAO implements ReportDAO {
 	 * Saves a {@link ReportProcessorConfiguration} to the database and returns it
 	 */
 	public ReportProcessorConfiguration saveReportProcessorConfiguration(ReportProcessorConfiguration processorConfiguration) {
-		sessionFactory.getCurrentSession().saveOrUpdate(processorConfiguration);
-		return processorConfiguration;
+		return HibernateUtil.saveOrUpdate(getSession(), processorConfiguration);
 	}
 
 	/**
 	 * @return the {@link ReportProcessorConfiguration} with the passed id
 	 */
 	public ReportProcessorConfiguration getReportProcessorConfiguration(Integer id) {
-		return (ReportProcessorConfiguration) sessionFactory.getCurrentSession().get(ReportProcessorConfiguration.class, id);
+		return getSession().get(ReportProcessorConfiguration.class, id);
 	}
 
 	/**
 	 * @return the {@link ReportProcessorConfiguration} with the passed uuid
 	 */
 	public ReportProcessorConfiguration getReportProcessorConfigurationByUuid(String uuid) {
-		Query q = sessionFactory.getCurrentSession().createQuery("from ReportProcessorConfiguration r where r.uuid = :uuid");
-		return (ReportProcessorConfiguration) q.setString("uuid", uuid).uniqueResult();
+		Query<ReportProcessorConfiguration> q = getSession().createQuery("from ReportProcessorConfiguration r where r.uuid = :uuid", ReportProcessorConfiguration.class);
+		return q.setParameter("uuid", uuid).uniqueResult();
 	}
 	
 	/**
@@ -137,11 +144,11 @@ public class HibernateReportDAO implements ReportDAO {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<ReportProcessorConfiguration> getAllReportProcessorConfigurations(boolean includeRetired) {
-		Criteria crit = sessionFactory.getCurrentSession().createCriteria(ReportProcessorConfiguration.class);
+		String hql = "from ReportProcessorConfiguration r";
 		if (includeRetired == false) {
-			crit.add(Expression.eq("retired", false));
+			hql += " where r.retired = false";
 		}
-		return crit.list();
+		return getSession().createQuery(hql, ReportProcessorConfiguration.class).list();
 	}
 	
 	/**
@@ -149,17 +156,15 @@ public class HibernateReportDAO implements ReportDAO {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<ReportProcessorConfiguration> getGlobalReportProcessorConfigurations() {
-		Criteria crit = sessionFactory.getCurrentSession().createCriteria(ReportProcessorConfiguration.class);
-		crit.add(Expression.eq("retired", false));
-		crit.add(Expression.isNull("reportDesign"));
-		return crit.list();
+		String hql = "from ReportProcessorConfiguration r where r.retired = false and r.reportDesign is null";
+		return getSession().createQuery(hql, ReportProcessorConfiguration.class).list();
 	}
 	
 	/**
 	 * Deletes the passed {@link ReportProcessorConfiguration}
 	 */
 	public void purgeReportProcessorConfiguration(ReportProcessorConfiguration processorConfiguration) {
-		sessionFactory.getCurrentSession().delete(processorConfiguration);
+		getSession().remove(processorConfiguration);
 	}
 	
 	//****** REPORT REQUESTS *****
@@ -168,23 +173,22 @@ public class HibernateReportDAO implements ReportDAO {
 	 * @see ReportDAO#saveReportRequest(ReportRequest)
 	 */
 	public ReportRequest saveReportRequest(ReportRequest request) {
-		sessionFactory.getCurrentSession().saveOrUpdate(request);
-		return request;
+		return HibernateUtil.saveOrUpdate(getSession(), request);
 	}
 
 	/**
 	 * @see ReportDAO#getReportRequest(java.lang.Integer)
 	 */
 	public ReportRequest getReportRequest(Integer id) {
-		return (ReportRequest) sessionFactory.getCurrentSession().get(ReportRequest.class, id);
+		return getSession().get(ReportRequest.class, id);
 	}
 
 	/**
 	 * @see ReportDAO#getReportRequestByUuid(java.lang.String)
 	 */
 	public ReportRequest getReportRequestByUuid(String uuid) {
-		Query q = sessionFactory.getCurrentSession().createQuery("from ReportRequest r where r.uuid = :uuid");
-		return (ReportRequest) q.setString("uuid", uuid).uniqueResult();
+		Query<ReportRequest> q = getSession().createQuery("from ReportRequest r where r.uuid = :uuid", ReportRequest.class);
+		return q.setParameter("uuid", uuid).uniqueResult();
 	}
 
 	/**
@@ -192,36 +196,37 @@ public class HibernateReportDAO implements ReportDAO {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<ReportRequest> getReportRequests(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Integer firstResult, Integer maxResults, Status...statuses) {
-		final Criteria criteria = createReportRequestsBaseCriteria(reportDefinition, requestOnOrAfter, requestOnOrBefore, statuses);
-
-		criteria.addOrder(Order.desc("requestDate"));
-		criteria.addOrder(Order.desc("evaluateStartDatetime"));
-		criteria.addOrder(Order.desc("evaluateCompleteDatetime"));
-		criteria.addOrder(Order.desc("priority"));
+		Map<String, Object> params = new HashMap<String, Object>();
+		String hql = "from ReportRequest r" + createReportRequestsWhereClause(params, reportDefinition, requestOnOrAfter, requestOnOrBefore, statuses)
+				+ " order by r.requestDate desc, r.evaluateStartDatetime desc, r.evaluateCompleteDatetime desc, r.priority desc";
+		Query<ReportRequest> query = getSession().createQuery(hql, ReportRequest.class);
+		setParameters(query, params);
 
 		if (firstResult != null) {
-			criteria.setFirstResult(firstResult);
+			query.setFirstResult(firstResult);
 		}
 
 		if(maxResults != null) {
-			criteria.setMaxResults(maxResults);
+			query.setMaxResults(maxResults);
 		}
 
-		return criteria.list();
+		return query.list();
 	}
 
 	@Override
 	public long getReportRequestsCount(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Status... statuses) {
-		final Criteria criteria = createReportRequestsBaseCriteria(reportDefinition, requestOnOrAfter, requestOnOrBefore, statuses);
-		criteria.setProjection(Projections.rowCount());
-		return ((Number) criteria.uniqueResult()).longValue();
+		Map<String, Object> params = new HashMap<String, Object>();
+		String hql = "select count(r) from ReportRequest r" + createReportRequestsWhereClause(params, reportDefinition, requestOnOrAfter, requestOnOrBefore, statuses);
+		Query<Long> query = getSession().createQuery(hql, Long.class);
+		setParameters(query, params);
+		return query.uniqueResult();
 	}
 
 	/**
 	 * @see ReportDAO#purgeReportRequest(ReportRequest)
 	 */
 	public void purgeReportRequest(ReportRequest request) {
-		sessionFactory.getCurrentSession().delete(request);
+		getSession().remove(request);
 	}
 
 	/**
@@ -230,8 +235,8 @@ public class HibernateReportDAO implements ReportDAO {
 	@Override
 	public void purgeReportRequestsForReportDefinition(String reportDefinitionUuid) {
 		String hql = "delete from ReportRequest r where r.reportDefinition.definition=:uuid";
-		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-		query.setString("uuid", reportDefinitionUuid);
+		MutationQuery query = getSession().createMutationQuery(hql);
+		query.setParameter("uuid", reportDefinitionUuid);
 		query.executeUpdate();
 	}
 
@@ -241,9 +246,12 @@ public class HibernateReportDAO implements ReportDAO {
 	 */
 	@Override
 	public void purgeReportDesignsForReportDefinition(String reportDefinitionUuid) {
-		String hql = "delete from ReportDesign r where r.reportDefinition=:uuid";
-		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-		query.setString("uuid", reportDefinitionUuid);
+		String hql = "delete from ReportDesign r where r.reportDefinition=:reportDefinition";
+		MutationQuery query = getSession().createMutationQuery(hql);
+		// the reportDefinition property is mapped by ReportDefinitionType, which binds the uuid of the definition
+		ReportDefinition reportDefinition = new ReportDefinition();
+		reportDefinition.setUuid(reportDefinitionUuid);
+		query.setParameter("reportDefinition", reportDefinition);
 		query.executeUpdate();
 	}
 
@@ -252,9 +260,9 @@ public class HibernateReportDAO implements ReportDAO {
 	 */
 	@Override
 	public List<String> getReportRequestUuids(String reportDefinitionUuid) {
-		String hql = "select uuid from ReportRequest r where r.reportDefinition.definition=:uuid";
-		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-		query.setString("uuid", reportDefinitionUuid);
+		String hql = "select r.uuid from ReportRequest r where r.reportDefinition.definition=:uuid";
+		Query<String> query = getSession().createQuery(hql, String.class);
+		query.setParameter("uuid", reportDefinitionUuid);
 		return query.list();
 	}
 
@@ -274,23 +282,42 @@ public class HibernateReportDAO implements ReportDAO {
 		this.sessionFactory = sessionFactory;
 	}
 
-	private Criteria createReportRequestsBaseCriteria(ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Status... statuses) {
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(ReportRequest.class);
+	private Session getSession() {
+		return sessionFactory.getHibernateSessionFactory().getCurrentSession();
+	}
+
+	private void setParameters(Query<?> query, Map<String, Object> params) {
+		for (Map.Entry<String, Object> e : params.entrySet()) {
+			if (e.getValue() instanceof Collection) {
+				query.setParameterList(e.getKey(), (Collection<?>) e.getValue());
+			}
+			else {
+				query.setParameter(e.getKey(), e.getValue());
+			}
+		}
+	}
+
+	private String createReportRequestsWhereClause(Map<String, Object> params, ReportDefinition reportDefinition, Date requestOnOrAfter, Date requestOnOrBefore, Status... statuses) {
+		StringBuilder where = new StringBuilder(" where 1 = 1");
 
 		if (reportDefinition != null) {
-			criteria.add(Restrictions.eq("reportDefinition.definition", reportDefinition.getUuid()));
+			where.append(" and r.reportDefinition.definition = :reportDefinitionUuid");
+			params.put("reportDefinitionUuid", reportDefinition.getUuid());
 		}
 		if (requestOnOrAfter != null) {
-			criteria.add(Restrictions.ge("requestDate", requestOnOrAfter));
+			where.append(" and r.requestDate >= :requestOnOrAfter");
+			params.put("requestOnOrAfter", requestOnOrAfter);
 		}
 		if (requestOnOrBefore != null) {
-			criteria.add(Restrictions.le("requestDate", requestOnOrBefore));
+			where.append(" and r.requestDate <= :requestOnOrBefore");
+			params.put("requestOnOrBefore", requestOnOrBefore);
 		}
 		if (statuses != null && statuses.length > 0) {
-			criteria.add(Restrictions.in("status", statuses));
+			where.append(" and r.status in (:statuses)");
+			params.put("statuses", Arrays.asList(statuses));
 		}
 
-		return criteria;
+		return where.toString();
 	}
 }
 

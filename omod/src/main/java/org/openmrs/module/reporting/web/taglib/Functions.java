@@ -11,7 +11,7 @@ package org.openmrs.module.reporting.web.taglib;
 
 import java.util.Date;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
@@ -64,6 +64,6 @@ public class Functions {
      * @return a JS-escaped version of s
      */
     public static String getSafeJsString(String s) {
-        return StringEscapeUtils.escapeJavaScript(s);
+        return StringEscapeUtils.escapeEcmaScript(s);
     }
 }

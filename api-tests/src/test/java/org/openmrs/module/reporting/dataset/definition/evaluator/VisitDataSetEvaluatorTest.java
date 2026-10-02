@@ -11,8 +11,8 @@ package org.openmrs.module.reporting.dataset.definition.evaluator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
@@ -23,7 +23,7 @@ import org.openmrs.module.reporting.dataset.DataSetUtil;
 import org.openmrs.module.reporting.dataset.definition.VisitDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 /**
  * Test the VisitDataSetDefinition
@@ -37,12 +37,12 @@ public class VisitDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
     protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 
     /**
-     * Run this before each unit test in this class. The "@Before" method in
-     * {@link org.openmrs.test.BaseContextSensitiveTest} is run right before this method.
+     * Run this before each unit test in this class. The "@BeforeEach" method in
+     * {@link org.openmrs.test.jupiter.BaseContextSensitiveTest} is run right before this method.
      *
      * @throws Exception
      */
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
     }

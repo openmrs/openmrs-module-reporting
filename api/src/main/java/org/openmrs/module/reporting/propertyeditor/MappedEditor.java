@@ -11,7 +11,7 @@ package org.openmrs.module.reporting.propertyeditor;
 
 import java.beans.PropertyEditorSupport;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.serializer.ReportingSerializer;

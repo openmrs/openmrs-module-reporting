@@ -11,11 +11,11 @@ package org.openmrs.module.reporting.data.patient.evaluator;
 
 import java.io.InputStream;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -31,8 +31,8 @@ import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.util.OpenmrsClassLoader;
 
 /**
@@ -45,12 +45,12 @@ public class ScriptedCompositionPatientDataEvaluatorTest extends BaseModuleConte
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -83,7 +83,7 @@ public class ScriptedCompositionPatientDataEvaluatorTest extends BaseModuleConte
 		    new Mapped<PatientDataDefinition>(lastEncounter, null));
 		
 		EvaluatedPatientData pd = Context.getService(PatientDataService.class).evaluate(daysSinceLastVisit, context);
-		Assert.assertEquals("2 days", pd.getData().get(22));
+		Assertions.assertEquals("2 days", pd.getData().get(22));
 	}
 	
 	/**
@@ -113,9 +113,9 @@ public class ScriptedCompositionPatientDataEvaluatorTest extends BaseModuleConte
 		EvaluatedPatientData daysSinceLastVisitResult = Context.getService(PatientDataService.class).evaluate(
 		    daysSinceLastVisit, context);
 		
-		Assert.assertEquals("Normal", daysSinceLastVisitResult.getData().get(7));
-		Assert.assertEquals("The recorded weight value might be incorrect!", daysSinceLastVisitResult.getData().get(20));
-		Assert.assertEquals("High", daysSinceLastVisitResult.getData().get(21));
-		Assert.assertEquals("The recorded weight value might be incorrect!", daysSinceLastVisitResult.getData().get(22));
+		Assertions.assertEquals("Normal", daysSinceLastVisitResult.getData().get(7));
+		Assertions.assertEquals("The recorded weight value might be incorrect!", daysSinceLastVisitResult.getData().get(20));
+		Assertions.assertEquals("High", daysSinceLastVisitResult.getData().get(21));
+		Assertions.assertEquals("The recorded weight value might be incorrect!", daysSinceLastVisitResult.getData().get(22));
 	}
 }

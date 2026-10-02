@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Patient;
@@ -25,7 +25,7 @@ import org.openmrs.module.reporting.dataset.definition.EncounterAndObsDataSetDef
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.query.encounter.definition.BasicEncounterQuery;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -40,7 +40,7 @@ public class EncounterAndObsDataSetEvaluatorTest extends BaseModuleContextSensit
 	@Autowired
 	private TestDataManager data;
 
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet("org/openmrs/module/reporting/include/" + new TestUtil().getTestDatasetFilename("ReportTestDataset"));
 	}
@@ -74,22 +74,22 @@ public class EncounterAndObsDataSetEvaluatorTest extends BaseModuleContextSensit
 		Encounter e = eb.save();
 
 		SimpleDataSet result = (SimpleDataSet)dataSetDefinitionService.evaluate(createEncounterAndObsDataSetDefinition(), null);
-		Assert.assertEquals(1, result.getRows().size());
+		Assertions.assertEquals(1, result.getRows().size());
 		DataSetRow row = result.getRows().get(0);
-		Assert.assertEquals(e.getEncounterId(), row.getColumnValue("ENCOUNTER_ID"));
-		Assert.assertEquals(p.getPatientId(), row.getColumnValue("PATIENT_ID"));
-		Assert.assertEquals(e.getEncounterType().getName(), row.getColumnValue("ENCOUNTER_TYPE"));
-		Assert.assertEquals(e.getEncounterDatetime(), row.getColumnValue("ENCOUNTER_DATETIME"));
-		Assert.assertEquals(p.getPatientId(), row.getColumnValue("PATIENT_ID"));
-		Assert.assertEquals(e.getLocation().getName(), row.getColumnValue("LOCATION"));
+		Assertions.assertEquals(e.getEncounterId(), row.getColumnValue("ENCOUNTER_ID"));
+		Assertions.assertEquals(p.getPatientId(), row.getColumnValue("PATIENT_ID"));
+		Assertions.assertEquals(e.getEncounterType().getName(), row.getColumnValue("ENCOUNTER_TYPE"));
+		Assertions.assertEquals(e.getEncounterDatetime(), row.getColumnValue("ENCOUNTER_DATETIME"));
+		Assertions.assertEquals(p.getPatientId(), row.getColumnValue("PATIENT_ID"));
+		Assertions.assertEquals(e.getLocation().getName(), row.getColumnValue("LOCATION"));
 		
 		//There are two weight concept names for locale en { WT, WEIGHT (KG) } in standardTestDataset.xml
 		//With java 8, the order of these names in the names collection changes, hence
 		//leading us to get any of the two. Therefore, by not hard coding either of the two names,
 		//we ensure that we test with whichever name was returned as first in the collection.
 		String columnName = ObjectUtil.format(wt).replaceAll("\\s", "_").replaceAll("-", "_").toUpperCase();
-		Assert.assertEquals(Double.valueOf(77), row.getColumnValue(columnName));
+		Assertions.assertEquals(Double.valueOf(77), row.getColumnValue(columnName));
 		
-		Assert.assertEquals("SINGLE", row.getColumnValue("CIVIL_STATUS"));
+		Assertions.assertEquals("SINGLE", row.getColumnValue("CIVIL_STATUS"));
 	}
 }

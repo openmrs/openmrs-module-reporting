@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.reporting.query.encounter.evaluator;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
@@ -28,8 +29,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SkipBaseSetup
 public class MappedParametersObsQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
@@ -41,8 +42,16 @@ public class MappedParametersObsQueryEvaluatorTest extends BaseModuleContextSens
     @BeforeEach
     public void setup() throws Exception {
         initializeInMemoryDatabase();
-        authenticate();
         executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
+        // commit, as core resolves role privileges on a separate thread that cannot see uncommitted rows
+        getConnection().commit();
+        authenticate();
+    }
+
+    @AfterEach
+    public void tearDown() {
+        // removes the data committed in setup
+        deleteAllData();
     }
 
     @Test

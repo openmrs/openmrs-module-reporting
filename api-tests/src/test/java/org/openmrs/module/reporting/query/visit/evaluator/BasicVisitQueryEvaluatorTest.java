@@ -11,15 +11,15 @@ package org.openmrs.module.reporting.query.visit.evaluator;
 
 import static org.openmrs.module.reporting.common.ReportingMatchers.hasExactlyIds;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
@@ -39,8 +39,9 @@ import org.openmrs.module.reporting.query.visit.VisitIdSet;
 import org.openmrs.module.reporting.query.visit.VisitQueryResult;
 import org.openmrs.module.reporting.query.visit.definition.BasicVisitQuery;
 import org.openmrs.module.reporting.query.visit.service.VisitQueryService;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class BasicVisitQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
 
@@ -57,7 +58,7 @@ public class BasicVisitQueryEvaluatorTest extends BaseModuleContextSensitiveTest
 	@Autowired
 	TestDataManager data;
 
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}

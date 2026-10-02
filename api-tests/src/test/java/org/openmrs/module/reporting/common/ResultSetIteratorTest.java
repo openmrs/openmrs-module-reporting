@@ -1,8 +1,8 @@
 package org.openmrs.module.reporting.common;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.reporting.dataset.DataSetRow;
 
 import javax.sql.rowset.RowSetMetaDataImpl;
@@ -26,7 +26,7 @@ public class ResultSetIteratorTest {
 
     private ResultSetIterator resultSetIterator;
 
-    @Before
+    @BeforeEach
     public void setUp() throws SQLException {
         mockResultSet = mock(ResultSet.class);
         mockStatement = mock(Statement.class);
@@ -43,13 +43,13 @@ public class ResultSetIteratorTest {
             DataSetRow row = (DataSetRow) i.next();
             rows.add(row);
         }
-        Assert.assertEquals(3, rows.size());
-        Assert.assertEquals("result_01", rows.get(0).getColumnValue("Column_01"));
-        Assert.assertEquals("result_02", rows.get(0).getColumnValue("Column_02"));
-        Assert.assertEquals("result_03", rows.get(1).getColumnValue("Column_01"));
-        Assert.assertEquals("result_04", rows.get(1).getColumnValue("Column_02"));
-        Assert.assertEquals("result_05", rows.get(2).getColumnValue("Column_01"));
-        Assert.assertEquals("result_06", rows.get(2).getColumnValue("Column_02"));
+        Assertions.assertEquals(3, rows.size());
+        Assertions.assertEquals("result_01", rows.get(0).getColumnValue("Column_01"));
+        Assertions.assertEquals("result_02", rows.get(0).getColumnValue("Column_02"));
+        Assertions.assertEquals("result_03", rows.get(1).getColumnValue("Column_01"));
+        Assertions.assertEquals("result_04", rows.get(1).getColumnValue("Column_02"));
+        Assertions.assertEquals("result_05", rows.get(2).getColumnValue("Column_01"));
+        Assertions.assertEquals("result_06", rows.get(2).getColumnValue("Column_02"));
     }
 
     @Test
@@ -61,13 +61,13 @@ public class ResultSetIteratorTest {
             row = resultSetIterator.next();
         }
 
-        Assert.assertEquals(3, rows.size());
-        Assert.assertEquals("result_01", rows.get(0).getColumnValue("Column_01"));
-        Assert.assertEquals("result_02", rows.get(0).getColumnValue("Column_02"));
-        Assert.assertEquals("result_03", rows.get(1).getColumnValue("Column_01"));
-        Assert.assertEquals("result_04", rows.get(1).getColumnValue("Column_02"));
-        Assert.assertEquals("result_05", rows.get(2).getColumnValue("Column_01"));
-        Assert.assertEquals("result_06", rows.get(2).getColumnValue("Column_02"));
+        Assertions.assertEquals(3, rows.size());
+        Assertions.assertEquals("result_01", rows.get(0).getColumnValue("Column_01"));
+        Assertions.assertEquals("result_02", rows.get(0).getColumnValue("Column_02"));
+        Assertions.assertEquals("result_03", rows.get(1).getColumnValue("Column_01"));
+        Assertions.assertEquals("result_04", rows.get(1).getColumnValue("Column_02"));
+        Assertions.assertEquals("result_05", rows.get(2).getColumnValue("Column_01"));
+        Assertions.assertEquals("result_06", rows.get(2).getColumnValue("Column_02"));
     }
 
     private ResultSetMetaData createMetadata() throws SQLException {

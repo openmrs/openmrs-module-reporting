@@ -9,11 +9,11 @@
  */
 package org.openmrs.module.reporting.common;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Test;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.junit.jupiter.api.Test;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -21,7 +21,7 @@ import java.io.FileOutputStream;
 import java.util.Date;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Testing the ExcelBuilder class.
@@ -34,25 +34,25 @@ public class ExcelBuilderTest extends BaseModuleContextSensitiveTest {
 	public void shouldBuildAnExcelWorkbook() throws Exception {
 
 		ExcelBuilder excelBuilder = new ExcelBuilder();
-		Assert.assertNotNull(excelBuilder.getWorkbook());
+		Assertions.assertNotNull(excelBuilder.getWorkbook());
 
 		excelBuilder.newSheet("SheetOne");
-		Assert.assertEquals("SheetOne", excelBuilder.getCurrentSheet().getSheetName());
+		Assertions.assertEquals("SheetOne", excelBuilder.getCurrentSheet().getSheetName());
 
 		excelBuilder.addCell("Row One Cell One");
 		excelBuilder.addCell("Row One Cell Two", "bold");
-		Assert.assertEquals("Row One Cell One, Row One Cell Two", ExcelUtil.formatRow(excelBuilder.getCurrentRow()));
+		Assertions.assertEquals("Row One Cell One, Row One Cell Two", ExcelUtil.formatRow(excelBuilder.getCurrentRow()));
 		excelBuilder.nextRow();
 		excelBuilder.addCell("Row Two Cell One");
 		excelBuilder.addCell("Row Two Cell Two", "bold");
-		Assert.assertEquals("Row Two Cell One, Row Two Cell Two", ExcelUtil.formatRow(excelBuilder.getCurrentRow()));
+		Assertions.assertEquals("Row Two Cell One, Row Two Cell Two", ExcelUtil.formatRow(excelBuilder.getCurrentRow()));
 
 		excelBuilder.newSheet("SheetTwo");
-		Assert.assertEquals("SheetTwo", excelBuilder.getCurrentSheet().getSheetName());
+		Assertions.assertEquals("SheetTwo", excelBuilder.getCurrentSheet().getSheetName());
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		excelBuilder.write(baos);
-		Assert.assertTrue(baos.size() > 0);
+		Assertions.assertTrue(baos.size() > 0);
 	}
 
 	@Test

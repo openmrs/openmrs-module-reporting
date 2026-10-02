@@ -9,17 +9,17 @@
  */
 package org.openmrs.module.reporting.query.encounter.service;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.query.encounter.EncounterQueryResult;
 import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 import org.openmrs.module.reporting.query.encounter.definition.SqlEncounterQuery;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 /**
  * Test the EncounterQueryServiceImpl
@@ -31,12 +31,12 @@ public class EncounterQueryServiceImplTest extends BaseModuleContextSensitiveTes
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -49,7 +49,7 @@ public class EncounterQueryServiceImplTest extends BaseModuleContextSensitiveTes
 	public void evaluate_shouldEvaluateAnEncounterQuery() throws Exception {
 		EncounterQuery q = new SqlEncounterQuery("select encounter_id from encounter where voided = 0");
 		EncounterQueryResult r = Context.getService(EncounterQueryService.class).evaluate(q, new EvaluationContext());
-		Assert.assertNotNull(r);
+		Assertions.assertNotNull(r);
 	}
 	
 	/**
@@ -61,10 +61,10 @@ public class EncounterQueryServiceImplTest extends BaseModuleContextSensitiveTes
 		EncounterQuery q = new SqlEncounterQuery("select encounter_id from encounter where voided = 0");
 		q.setName("Non voided encounters");
 		q = Context.getService(EncounterQueryService.class).saveDefinition(q);
-		Assert.assertNotNull(q.getId());
-		Assert.assertNotNull(q.getUuid());
+		Assertions.assertNotNull(q.getId());
+		Assertions.assertNotNull(q.getUuid());
 		EncounterQuery loadedQuery = Context.getService(EncounterQueryService.class).getDefinitionByUuid(q.getUuid());
-		Assert.assertEquals(q, loadedQuery);
+		Assertions.assertEquals(q, loadedQuery);
 	}
 	
 }

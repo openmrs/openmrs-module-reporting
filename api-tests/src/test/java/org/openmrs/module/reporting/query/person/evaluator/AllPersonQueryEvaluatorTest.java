@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.reporting.query.person.evaluator;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.module.reporting.common.ReportingMatchers;
 import org.openmrs.module.reporting.common.TestUtil;
@@ -21,13 +21,13 @@ import org.openmrs.module.reporting.query.person.PersonIdSet;
 import org.openmrs.module.reporting.query.person.PersonQueryResult;
 import org.openmrs.module.reporting.query.person.definition.AllPersonQuery;
 import org.openmrs.module.reporting.query.person.service.PersonQueryService;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Test the evaluation of the SqlPersonQuery
@@ -37,7 +37,7 @@ public class AllPersonQueryEvaluatorTest extends BaseModuleContextSensitiveTest 
 	@Autowired
 	PersonQueryService personQueryService;
 
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet("org/openmrs/module/reporting/include/" + new TestUtil().getTestDatasetFilename("ReportTestDataset"));
 	}

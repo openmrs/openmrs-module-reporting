@@ -9,10 +9,10 @@
  */
 package org.openmrs.module.reporting.data.person.evaluator;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
@@ -28,8 +28,8 @@ import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefin
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.service.PersonDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 /**
  * Test for the AgeAtDateOfOtherDataEvaluator
@@ -41,12 +41,12 @@ public class AgeAtDateOfOtherDataEvaluatorTest extends BaseModuleContextSensitiv
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -74,19 +74,19 @@ public class AgeAtDateOfOtherDataEvaluatorTest extends BaseModuleContextSensitiv
 		EvaluatedPersonData data = Context.getService(PersonDataService.class).evaluate(ageAtLastWeight, context);
 		
 		Age pat20 = (Age)data.getData().get(20);
-		Assert.assertEquals("1925-02-08", DateUtil.formatDate(pat20.getBirthDate(), "yyyy-MM-dd"));
-		Assert.assertEquals("2009-08-19", DateUtil.formatDate(pat20.getCurrentDate(), "yyyy-MM-dd"));
-		Assert.assertEquals(84, pat20.getFullYears().intValue());
+		Assertions.assertEquals("1925-02-08", DateUtil.formatDate(pat20.getBirthDate(), "yyyy-MM-dd"));
+		Assertions.assertEquals("2009-08-19", DateUtil.formatDate(pat20.getCurrentDate(), "yyyy-MM-dd"));
+		Assertions.assertEquals(84, pat20.getFullYears().intValue());
 		
 		Age pat21 = (Age)data.getData().get(21);
-		Assert.assertEquals("1959-06-08", DateUtil.formatDate(pat21.getBirthDate(), "yyyy-MM-dd"));
-		Assert.assertEquals("2009-09-19", DateUtil.formatDate(pat21.getCurrentDate(), "yyyy-MM-dd"));
-		Assert.assertEquals(50, pat21.getFullYears().intValue());
+		Assertions.assertEquals("1959-06-08", DateUtil.formatDate(pat21.getBirthDate(), "yyyy-MM-dd"));
+		Assertions.assertEquals("2009-09-19", DateUtil.formatDate(pat21.getCurrentDate(), "yyyy-MM-dd"));
+		Assertions.assertEquals(50, pat21.getFullYears().intValue());
 		
 		Age pat22 = (Age)data.getData().get(22);
-		Assert.assertEquals("1997-07-08", DateUtil.formatDate(pat22.getBirthDate(), "yyyy-MM-dd"));
-		Assert.assertEquals("2009-09-19", DateUtil.formatDate(pat22.getCurrentDate(), "yyyy-MM-dd"));
-		Assert.assertEquals(12, pat22.getFullYears().intValue());
+		Assertions.assertEquals("1997-07-08", DateUtil.formatDate(pat22.getBirthDate(), "yyyy-MM-dd"));
+		Assertions.assertEquals("2009-09-19", DateUtil.formatDate(pat22.getCurrentDate(), "yyyy-MM-dd"));
+		Assertions.assertEquals(12, pat22.getFullYears().intValue());
 	}
 	
 }

@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.common.ResultSetIterator;

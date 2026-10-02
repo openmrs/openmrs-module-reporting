@@ -11,9 +11,11 @@ package org.openmrs.module.reporting.evaluation.querybuilder;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Query;
+import org.hibernate.query.Query;
+import org.hibernate.query.spi.SqmQuery;
+import org.hibernate.query.sqm.tree.select.SqmSelectStatement;
+import org.hibernate.query.sqm.tree.select.SqmSelection;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
-import org.hibernate.type.Type;
 import org.openmrs.Cohort;
 import org.openmrs.Voidable;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -35,6 +37,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -457,14 +460,16 @@ public class HqlQueryBuilder implements QueryBuilder {
 	public List<DataSetColumn> getColumns(DbSessionFactory sessionFactory) {
 		List<DataSetColumn> l = new ArrayList<DataSetColumn>();
 		Query q = buildQuery(sessionFactory);
-		String[] returnAliases = q.getReturnAliases();
-		Type[] returnTypes = q.getReturnTypes();
-		for (int i=0; i < returnAliases.length; i++) {
+		SqmSelectStatement<?> statement = (SqmSelectStatement<?>) ((SqmQuery<?>) q).getSqmStatement();
+		List<SqmSelection<?>> selections = statement.getQuerySpec().getSelectClause().getSelections();
+		List<String> columnAliases = getColumnAliases();
+		for (int i=0; i < selections.size(); i++) {
 			DataSetColumn column = new DataSetColumn();
-			String returnAlias = ObjectUtil.nvl(returnAliases[i], "" + i);
+			String derivedAlias = (i < columnAliases.size() ? columnAliases.get(i) : null);
+			String returnAlias = ObjectUtil.nvl(ObjectUtil.nvl(derivedAlias, selections.get(i).getAlias()), "" + i);
 			column.setName(returnAlias);
 			column.setLabel(returnAlias);
-			column.setDataType(returnTypes[i].getReturnedClass());
+			column.setDataType(selections.get(i).getNodeJavaType() == null ? Object.class : selections.get(i).getNodeJavaType().getJavaTypeClass());
 			l.add(column);
 		}
 		return l;
@@ -510,16 +515,13 @@ public class HqlQueryBuilder implements QueryBuilder {
 		return ret;
 	}
 
-	protected String getQueryString() {
-		if ((positionIndex-1) > parameters.size()) {
-			throw new IllegalStateException("You have not specified enough parameters for the specified constraints");
-		}
-
-		// Create query string
-		StringBuilder q = new StringBuilder();
+	/**
+	 * @return the alias of each selected column, or null if it has none
+	 */
+	protected List<String> getColumnAliases() {
+		List<String> ret = new ArrayList<String>();
 		for (String s : columns) {
 			String[] split = s.split("\\:");
-			q.append(q.length() == 0 ? "select " : ", ");
 			String column = split[0];
 
 			// Determine an alias to use if not supplied to derive appropriate column naming
@@ -532,7 +534,26 @@ public class HqlQueryBuilder implements QueryBuilder {
 				columnAlias = propertySplit[propertySplit.length - 1];
                 columnAlias = columnAlias.replace("(", "").replace(")", "");
 			}
-			q.append(column).append(columnAlias != null ? " as " + columnAlias : "");
+			ret.add(columnAlias);
+		}
+		return ret;
+	}
+
+	protected String getQueryString() {
+		if ((positionIndex-1) > parameters.size()) {
+			throw new IllegalStateException("You have not specified enough parameters for the specified constraints");
+		}
+
+		// Create query string
+		StringBuilder q = new StringBuilder();
+		List<String> columnAliases = getColumnAliases();
+		Set<String> usedAliases = new HashSet<String>();
+		for (int i=0; i<columns.size(); i++) {
+			String column = columns.get(i).split("\\:")[0];
+			q.append(q.length() == 0 ? "select " : ", ");
+			String columnAlias = columnAliases.get(i);
+			// Hibernate no longer allows the same alias for more than one selected column
+			q.append(column).append(columnAlias != null && usedAliases.add(columnAlias) ? " as " + columnAlias : "");
 		}
 
 		List<String> aliases = new ArrayList<String>(fromTypes.keySet());
@@ -586,7 +607,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 			throw new IllegalStateException("You have not specified enough parameters for the specified constraints");
 		}
 
-		Query query = sessionFactory.getCurrentSession().createQuery(getQueryString());
+		Query query = sessionFactory.getHibernateSessionFactory().getCurrentSession().createQuery(getQueryString());
 
 		for (Map.Entry<String, Object> e : parameters.entrySet()) {
 			if (e.getValue() instanceof Collection) {

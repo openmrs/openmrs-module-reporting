@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.query.encounter.evaluator;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Encounter;
 import org.openmrs.contrib.testdata.TestDataManager;
@@ -22,7 +22,7 @@ import org.openmrs.module.reporting.query.encounter.EncounterQueryResult;
 import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 import org.openmrs.module.reporting.query.encounter.definition.MostRecentEncounterForPatientQuery;
 import org.openmrs.module.reporting.query.encounter.service.EncounterQueryService;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -39,7 +39,7 @@ public class MostRecentEncounterForPatientQueryEvaluatorTest extends BaseModuleC
 	@Autowired
 	EncounterQueryService encounterQueryService;
 	
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -60,7 +60,7 @@ public class MostRecentEncounterForPatientQueryEvaluatorTest extends BaseModuleC
 		EvaluationContext context = new EvaluationContext();
 		context.setBaseCohort(cohort);
 		EncounterQueryResult result = encounterQueryService.evaluate(query, context);
-		Assert.assertEquals(enc.getEncounterId(), result.getMemberIds().iterator().next());
+		Assertions.assertEquals(enc.getEncounterId(), result.getMemberIds().iterator().next());
 	}
 	
 }

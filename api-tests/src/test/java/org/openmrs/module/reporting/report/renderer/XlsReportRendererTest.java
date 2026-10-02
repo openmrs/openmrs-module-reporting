@@ -9,13 +9,13 @@
  */
 package org.openmrs.module.reporting.report.renderer;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.reporting.common.ExcelUtil;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
@@ -25,7 +25,7 @@ import org.openmrs.module.reporting.report.ReportData;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.openmrs.module.reporting.report.definition.service.ReportDefinitionService;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
@@ -44,10 +44,10 @@ public class XlsReportRendererTest extends BaseModuleContextSensitiveTest {
     public void testXlsReportRenderingWithoutHeaders() throws Exception {
 		Workbook wb = renderToXls(false);
 
-		Assert.assertEquals(3, wb.getNumberOfSheets());
-		Assert.assertNotNull(wb.getSheet("males"));
-		Assert.assertNotNull(wb.getSheet("females"));
-		Assert.assertNotNull(wb.getSheet("encounters"));
+		Assertions.assertEquals(3, wb.getNumberOfSheets());
+		Assertions.assertNotNull(wb.getSheet("males"));
+		Assertions.assertNotNull(wb.getSheet("females"));
+		Assertions.assertNotNull(wb.getSheet("encounters"));
 
 		testValue(wb, "males", 1, 1, "patient_id");
 		testValue(wb, "males", 1, 2, "gender");
@@ -57,7 +57,7 @@ public class XlsReportRendererTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void testXlsReportRenderingWithHeaders() throws Exception {
 		Workbook wb = renderToXls(true);
-		Assert.assertEquals(3, wb.getNumberOfSheets());
+		Assertions.assertEquals(3, wb.getNumberOfSheets());
 		testValue(wb, "males", 1, 1, "Gender Data Set");
 		testValue(wb, "females", 1, 1, "Gender Data Set");
 		testValue(wb, "encounters", 1, 1, "encounters");
@@ -73,7 +73,7 @@ public class XlsReportRendererTest extends BaseModuleContextSensitiveTest {
 		Sheet sheet = wb.getSheet(sheetName);
 		Row row = CellUtil.getRow(rowNum-1, sheet);
 		Cell cell = CellUtil.getCell(row, colNum-1);
-		Assert.assertEquals(value.toLowerCase(), cell.getStringCellValue().toLowerCase());
+		Assertions.assertEquals(value.toLowerCase(), cell.getStringCellValue().toLowerCase());
 	}
 
 	protected ReportDefinition getReportDefinition() {

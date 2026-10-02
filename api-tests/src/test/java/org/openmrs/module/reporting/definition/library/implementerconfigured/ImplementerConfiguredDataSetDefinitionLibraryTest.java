@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.reporting.definition.library.implementerconfigured;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.EvaluatableDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
@@ -19,14 +19,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ImplementerConfiguredDataSetDefinitionLibraryTest extends BaseImplementerConfiguredLibraryTest {
 
 	@Autowired
 	ImplementerConfiguredDataSetDefinitionLibrary library;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		copyResource("dataset", "patientIdSql.sql");
 		copyResource("dataset", "patientIdXml.reportingserializerxml");

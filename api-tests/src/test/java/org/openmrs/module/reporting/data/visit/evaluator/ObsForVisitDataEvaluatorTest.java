@@ -11,9 +11,9 @@ package org.openmrs.module.reporting.data.visit.evaluator;
 
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
@@ -30,8 +30,8 @@ import org.openmrs.module.reporting.data.visit.definition.VisitDataDefinition;
 import org.openmrs.module.reporting.data.visit.service.VisitDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.context.VisitEvaluationContext;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class ObsForVisitDataEvaluatorTest extends BaseModuleContextSensitiveTest {
@@ -50,12 +50,12 @@ public class ObsForVisitDataEvaluatorTest extends BaseModuleContextSensitiveTest
 	TestDataManager data;
  
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -83,15 +83,15 @@ public class ObsForVisitDataEvaluatorTest extends BaseModuleContextSensitiveTest
 		d.setQuestion(Context.getConceptService().getConcept(5089));
 		
 		EvaluatedVisitData vd = Context.getService(VisitDataService.class).evaluate(d, context);
-		Assert.assertEquals(2, ((List) vd.getData().get(5)).size());
+		Assertions.assertEquals(2, ((List) vd.getData().get(5)).size());
 		
 		d.setWhich(TimeQualifier.LAST);
 		vd = Context.getService(VisitDataService.class).evaluate(d, context);
-		Assert.assertEquals(150, ((Obs) vd.getData().get(5)).getValueNumeric().intValue());
+		Assertions.assertEquals(150, ((Obs) vd.getData().get(5)).getValueNumeric().intValue());
 
 		d.setWhich(TimeQualifier.FIRST);
 		vd = Context.getService(VisitDataService.class).evaluate(d, context);
-		Assert.assertEquals(80, ((Obs) vd.getData().get(5)).getValueNumeric().intValue());
+		Assertions.assertEquals(80, ((Obs) vd.getData().get(5)).getValueNumeric().intValue());
 		
 	}
 	
@@ -117,6 +117,6 @@ public class ObsForVisitDataEvaluatorTest extends BaseModuleContextSensitiveTest
 		def.setQuestion(Context.getConceptService().getConcept(23));
 		
 		EvaluatedVisitData vd = Context.getService(VisitDataService.class).evaluate(def, context);
-		Assert.assertEquals(3, ((List) vd.getData().get(5)).size());
+		Assertions.assertEquals(3, ((List) vd.getData().get(5)).size());
 	}
 }

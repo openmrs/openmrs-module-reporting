@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.reporting.data.visit.library;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Visit;
 import org.openmrs.contrib.testdata.TestDataManager;
 import org.openmrs.module.reporting.data.visit.EvaluatedVisitData;
@@ -19,13 +19,13 @@ import org.openmrs.module.reporting.data.visit.service.VisitDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.context.VisitEvaluationContext;
 import org.openmrs.module.reporting.query.visit.VisitIdSet;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class BuiltInVisitDataLibraryTest extends BaseModuleContextSensitiveTest {
 
@@ -44,7 +44,7 @@ public class BuiltInVisitDataLibraryTest extends BaseModuleContextSensitiveTest 
 
     private VisitIdSet visitIdSet;
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
 
         v1 = data.visit().patient(7)

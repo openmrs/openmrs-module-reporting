@@ -9,26 +9,27 @@
  */
 package org.openmrs.module.reporting.indicator;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.reporting.common.Fraction;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.service.IndicatorService;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Test class for testing evaluation of SQLIndicators
  */
 public class SqlIndicatorTest extends BaseModuleContextSensitiveTest {
 
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet("org/openmrs/module/reporting/include/" + new TestUtil().getTestDatasetFilename("ReportTestDataset"));
 	}
@@ -75,19 +76,25 @@ public class SqlIndicatorTest extends BaseModuleContextSensitiveTest {
 		assertIndicatorValue(indicator, new Fraction(6, 24), context);
 	}
 
-    @Test(expected = RuntimeException.class)
+    @Test
 	public void sqlIndicator_shouldEvaluateSqlIndicatorDecimals() throws Exception {
-		assertIndicatorValue("SELECT distinct(.222) as res from patient", "SELECT distinct(.44) as res2 from patient", null);
+		assertThrows(RuntimeException.class, () -> {
+			assertIndicatorValue("SELECT distinct(.222) as res from patient", "SELECT distinct(.44) as res2 from patient", null);
+		});
 	}
 	
-    @Test(expected = EvaluationException.class)
+    @Test
 	public void sqlIndicator_shouldNotAllowQueriesThatReturnMoreThanOneColumn() throws Exception {
-		assertIndicatorValue("SELECT distinct(.222) as res, 33 as res2 from patient", null);
+		assertThrows(EvaluationException.class, () -> {
+			assertIndicatorValue("SELECT distinct(.222) as res, 33 as res2 from patient", null);
+		});
 	}
 	
-	@Test(expected = EvaluationException.class)
+	@Test
 	public void sqlIndicator_shouldNotAllowQueriesThatReturnMoreThanOneRow() throws Exception {
-		assertIndicatorValue("SELECT person_id from person", null);
+		assertThrows(EvaluationException.class, () -> {
+			assertIndicatorValue("SELECT person_id from person", null);
+		});
 	}
 
 	protected void assertIndicatorValue(SqlIndicator indicator, Number expectedValue, EvaluationContext context) throws Exception {
@@ -96,7 +103,7 @@ public class SqlIndicatorTest extends BaseModuleContextSensitiveTest {
 		if (result instanceof BigDecimal) {
 			result = result.doubleValue();
 		}
-		Assert.assertEquals(expectedValue, result);
+		Assertions.assertEquals(expectedValue, result);
 	}
 
 	protected void assertIndicatorValue(SqlIndicator indicator, Number expectedValue) throws Exception {

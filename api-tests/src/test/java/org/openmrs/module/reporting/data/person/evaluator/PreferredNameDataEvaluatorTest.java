@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.data.person.evaluator;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.PersonName;
 import org.openmrs.api.context.Context;
@@ -21,8 +21,8 @@ import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.data.person.service.PersonDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 public class PreferredNameDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
@@ -31,12 +31,12 @@ public class PreferredNameDataEvaluatorTest extends BaseModuleContextSensitiveTe
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -51,10 +51,10 @@ public class PreferredNameDataEvaluatorTest extends BaseModuleContextSensitiveTe
 		EvaluationContext context = new EvaluationContext();
 		context.setBaseCohort(new Cohort("2,6,7,8"));
 		EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(d, context);
-		Assert.assertEquals("Hornblower", ((PersonName)pd.getData().get(2)).getFamilyName());
-		Assert.assertEquals("Johnny", ((PersonName)pd.getData().get(6)).getGivenName());
-		Assert.assertEquals("Collet", ((PersonName)pd.getData().get(7)).getGivenName());
-		Assert.assertEquals("Oloo", ((PersonName)pd.getData().get(8)).getFamilyName());
+		Assertions.assertEquals("Hornblower", ((PersonName)pd.getData().get(2)).getFamilyName());
+		Assertions.assertEquals("Johnny", ((PersonName)pd.getData().get(6)).getGivenName());
+		Assertions.assertEquals("Collet", ((PersonName)pd.getData().get(7)).getGivenName());
+		Assertions.assertEquals("Oloo", ((PersonName)pd.getData().get(8)).getFamilyName());
 	}
 	
 	/**
@@ -67,7 +67,7 @@ public class PreferredNameDataEvaluatorTest extends BaseModuleContextSensitiveTe
 		EvaluationContext context = new EvaluationContext();
 		context.setBaseCohort(new Cohort());
 		EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(d, context);
-		Assert.assertEquals(0, pd.getData().size());
+		Assertions.assertEquals(0, pd.getData().size());
 	}
 
 	/**
@@ -80,8 +80,8 @@ public class PreferredNameDataEvaluatorTest extends BaseModuleContextSensitiveTe
 		EvaluationContext context = new EvaluationContext();
 		context.setBaseCohort(new Cohort("6"));
 		EvaluatedPersonData pd = Context.getService(PersonDataService.class).evaluate(d, context);
-		Assert.assertEquals(1, pd.getData().size());
+		Assertions.assertEquals(1, pd.getData().size());
 		PersonName pn = (PersonName) pd.getData().get(6);
-		Assert.assertEquals(Boolean.TRUE, pn.getPreferred());
+		Assertions.assertEquals(Boolean.TRUE, pn.getPreferred());
 	}
 }

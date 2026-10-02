@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.reporting.query.visit.evaluator;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openmrs.Patient;
@@ -31,7 +32,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @SkipBaseSetup
 public class ActiveVisitQueryEvaluatorTest extends BaseModuleContextSensitiveTest {
@@ -52,8 +53,16 @@ public class ActiveVisitQueryEvaluatorTest extends BaseModuleContextSensitiveTes
     @BeforeEach
     public void setup() throws Exception {
         initializeInMemoryDatabase();
-        authenticate();
         executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
+        // commit, as core resolves role privileges on a separate thread that cannot see uncommitted rows
+        getConnection().commit();
+        authenticate();
+    }
+
+    @AfterEach
+    public void tearDown() {
+        // removes the data committed in setup
+        deleteAllData();
     }
 
     @Test

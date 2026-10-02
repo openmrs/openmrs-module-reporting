@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.reporting.data.encounter.evaluator;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.TestUtil;
@@ -19,10 +19,10 @@ import org.openmrs.module.reporting.data.encounter.definition.EncounterVisitData
 import org.openmrs.module.reporting.data.encounter.service.EncounterDataService;
 import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
 import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class EncounterVisitDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 
@@ -33,12 +33,12 @@ public class EncounterVisitDataEvaluatorTest extends BaseModuleContextSensitiveT
     protected static final String XML_ENCOUNTER_VISIT_TEST_DATASET = "EncounterVisitTestDataset.xml";
 
     /**
-     * Run this before each unit test in this class. The "@Before" method in
-     * {@link org.openmrs.test.BaseContextSensitiveTest} is run right before this method.
+     * Run this before each unit test in this class. The "@BeforeEach" method in
+     * {@link org.openmrs.test.jupiter.BaseContextSensitiveTest} is run right before this method.
      *
      * @throws Exception
      */
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
         executeDataSet(XML_DATASET_PATH + XML_ENCOUNTER_VISIT_TEST_DATASET);

@@ -9,10 +9,10 @@
  */
 package org.openmrs.module.reporting.dataset.definition.evaluator;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.ObjectUtil;
@@ -23,8 +23,8 @@ import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SimplePatientDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.service.DataSetDefinitionService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 public class SimplePatientDataSetEvaluatorTest extends BaseModuleContextSensitiveTest {
@@ -34,12 +34,12 @@ public class SimplePatientDataSetEvaluatorTest extends BaseModuleContextSensitiv
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -61,18 +61,18 @@ public class SimplePatientDataSetEvaluatorTest extends BaseModuleContextSensitiv
 		d.addPersonAttributeType(Context.getPersonService().getPersonAttributeTypeByName("Birthplace"));
 		
 		SimpleDataSet result = (SimpleDataSet)Context.getService(DataSetDefinitionService.class).evaluate(d, null);
-		Assert.assertEquals(9, result.getRows().size());
-		Assert.assertEquals(7, result.getMetaData().getColumnCount());
+		Assertions.assertEquals(9, result.getRows().size());
+		Assertions.assertEquals(7, result.getMetaData().getColumnCount());
 		for (DataSetRow row : result.getRows()) {
 			Integer patientId = (Integer)row.getColumnValue("patientId");
 			Patient p = Context.getPatientService().getPatient(patientId);
-			Assert.assertTrue(ObjectUtil.areEqualStr(p.getPatientIdentifier("Old Identification Number"), row.getColumnValue("Old Identification Number")));
-			Assert.assertEquals(p.getGivenName(), row.getColumnValue("givenName"));
-			Assert.assertEquals(p.getFamilyName(), row.getColumnValue("familyName"));
-			Assert.assertEquals(p.getGender(), row.getColumnValue("gender"));
-			Assert.assertEquals(p.getAge(), row.getColumnValue("age"));
+			Assertions.assertTrue(ObjectUtil.areEqualStr(p.getPatientIdentifier("Old Identification Number"), row.getColumnValue("Old Identification Number")));
+			Assertions.assertEquals(p.getGivenName(), row.getColumnValue("givenName"));
+			Assertions.assertEquals(p.getFamilyName(), row.getColumnValue("familyName"));
+			Assertions.assertEquals(p.getGender(), row.getColumnValue("gender"));
+			Assertions.assertEquals(p.getAge(), row.getColumnValue("age"));
 			Object attVal = p.getAttribute("Birthplace") == null ? null : p.getAttribute("Birthplace").getHydratedObject();
-			Assert.assertEquals(attVal, row.getColumnValue("Birthplace"));
+			Assertions.assertEquals(attVal, row.getColumnValue("Birthplace"));
 		}
 	}
 }

@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.data.encounter.evaluator;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.common.TestUtil;
@@ -22,8 +22,8 @@ import org.openmrs.module.reporting.data.encounter.service.EncounterDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContext;
 import org.openmrs.module.reporting.query.encounter.EncounterIdSet;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 
 public class EncounterIdDataEvaluatorTest extends BaseModuleContextSensitiveTest {
 	
@@ -32,12 +32,12 @@ public class EncounterIdDataEvaluatorTest extends BaseModuleContextSensitiveTest
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -51,15 +51,15 @@ public class EncounterIdDataEvaluatorTest extends BaseModuleContextSensitiveTest
 		EncounterIdDataDefinition d = new EncounterIdDataDefinition();
 		EvaluationContext context = new EvaluationContext();
 		EvaluatedEncounterData ed = Context.getService(EncounterDataService.class).evaluate(d, context);
-		Assert.assertEquals(10, ed.getData().size());
+		Assertions.assertEquals(10, ed.getData().size());
 		for (Integer eId : ed.getData().keySet()) {
-			Assert.assertEquals(eId, ed.getData().get(eId));
+			Assertions.assertEquals(eId, ed.getData().get(eId));
 		}
 		
 		// Test for a limited base cohort of patients
 		context.setBaseCohort(new Cohort("7,20"));
 		ed = Context.getService(EncounterDataService.class).evaluate(d, context);
-		Assert.assertEquals(4, ed.getData().size());
+		Assertions.assertEquals(4, ed.getData().size());
 	}
 
 	/**
@@ -73,6 +73,6 @@ public class EncounterIdDataEvaluatorTest extends BaseModuleContextSensitiveTest
 		context.setBaseCohort(new Cohort("7,20"));
 		context.setBaseEncounters(new EncounterIdSet(3,4,6));
 		EvaluatedEncounterData ed = Context.getService(EncounterDataService.class).evaluate(d, context);
-		Assert.assertEquals(3, ed.getData().size());
+		Assertions.assertEquals(3, ed.getData().size());
 	}
 }

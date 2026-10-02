@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.reporting.cohort.definition.evaluator;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.cohort.CohortUtil;
@@ -23,8 +23,8 @@ import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionSe
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.TestUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseContextSensitiveTest;
+import org.openmrs.test.jupiter.BaseModuleContextSensitiveTest;
 import org.openmrs.test.Verifies;
 
 public class InverseCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
@@ -34,12 +34,12 @@ public class InverseCohortDefinitionEvaluatorTest extends BaseModuleContextSensi
 	protected static final String XML_REPORT_TEST_DATASET = "ReportTestDataset";
 	
 	/**
-	 * Run this before each unit test in this class. The "@Before" method in
+	 * Run this before each unit test in this class. The "@BeforeEach" method in
 	 * {@link BaseContextSensitiveTest} is run right before this method.
 	 * 
 	 * @throws Exception
 	 */
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(XML_DATASET_PATH + new TestUtil().getTestDatasetFilename(XML_REPORT_TEST_DATASET));
 	}
@@ -61,8 +61,8 @@ public class InverseCohortDefinitionEvaluatorTest extends BaseModuleContextSensi
 		Cohort nonMaleCohort = Context.getService(CohortDefinitionService.class).evaluate(nonMales, null);
 		Cohort femaleOrUnknownCohort = Context.getService(CohortDefinitionService.class).evaluate(femaleOrUnknown, null);
 
-		Assert.assertEquals(femaleOrUnknownCohort.size(), nonMaleCohort.getSize());
-		Assert.assertTrue(CohortUtil.subtract(nonMaleCohort, femaleOrUnknownCohort).isEmpty());
+		Assertions.assertEquals(femaleOrUnknownCohort.size(), nonMaleCohort.getSize());
+		Assertions.assertTrue(CohortUtil.subtract(nonMaleCohort, femaleOrUnknownCohort).isEmpty());
 	}
 
 	/**
@@ -78,22 +78,22 @@ public class InverseCohortDefinitionEvaluatorTest extends BaseModuleContextSensi
 		males.setMaleIncluded(true);
 		Cohort baseCohort = Context.getService(CohortDefinitionService.class).evaluate(males, null);
 		context.setBaseCohort(baseCohort);
-		Assert.assertEquals(3, baseCohort.size());
+		Assertions.assertEquals(3, baseCohort.size());
 		
 		// Children on 1/1/2010 (4)
 		AgeCohortDefinition children = new AgeCohortDefinition();
 		children.setMaxAge(15);
 		children.setEffectiveDate(DateUtil.getDateTime(2010, 1, 1));
 		Cohort childrenCohort = Context.getService(CohortDefinitionService.class).evaluate(children, null);
-		Assert.assertEquals(4, childrenCohort.size());
+		Assertions.assertEquals(4, childrenCohort.size());
 		
 		InverseCohortDefinition nonChildren = new InverseCohortDefinition(children);
 
 		// Inverse Children, non base cohort
-		Assert.assertEquals(5, Context.getService(CohortDefinitionService.class).evaluate(nonChildren, null).size());
+		Assertions.assertEquals(5, Context.getService(CohortDefinitionService.class).evaluate(nonChildren, null).size());
 		
 		// Inverse Children, base cohort
-		Assert.assertEquals(2, Context.getService(CohortDefinitionService.class).evaluate(nonChildren, context).size());
+		Assertions.assertEquals(2, Context.getService(CohortDefinitionService.class).evaluate(nonChildren, context).size());
 
 	}
 }
