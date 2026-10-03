@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.reporting.evaluation.querybuilder;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +22,7 @@ import org.openmrs.Person;
 import org.openmrs.PersonAddress;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
+import org.openmrs.logging.OpenmrsLoggingUtil;
 import org.openmrs.module.reporting.cohort.PatientIdSet;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.RangeComparator;
@@ -63,6 +66,19 @@ public class HqlQueryBuilderTest extends BaseModuleContextSensitiveTest {
 		testSize(results, 2);
 		testRow(results, 1, 2, "M");
 		testRow(results, 2, 7, "F");
+	}
+
+	@Test
+	public void evaluateToList_shouldRaiseHqlSqlWalkerLoggerToWarn() throws Exception {
+		String walker = "org.hibernate.hql.internal.ast.HqlSqlWalker";
+		OpenmrsLoggingUtil.applyLogLevel(walker, "DEBUG");
+		Assert.assertEquals(Level.DEBUG, LogManager.getLogger(walker).getLevel());
+
+		HqlQueryBuilder q = new HqlQueryBuilder();
+		q.select("personId").from(Person.class).whereEqual("personId", 2);
+		evaluationService.evaluateToList(q, new EvaluationContext());
+
+		Assert.assertEquals(Level.WARN, LogManager.getLogger(walker).getLevel());
 	}
 
 	@Test
