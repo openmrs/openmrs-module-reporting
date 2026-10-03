@@ -27,6 +27,7 @@ import org.openmrs.module.reporting.evaluation.context.EncounterEvaluationContex
 import org.openmrs.module.reporting.evaluation.context.ObsEvaluationContext;
 import org.openmrs.module.reporting.evaluation.context.VisitEvaluationContext;
 import org.openmrs.module.reporting.query.IdSet;
+import org.openmrs.logging.OpenmrsLoggingUtil;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.util.ArrayList;
@@ -473,8 +474,7 @@ public class HqlQueryBuilder implements QueryBuilder {
 	@Override
 	public List<Object[]> evaluateToList(DbSessionFactory sessionFactory, EvaluationContext context) {
 		// Due to hibernate bug HHH-2166, we need to make sure the HqlSqlWalker logger is not at DEBUG or TRACE level
-		OpenmrsUtil.applyLogLevel("org.hibernate.hql.ast.HqlSqlWalker", "WARN");
-        OpenmrsUtil.applyLogLevel("org.hibernate.hql.internal.ast.HqlSqlWalker", "WARN");
+		OpenmrsLoggingUtil.applyLogLevel("org.hibernate.hql.internal.ast.HqlSqlWalker", "WARN");
 		EvaluationProfiler profiler = new EvaluationProfiler(context);
 		profiler.logBefore("EXECUTING_QUERY", toString());
 		List<Object[]> ret = new ArrayList<Object[]>();
