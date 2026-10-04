@@ -43,7 +43,7 @@
 		<htmlwidgetsVersion>2.0.1</htmlwidgetsVersion>
 		<serializationVersion>0.3.0</serializationVersion>
 		<calculationVersion>1.2</calculationVersion>
-		<quartzVersion>2.1.1</quartzVersion>
+		<quartzVersion>2.3.2</quartzVersion>
 		<poiVersion>3.12</poiVersion>
 		<jodatimeVersion>2.12.5</jodatimeVersion>
 		<handlebarsVersion>1.1.2</handlebarsVersion>
@@ -94,8 +94,16 @@
 					<artifactId>slf4j-api</artifactId>
 				</exclusion>
 				<exclusion>
-					<groupId>c3p0</groupId>
+					<groupId>com.mchange</groupId>
 					<artifactId>c3p0</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.mchange</groupId>
+					<artifactId>mchange-commons-java</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.zaxxer</groupId>
+					<artifactId>HikariCP-java7</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
