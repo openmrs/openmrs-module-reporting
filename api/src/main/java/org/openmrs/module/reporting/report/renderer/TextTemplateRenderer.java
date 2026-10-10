@@ -107,6 +107,9 @@ public class TextTemplateRenderer extends ReportTemplateRenderer {
 		try {
 			ReportDesign reportDesign = getDesign(argument);
 			ReportDesignResource reportDesignResource = getTemplate(reportDesign);
+			if (reportDesignResource == null) {
+				throw new RenderingException("No template found for report design with uuid: " + argument);
+			}
 			String templateContents = new String(reportDesignResource.getContents(), "UTF-8");
 			Map<String, Object> replacements = getBaseReplacementData(reportData, reportDesign);
 	

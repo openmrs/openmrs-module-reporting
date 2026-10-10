@@ -91,7 +91,7 @@ public class ParameterizableUtil {
 		// Get generic type of the Mapped property, if specified
 		Class<? extends Parameterizable> mappedType = null;
 		if (StringUtils.isNotEmpty(property)) {
-	    	Field f = ReflectionUtil.getField(type, property);
+	    	Field f = getMappedField(type, property);
 			try {
 				Type genericType = null;
 				if (Mapped.class.isAssignableFrom(f.getType())) {
@@ -126,6 +126,19 @@ public class ParameterizableUtil {
 			}
 		}
 		return mappedType;
+	}
+
+	/**
+	 * @return the field named property on type or its superclasses
+	 * @throws IllegalArgumentException if type is null or has no such field
+	 */
+	private static Field getMappedField(Class<?> type, String property) {
+		Field f = ReflectionUtil.getField(type, property);
+		if (f == null) {
+			String typeName = (type == null ? null : type.getSimpleName());
+			throw new IllegalArgumentException("Cannot retrieve Mapped type from: " + typeName + "." + property);
+		}
+		return f;
 	}
 	
 	/**

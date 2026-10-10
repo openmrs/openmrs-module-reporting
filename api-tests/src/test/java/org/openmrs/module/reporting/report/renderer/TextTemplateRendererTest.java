@@ -129,4 +129,13 @@ public class TextTemplateRendererTest extends BaseModuleContextSensitiveTest {
 		xml = templateType != null ? StringUtils.deleteWhitespace(xml) : "Males=2Females=2";
 		Assertions.assertEquals(xml, renderedOutput);
 	}
+
+	@Test
+	public void render_shouldFailNamingTheMissingTemplateWhenTheDesignHasNone() {
+		TextTemplateRenderer renderer = new TextTemplateRenderer();
+		RenderingException e = Assertions.assertThrows(RenderingException.class,
+		    () -> renderer.render(new ReportData(), "no-such-report-design-uuid", new ByteArrayOutputStream()));
+		Assertions.assertNull(e.getCause(), "a design without a template must be reported, not surface as " + e.getCause());
+		Assertions.assertEquals("No template found for report design with uuid: no-such-report-design-uuid", e.getMessage());
+	}
 }

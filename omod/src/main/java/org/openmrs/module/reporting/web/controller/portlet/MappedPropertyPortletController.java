@@ -133,6 +133,6 @@ public class MappedPropertyPortletController extends ParameterizablePortletContr
 		// Handle customizations for look and feel
 		
 		model.put("keyLabel", ObjectUtil.nvlStr(model.get("keyLabel"), "Key"));
-		model.put("typeLabel", ObjectUtil.nvlStr(model.get("typeLabel"), mappedType.getSimpleName()));
+		model.put("typeLabel", ObjectUtil.nvlStr(model.get("typeLabel"), mappedType == null ? null : mappedType.getSimpleName()));
 	}
 }

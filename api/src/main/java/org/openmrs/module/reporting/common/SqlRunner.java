@@ -38,7 +38,9 @@ public class SqlRunner {
     private static Log log = LogFactory.getLog(SqlRunner.class);
 
 	// Regular expression to identify a change in the delimiter.  This ignores spaces, allows delimiter in comment, allows an equals-sign
-    private static final Pattern DELIMITER_PATTERN = Pattern.compile("^\\s*(--)?\\s*delimiter\\s*=?\\s*([^\\s]+)+\\s*.*$", Pattern.CASE_INSENSITIVE);
+	// The quantifiers are possessive: giving characters back never lets a line match that would not match otherwise,
+	// so they accept exactly the same lines and capture the same delimiter, without backtracking between \S, \s and .
+    private static final Pattern DELIMITER_PATTERN = Pattern.compile("^\\s*+(--)?\\s*+delimiter\\s*+=?\\s*+(\\S++)\\s*+.*$", Pattern.CASE_INSENSITIVE);
 
     //*********** INSTANCE PROPERTIES ******************
 
