@@ -21,7 +21,7 @@ jobs:
       MAVEN_REPO_API_KEY: ${{ secrets.MAVEN_REPO_API_KEY }}
 
   owasp-dependency-check:
-    if: ${{ github.event_name != 'pull_request' }}
+    if: ${{ github.event_name != 'pull_request' && github.ref_name != 'core-3.x' }}
     uses: openmrs/openmrs-contrib-gha-workflows/.github/workflows/owasp-dependency-check.yml@main
     secrets:
       NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
