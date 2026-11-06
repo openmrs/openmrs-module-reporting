@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.reporting.cohort.definition.library;
 
+import org.openmrs.CareSetting;
+import org.openmrs.Drug;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Form;
@@ -20,6 +22,7 @@ import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.BirthAndDeathCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.ConditionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.DrugOrderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
@@ -286,6 +289,18 @@ public class BuiltInCohortDefinitionLibrary extends BaseDefinitionLibrary<Cohort
         cd.addParameter(new Parameter("createdOnOrBefore", "reporting.parameter.createdOnOrBefore", Date.class));
         cd.addParameter(new Parameter("createdOnOrAfter", "reporting.parameter.createdOnOrAfter", Date.class));
         cd.addParameter(new Parameter("activeOnDate", "reporting.parameter.activeOnDate", Date.class));
+        return cd;
+    }
+
+    @DocumentedDefinition("drugOrderSearch")
+    public CohortDefinition getDrugOrderSearch() {
+        DrugOrderCohortDefinition cd = new DrugOrderCohortDefinition();
+        cd.addParameter(new Parameter("drugs", "reporting.parameter.drugs", Drug.class, List.class, null));
+        cd.addParameter(new Parameter("careSetting", "reporting.parameter.careSetting", CareSetting.class));
+        cd.addParameter(new Parameter("activeOnOrAfter", "reporting.parameter.activeOnOrAfter", Date.class));
+        cd.addParameter(new Parameter("activeOnOrBefore", "reporting.parameter.activeOnOrBefore", Date.class));
+        cd.addParameter(new Parameter("activatedOnOrAfter", "reporting.parameter.activatedOnOrAfter", Date.class));
+        cd.addParameter(new Parameter("activatedOnOrBefore", "reporting.parameter.activatedOnOrBefore", Date.class));
         return cd;
     }
 }

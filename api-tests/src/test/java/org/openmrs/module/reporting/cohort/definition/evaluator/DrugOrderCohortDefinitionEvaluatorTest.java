@@ -21,15 +21,20 @@ import org.openmrs.Concept;
 import org.openmrs.Drug;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.reporting.cohort.definition.DefinitionLibraryCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.DrugOrderCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.library.BuiltInCohortDefinitionLibrary;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.Match;
+import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class DrugOrderCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
@@ -259,5 +264,26 @@ public class DrugOrderCohortDefinitionEvaluatorTest extends BaseModuleContextSen
   		Assert.assertTrue(cohort.contains(22));
   		Assert.assertEquals(5, cohort.size());
 
+  	}
+
+  	@Test
+  	public void evaluateShouldReturnPatientsForTheBuiltInDrugOrderSearchWithParameterValues() throws Exception {
+  		List<Drug> drugs = new ArrayList<Drug>();
+  		drugs.add(Context.getConceptService().getDrug(11));
+  		drugs.add(Context.getConceptService().getDrug(2));
+  		Map<String, Object> parameterValues = new HashMap<String, Object>();
+  		parameterValues.put("drugs", drugs);
+  		parameterValues.put("careSetting", Context.getService(OrderService.class).getCareSetting(1));
+
+  		DefinitionLibraryCohortDefinition definition = new DefinitionLibraryCohortDefinition();
+  		definition.setDefinitionKey(BuiltInCohortDefinitionLibrary.PREFIX + "drugOrderSearch");
+  		definition.setParameterValues(parameterValues);
+  		Cohort cohort = Context.getService(CohortDefinitionService.class).evaluate(definition, new EvaluationContext());
+
+  		Assert.assertTrue(cohort.contains(2));
+  		Assert.assertTrue(cohort.contains(8));
+  		Assert.assertTrue(cohort.contains(21));
+  		Assert.assertTrue(cohort.contains(22));
+  		Assert.assertEquals(4, cohort.size());
   	}
 }
