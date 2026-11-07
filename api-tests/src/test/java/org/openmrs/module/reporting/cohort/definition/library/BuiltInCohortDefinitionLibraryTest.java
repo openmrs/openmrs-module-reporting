@@ -11,12 +11,15 @@ package org.openmrs.module.reporting.cohort.definition.library;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.CareSetting;
 import org.openmrs.Concept;
+import org.openmrs.Drug;
 import org.openmrs.EncounterType;
 import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.BirthAndDeathCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.ConditionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.DrugOrderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.GenderCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.MappedParametersCohortDefinition;
@@ -159,5 +162,18 @@ public class BuiltInCohortDefinitionLibraryTest {
         assertThat(cd, hasParameter("activeOnDate", Date.class));
         assertThat(cd, hasParameter("conditionNonCoded", String.class));
         assertThat(cd, hasParameter("conditionCoded", Concept.class));
+    }
+
+    @Test
+    public void testGetDrugOrderSearch() throws Exception {
+        CohortDefinition cd = library.getDrugOrderSearch();
+        assertTrue(DrugOrderCohortDefinition.class.isAssignableFrom(cd.getClass()));
+        assertThat(cd.getParameters().size(), is(6));
+        assertThat(cd, hasParameter("drugs", Drug.class, List.class));
+        assertThat(cd, hasParameter("careSetting", CareSetting.class));
+        assertThat(cd, hasParameter("activeOnOrAfter", Date.class));
+        assertThat(cd, hasParameter("activeOnOrBefore", Date.class));
+        assertThat(cd, hasParameter("activatedOnOrAfter", Date.class));
+        assertThat(cd, hasParameter("activatedOnOrBefore", Date.class));
     }
 }
